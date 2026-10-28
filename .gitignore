@@ -1,0 +1,36 @@
+# Private authentication, player accounts, and saved progress
+/.hosting/
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Local deployment details
+/HOSTING.md
+/arcade-host.service
+/arcade-local.service
+
+# Standalone third-party games: keep installed locally, never publish here
+/astray/
+/hextris/
+/infinite-mario/
+/neverball/
+/platforms/
+/tetris/
+/.adult-sources/
+
+# Local references, backups, generated files, and development state
+/design/
+/.tools/profile-backup/
+__pycache__/
+*.py[cod]
+node_modules/
+.venv/
+*.log
+*.bak
+*.tmp
+.DS_Store
+/launcher.png
+/.tools/*-shot.png

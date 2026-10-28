@@ -1,0 +1,2709 @@
+{
+  "reviewed": "2026-10-24",
+  "notes": "Google Maps place search and city overview reviewed; distributable street/footprint/coastline geometry comes from OSM. Landmark models are stylized. Bridge alignments cross-checked against mapped OSM bridge ways. Expanded 25-stop routes: 252 additional place searches reviewed; additional stop coordinates retain their linked OSM feature locations. Bengaluru added 2026-10-26: Google Maps place references and central OSM coordinates checked; distant outskirts excluded.",
+  "places": [
+    {
+      "city": "paris",
+      "landmark": "Eiffel Tower",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Eiffel%20Tower%20Paris",
+      "placeTitle": "Eiffelturm - Google Maps"
+    },
+    {
+      "city": "paris",
+      "landmark": "Les Invalides",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Les%20Invalides%20Paris",
+      "placeTitle": "Hôtel des Invalides - Google Maps"
+    },
+    {
+      "city": "paris",
+      "landmark": "Musée Rodin",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Mus%C3%A9e%20Rodin%20Paris",
+      "placeTitle": "Musée Rodin - Google Maps"
+    },
+    {
+      "city": "paris",
+      "landmark": "Musée d’Orsay",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Mus%C3%A9e%20d%E2%80%99Orsay%20Paris",
+      "placeTitle": "Musée d´Orsay - Google Maps"
+    },
+    {
+      "city": "paris",
+      "landmark": "Place de la Concorde",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Place%20de%20la%20Concorde%20Paris",
+      "placeTitle": "Place de la Concorde - Google Maps"
+    },
+    {
+      "city": "paris",
+      "landmark": "Louvre Pyramid",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Louvre%20Pyramid%20Paris",
+      "placeTitle": "Glaspyramide im Innenhof des Louvre - Google Maps"
+    },
+    {
+      "city": "paris",
+      "landmark": "Notre-Dame",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Notre-Dame%20Paris",
+      "placeTitle": "Kathedrale Notre-Dame de Paris - Google Maps"
+    },
+    {
+      "city": "paris",
+      "landmark": "Sainte-Chapelle",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Sainte-Chapelle%20Paris",
+      "placeTitle": "Sainte-Chapelle - Google Maps"
+    },
+    {
+      "city": "london",
+      "landmark": "Buckingham Palace",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Buckingham%20Palace%20London",
+      "placeTitle": "Buckingham Palace - Google Maps"
+    },
+    {
+      "city": "london",
+      "landmark": "Westminster Abbey",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Westminster%20Abbey%20London",
+      "placeTitle": "Westminster Abbey - Google Maps"
+    },
+    {
+      "city": "london",
+      "landmark": "Big Ben",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Big%20Ben%20London",
+      "placeTitle": "Big Ben - Google Maps"
+    },
+    {
+      "city": "london",
+      "landmark": "London Eye",
+      "reference": "https://www.google.com/maps/search/?api=1&query=London%20Eye%20London",
+      "placeTitle": "London Eye - Google Maps"
+    },
+    {
+      "city": "london",
+      "landmark": "Trafalgar Square",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Trafalgar%20Square%20London",
+      "placeTitle": "Trafalgar Square - Google Maps"
+    },
+    {
+      "city": "london",
+      "landmark": "National Gallery",
+      "reference": "https://www.google.com/maps/search/?api=1&query=National%20Gallery%20London",
+      "placeTitle": "National Gallery - Google Maps"
+    },
+    {
+      "city": "london",
+      "landmark": "Covent Garden",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Covent%20Garden%20London",
+      "placeTitle": "Covent Garden - Google Maps"
+    },
+    {
+      "city": "london",
+      "landmark": "Somerset House",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Somerset%20House%20London",
+      "placeTitle": "Somerset House - Google Maps"
+    },
+    {
+      "city": "rome",
+      "landmark": "Colosseum",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Colosseum%20Rome",
+      "placeTitle": "Kolosseum - Google Maps"
+    },
+    {
+      "city": "rome",
+      "landmark": "Arch of Constantine",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Arch%20of%20Constantine%20Rome",
+      "placeTitle": "Konstantinsbogen - Google Maps"
+    },
+    {
+      "city": "rome",
+      "landmark": "Roman Forum",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Roman%20Forum%20Rome",
+      "placeTitle": "Forum Romanum - Google Maps"
+    },
+    {
+      "city": "rome",
+      "landmark": "Capitoline Hill",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Capitoline%20Hill%20Rome",
+      "placeTitle": "Capitoline Hill - Google Maps"
+    },
+    {
+      "city": "rome",
+      "landmark": "Pantheon",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Pantheon%20Rome",
+      "placeTitle": "Pantheon - Google Maps"
+    },
+    {
+      "city": "rome",
+      "landmark": "Piazza Navona",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Piazza%20Navona%20Rome",
+      "placeTitle": "Piazza Navona - Google Maps"
+    },
+    {
+      "city": "rome",
+      "landmark": "Trevi Fountain",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Trevi%20Fountain%20Rome",
+      "placeTitle": "Trevi Brunnen - Google Maps"
+    },
+    {
+      "city": "rome",
+      "landmark": "Spanish Steps",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Spanish%20Steps%20Rome",
+      "placeTitle": "Spanische Treppe - Google Maps"
+    },
+    {
+      "city": "barcelona",
+      "landmark": "Sagrada Família",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Sagrada%20Fam%C3%ADlia%20Barcelona",
+      "placeTitle": "Sagrada Família - Google Maps"
+    },
+    {
+      "city": "barcelona",
+      "landmark": "Casa Milà",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Casa%20Mil%C3%A0%20Barcelona",
+      "placeTitle": "Casa Milà - Google Maps"
+    },
+    {
+      "city": "barcelona",
+      "landmark": "Casa Batlló",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Casa%20Batll%C3%B3%20Barcelona",
+      "placeTitle": "Casa Batlló - Google Maps"
+    },
+    {
+      "city": "barcelona",
+      "landmark": "Plaça de Catalunya",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Pla%C3%A7a%20de%20Catalunya%20Barcelona",
+      "placeTitle": "Plaça de Catalunya - Google Maps"
+    },
+    {
+      "city": "barcelona",
+      "landmark": "Palau de la Música",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Palau%20de%20la%20M%C3%BAsica%20Barcelona",
+      "placeTitle": "Palau de la Música Catalana - Google Maps"
+    },
+    {
+      "city": "barcelona",
+      "landmark": "Barcelona Cathedral",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Barcelona%20Cathedral%20Barcelona",
+      "placeTitle": "La Catedral - Google Maps"
+    },
+    {
+      "city": "barcelona",
+      "landmark": "Santa Maria del Mar",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Santa%20Maria%20del%20Mar%20Barcelona",
+      "placeTitle": "Santa Maria del Mar - Google Maps"
+    },
+    {
+      "city": "barcelona",
+      "landmark": "Parc de la Ciutadella",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Parc%20de%20la%20Ciutadella%20Barcelona",
+      "placeTitle": "Parc de la Ciutadella - Google Maps"
+    },
+    {
+      "city": "barcelona",
+      "landmark": "Arc de Triomf",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Arc%20de%20Triomf%20Barcelona",
+      "placeTitle": "Arc de Triomf - Google Maps"
+    },
+    {
+      "city": "amsterdam",
+      "landmark": "Amsterdam Centraal",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Amsterdam%20Centraal%20Amsterdam",
+      "placeTitle": "Amsterdam Centraal - Google Maps"
+    },
+    {
+      "city": "amsterdam",
+      "landmark": "Royal Palace",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Royal%20Palace%20Amsterdam",
+      "placeTitle": "Paleis op de Dam - Google Maps"
+    },
+    {
+      "city": "amsterdam",
+      "landmark": "Nieuwe Kerk",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Nieuwe%20Kerk%20Amsterdam",
+      "placeTitle": "Nieuwe Kerk - Google Maps"
+    },
+    {
+      "city": "amsterdam",
+      "landmark": "Anne Frank House",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Anne%20Frank%20House%20Amsterdam",
+      "placeTitle": "Anne-Frank-Haus - Google Maps"
+    },
+    {
+      "city": "amsterdam",
+      "landmark": "Westerkerk",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Westerkerk%20Amsterdam",
+      "placeTitle": "Westerkerk - Google Maps"
+    },
+    {
+      "city": "amsterdam",
+      "landmark": "Rijksmuseum",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Rijksmuseum%20Amsterdam",
+      "placeTitle": "Rijksmuseum Amsterdam - Google Maps"
+    },
+    {
+      "city": "amsterdam",
+      "landmark": "Van Gogh Museum",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Van%20Gogh%20Museum%20Amsterdam",
+      "placeTitle": "Van Gogh Museum - Google Maps"
+    },
+    {
+      "city": "amsterdam",
+      "landmark": "Concertgebouw",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Concertgebouw%20Amsterdam",
+      "placeTitle": "Concertgebouw - Google Maps"
+    },
+    {
+      "city": "prague",
+      "landmark": "St. Vitus Cathedral",
+      "reference": "https://www.google.com/maps/search/?api=1&query=St.%20Vitus%20Cathedral%20Prague",
+      "placeTitle": "St. Veits Dom - Google Maps"
+    },
+    {
+      "city": "prague",
+      "landmark": "Prague Castle",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Prague%20Castle%20Prague",
+      "placeTitle": "Prager Burg - Google Maps"
+    },
+    {
+      "city": "prague",
+      "landmark": "Charles Bridge",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Charles%20Bridge%20Prague",
+      "placeTitle": "Karlsbrücke - Google Maps"
+    },
+    {
+      "city": "prague",
+      "landmark": "Rudolfinum",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Rudolfinum%20Prague",
+      "placeTitle": "Rudolfinum - Google Maps"
+    },
+    {
+      "city": "prague",
+      "landmark": "Old Town Hall Clock",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Prague%20Astronomical%20Clock",
+      "placeTitle": "Prager Rathausuhr - Google Maps"
+    },
+    {
+      "city": "prague",
+      "landmark": "Church of Our Lady before Týn",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Church%20of%20Our%20Lady%20before%20T%C3%BDn%20Prague",
+      "placeTitle": "Teynkirche - Google Maps"
+    },
+    {
+      "city": "prague",
+      "landmark": "Powder Tower",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Powder%20Tower%20Prague",
+      "placeTitle": "Pulverturm - Google Maps"
+    },
+    {
+      "city": "prague",
+      "landmark": "National Museum",
+      "reference": "https://www.google.com/maps/search/?api=1&query=National%20Museum%20Prague",
+      "placeTitle": "Nationalmuseum - Google Maps"
+    },
+    {
+      "city": "vienna",
+      "landmark": "St. Stephen’s Cathedral",
+      "reference": "https://www.google.com/maps/search/?api=1&query=St.%20Stephen%E2%80%99s%20Cathedral%20Vienna",
+      "placeTitle": "Domkirche St. Stephan - Google Maps"
+    },
+    {
+      "city": "vienna",
+      "landmark": "Hofburg",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Hofburg%20Vienna",
+      "placeTitle": "Hofburg - Google Maps"
+    },
+    {
+      "city": "vienna",
+      "landmark": "Vienna State Opera",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Vienna%20State%20Opera%20Vienna",
+      "placeTitle": "Wiener Staatsoper - Google Maps"
+    },
+    {
+      "city": "vienna",
+      "landmark": "Karlskirche",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Karlskirche%20Vienna",
+      "placeTitle": "Karlskirche - Google Maps"
+    },
+    {
+      "city": "vienna",
+      "landmark": "Vienna Secession",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Vienna%20Secession%20Vienna",
+      "placeTitle": "Wiener Secession - Google Maps"
+    },
+    {
+      "city": "vienna",
+      "landmark": "Kunsthistorisches Museum",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Kunsthistorisches%20Museum%20Vienna",
+      "placeTitle": "Kunsthistorisches Museum Wien - Google Maps"
+    },
+    {
+      "city": "vienna",
+      "landmark": "Austrian Parliament",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Austrian%20Parliament%20Vienna",
+      "placeTitle": "Parlament Österreich - Google Maps"
+    },
+    {
+      "city": "vienna",
+      "landmark": "Vienna City Hall",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Vienna%20City%20Hall%20Vienna",
+      "placeTitle": "Das Wiener Rathaus - Google Maps"
+    },
+    {
+      "city": "budapest",
+      "landmark": "Fisherman’s Bastion",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Fisherman%E2%80%99s%20Bastion%20Budapest",
+      "placeTitle": "Fischerbastei - Google Maps"
+    },
+    {
+      "city": "budapest",
+      "landmark": "Matthias Church",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Matthias%20Church%20Budapest",
+      "placeTitle": "Matthiaskirche - Google Maps"
+    },
+    {
+      "city": "budapest",
+      "landmark": "Buda Castle",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Buda%20Castle%20Budapest",
+      "placeTitle": "Royal Palace - Google Maps"
+    },
+    {
+      "city": "budapest",
+      "landmark": "Chain Bridge",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Chain%20Bridge%20Budapest",
+      "placeTitle": "Kettenbrücke - Google Maps"
+    },
+    {
+      "city": "budapest",
+      "landmark": "Hungarian Parliament",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Hungarian%20Parliament%20Budapest",
+      "placeTitle": "Parlamentsgebäude - Google Maps"
+    },
+    {
+      "city": "budapest",
+      "landmark": "St. Stephen’s Basilica",
+      "reference": "https://www.google.com/maps/search/?api=1&query=St.%20Stephen%E2%80%99s%20Basilica%20Budapest",
+      "placeTitle": "St.-Stephans-Basilika - Google Maps"
+    },
+    {
+      "city": "budapest",
+      "landmark": "Hungarian State Opera",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Hungarian%20State%20Opera%20Budapest",
+      "placeTitle": "Oper - Google Maps"
+    },
+    {
+      "city": "budapest",
+      "landmark": "Dohány Street Synagogue",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Doh%C3%A1ny%20Street%20Synagogue%20Budapest",
+      "placeTitle": "Synagoge der Dohánystraße - Google Maps"
+    },
+    {
+      "city": "budapest",
+      "landmark": "Central Market Hall",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Central%20Market%20Hall%20Budapest",
+      "placeTitle": "Große Markthalle - Google Maps"
+    },
+    {
+      "city": "copenhagen",
+      "landmark": "Copenhagen City Hall",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Copenhagen%20City%20Hall%20Copenhagen",
+      "placeTitle": "Københavns Rådhus - Google Maps"
+    },
+    {
+      "city": "copenhagen",
+      "landmark": "Tivoli Gardens",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Tivoli%20Gardens%20Copenhagen",
+      "placeTitle": "Tivoli - Google Maps"
+    },
+    {
+      "city": "copenhagen",
+      "landmark": "Christiansborg Palace",
+      "reference": "https://www.google.com/maps/search/?api=1&query=55.6761,12.58",
+      "placeTitle": "Christiansborg palace complex",
+      "reviewNote": "Name search resolved to the adjoining palace chapel; use the mapped palace coordinates, cross-checked with the city overview and OSM footprint."
+    },
+    {
+      "city": "copenhagen",
+      "landmark": "Round Tower",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Round%20Tower%20Copenhagen",
+      "placeTitle": "Rundetårn - Google Maps"
+    },
+    {
+      "city": "copenhagen",
+      "landmark": "Rosenborg Castle",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Rosenborg%20Castle%20Copenhagen",
+      "placeTitle": "Rosenborg Castle - Google Maps"
+    },
+    {
+      "city": "copenhagen",
+      "landmark": "Frederik’s Church",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Frederik%E2%80%99s%20Church%20Copenhagen",
+      "placeTitle": "Frederiks Kirke - Google Maps"
+    },
+    {
+      "city": "copenhagen",
+      "landmark": "Amalienborg",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Amalienborg%20Copenhagen",
+      "placeTitle": "Schloss Amalienborg - Google Maps"
+    },
+    {
+      "city": "copenhagen",
+      "landmark": "Nyhavn",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Nyhavn%20Copenhagen",
+      "placeTitle": "Nyhavn - Google Maps"
+    },
+    {
+      "city": "stockholm",
+      "landmark": "Stockholm City Hall",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Stockholm%20City%20Hall%20Stockholm",
+      "placeTitle": "Stockholms stadshus - Google Maps"
+    },
+    {
+      "city": "stockholm",
+      "landmark": "Riddarholmen Church",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Riddarholmen%20Church%20Stockholm",
+      "placeTitle": "Riddarholmskirche - Google Maps"
+    },
+    {
+      "city": "stockholm",
+      "landmark": "Nobel Prize Museum",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Nobel%20Prize%20Museum%20Stockholm",
+      "placeTitle": "Nobelpreismuseum - Google Maps"
+    },
+    {
+      "city": "stockholm",
+      "landmark": "Storkyrkan",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Storkyrkan%20Stockholm",
+      "placeTitle": "Nikolaikirche - Google Maps"
+    },
+    {
+      "city": "stockholm",
+      "landmark": "Royal Palace",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Royal%20Palace%20Stockholm",
+      "placeTitle": "Stockholmer Schloss - Google Maps"
+    },
+    {
+      "city": "stockholm",
+      "landmark": "Nationalmuseum",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Nationalmuseum%20Stockholm",
+      "placeTitle": "Schwedisches Nationalmuseum - Google Maps"
+    },
+    {
+      "city": "stockholm",
+      "landmark": "Vasa Museum",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Vasa%20Museum%20Stockholm",
+      "placeTitle": "Vasa-Museum - Google Maps"
+    },
+    {
+      "city": "stockholm",
+      "landmark": "Nordic Museum",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Nordic%20Museum%20Stockholm",
+      "placeTitle": "Nordisches Museum - Google Maps"
+    },
+    {
+      "city": "lisbon",
+      "landmark": "Praça do Comércio",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Pra%C3%A7a%20do%20Com%C3%A9rcio%20Lisbon",
+      "placeTitle": "Praça do Comércio - Google Maps"
+    },
+    {
+      "city": "lisbon",
+      "landmark": "Rua Augusta Arch",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Rua%20Augusta%20Arch%20Lisbon",
+      "placeTitle": "Arco da Rua Augusta - Google Maps"
+    },
+    {
+      "city": "lisbon",
+      "landmark": "Lisbon Cathedral",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Lisbon%20Cathedral%20Lisbon",
+      "placeTitle": "Kathedrale von Lissabon - Google Maps"
+    },
+    {
+      "city": "lisbon",
+      "landmark": "São Jorge Castle",
+      "reference": "https://www.google.com/maps/search/?api=1&query=S%C3%A3o%20Jorge%20Castle%20Lisbon",
+      "placeTitle": "Castelo de São Jorge - Google Maps"
+    },
+    {
+      "city": "lisbon",
+      "landmark": "Rossio Square",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Rossio%20Square%20Lisbon",
+      "placeTitle": "Praça Dom Pedro IV - Google Maps"
+    },
+    {
+      "city": "lisbon",
+      "landmark": "Santa Justa Lift",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Santa%20Justa%20Lift%20Lisbon",
+      "placeTitle": "Elevador de Santa Justa - Google Maps"
+    },
+    {
+      "city": "lisbon",
+      "landmark": "Carmo Convent",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Carmo%20Convent%20Lisbon",
+      "placeTitle": "Convento do Carmo - Google Maps"
+    },
+    {
+      "city": "lisbon",
+      "landmark": "São Pedro de Alcântara",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Miradouro%20de%20S%C3%A3o%20Pedro%20de%20Alc%C3%A2ntara%20Lisbon",
+      "placeTitle": "Miradouro de São Pedro de Alcântara - Google Maps"
+    },
+    {
+      "city": "madrid",
+      "landmark": "Royal Palace of Madrid",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Royal%20Palace%20of%20Madrid%20Madrid",
+      "placeTitle": "Palacio Real - Google Maps"
+    },
+    {
+      "city": "madrid",
+      "landmark": "Almudena Cathedral",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Almudena%20Cathedral%20Madrid",
+      "placeTitle": "Catedral de Santa María la Real de la Almudena - Google Maps"
+    },
+    {
+      "city": "madrid",
+      "landmark": "Plaza Mayor",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Plaza%20Mayor%20Madrid",
+      "placeTitle": "Plaza Mayor - Google Maps"
+    },
+    {
+      "city": "madrid",
+      "landmark": "Puerta del Sol",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Puerta%20del%20Sol%20Madrid",
+      "placeTitle": "Puerta del Sol - Google Maps"
+    },
+    {
+      "city": "madrid",
+      "landmark": "Metropolis Building",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Metropolis%20Building%20Madrid",
+      "placeTitle": "Metropolis-Haus - Google Maps"
+    },
+    {
+      "city": "madrid",
+      "landmark": "Cibeles Palace",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Cibeles%20Palace%20Madrid",
+      "placeTitle": "Palacio de Cibeles - Google Maps"
+    },
+    {
+      "city": "madrid",
+      "landmark": "Puerta de Alcalá",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Puerta%20de%20Alcal%C3%A1%20Madrid",
+      "placeTitle": "Puerta de Alcalá Madrid - Google Maps"
+    },
+    {
+      "city": "madrid",
+      "landmark": "Prado Museum",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Prado%20Museum%20Madrid",
+      "placeTitle": "Museo del Prado - Google Maps"
+    },
+    {
+      "city": "madrid",
+      "landmark": "Crystal Palace",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Crystal%20Palace%20Madrid",
+      "placeTitle": "Kristallpalast - Google Maps"
+    },
+    {
+      "city": "edinburgh",
+      "landmark": "Edinburgh Castle",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Edinburgh%20Castle%20Edinburgh",
+      "placeTitle": "Edinburgh Castle - Google Maps"
+    },
+    {
+      "city": "edinburgh",
+      "landmark": "St Giles’ Cathedral",
+      "reference": "https://www.google.com/maps/search/?api=1&query=St%20Giles%E2%80%99%20Cathedral%20Edinburgh",
+      "placeTitle": "St. Giles Cathedral - Google Maps"
+    },
+    {
+      "city": "edinburgh",
+      "landmark": "Scottish National Gallery",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Scottish%20National%20Gallery%20Edinburgh",
+      "placeTitle": "Scottish National Gallery Edinburgh - Google Maps"
+    },
+    {
+      "city": "edinburgh",
+      "landmark": "Scott Monument",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Scott%20Monument%20Edinburgh",
+      "placeTitle": "Scott-Denkmal - Google Maps"
+    },
+    {
+      "city": "edinburgh",
+      "landmark": "Balmoral Hotel",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Balmoral%20Hotel%20Edinburgh",
+      "placeTitle": "The Balmoral, a Rocco Forte hotel - Google Maps"
+    },
+    {
+      "city": "edinburgh",
+      "landmark": "Calton Hill National Monument",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Calton%20Hill%20National%20Monument%20Edinburgh",
+      "placeTitle": "National Monument of Scotland - Google Maps"
+    },
+    {
+      "city": "edinburgh",
+      "landmark": "Palace of Holyroodhouse",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Palace%20of%20Holyroodhouse%20Edinburgh",
+      "placeTitle": "Holyrood Palace - Google Maps"
+    },
+    {
+      "city": "edinburgh",
+      "landmark": "Scottish Parliament",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Scottish%20Parliament%20Edinburgh",
+      "placeTitle": "Schottisches Parlamentsgebäude - Google Maps"
+    },
+    {
+      "city": "venice",
+      "landmark": "Rialto Bridge",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Rialto%20Bridge%20Venice",
+      "placeTitle": "Rialtobrücke - Google Maps"
+    },
+    {
+      "city": "venice",
+      "landmark": "Teatro La Fenice",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Teatro%20La%20Fenice%20Venice",
+      "placeTitle": "Teatro la Fenice - Google Maps"
+    },
+    {
+      "city": "venice",
+      "landmark": "Ponte dell’Accademia",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Ponte%20dell%E2%80%99Accademia%20Venice",
+      "placeTitle": "Ponte dell'Accademia - Google Maps"
+    },
+    {
+      "city": "venice",
+      "landmark": "Santa Maria della Salute",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Santa%20Maria%20della%20Salute%20Venice",
+      "placeTitle": "Santa Maria della Salute - Google Maps"
+    },
+    {
+      "city": "venice",
+      "landmark": "Doge’s Palace",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Doge%E2%80%99s%20Palace%20Venice",
+      "placeTitle": "Dogenpalast - Google Maps"
+    },
+    {
+      "city": "venice",
+      "landmark": "St Mark’s Basilica",
+      "reference": "https://www.google.com/maps/search/?api=1&query=St%20Mark%E2%80%99s%20Basilica%20Venice",
+      "placeTitle": "Markusdom - Google Maps"
+    },
+    {
+      "city": "venice",
+      "landmark": "St Mark’s Campanile",
+      "reference": "https://www.google.com/maps/search/?api=1&query=St%20Mark%E2%80%99s%20Campanile%20Venice",
+      "placeTitle": "Markusturm - Google Maps"
+    },
+    {
+      "city": "venice",
+      "landmark": "Bridge of Sighs",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Bridge%20of%20Sighs%20Venice",
+      "placeTitle": "Seufzerbrücke - Google Maps"
+    },
+    {
+      "city": "athens",
+      "landmark": "Temple of Hephaestus",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Temple%20of%20Hephaestus%20Athens",
+      "placeTitle": "Tempel des Hephaistos - Google Maps"
+    },
+    {
+      "city": "athens",
+      "landmark": "Ancient Agora",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Ancient%20Agora%20Athens",
+      "placeTitle": "Agora - Google Maps"
+    },
+    {
+      "city": "athens",
+      "landmark": "Parthenon",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Parthenon%20Athens",
+      "placeTitle": "Parthenon - Google Maps"
+    },
+    {
+      "city": "athens",
+      "landmark": "Odeon of Herodes Atticus",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Odeon%20of%20Herodes%20Atticus%20Athens",
+      "placeTitle": "Odeon des Herodes Atticus - Google Maps"
+    },
+    {
+      "city": "athens",
+      "landmark": "Acropolis Museum",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Acropolis%20Museum%20Athens",
+      "placeTitle": "Akropolismuseum - Google Maps"
+    },
+    {
+      "city": "athens",
+      "landmark": "Temple of Olympian Zeus",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Temple%20of%20Olympian%20Zeus%20Athens",
+      "placeTitle": "Olympieion - Google Maps"
+    },
+    {
+      "city": "athens",
+      "landmark": "Panathenaic Stadium",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Panathenaic%20Stadium%20Athens",
+      "placeTitle": "Panathenaic Stadium - Google Maps"
+    },
+    {
+      "city": "athens",
+      "landmark": "Syntagma Square",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Syntagma%20Square%20Athens",
+      "placeTitle": "Plateia Syntagmatos - Google Maps"
+    },
+    {
+      "city": "paris",
+      "landmark": "Trocadéro Gardens",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Trocad%C3%A9ro%20Gardens%20Paris",
+      "placeTitle": "Jardins du Trocadéro - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/13716106"
+    },
+    {
+      "city": "paris",
+      "landmark": "Palais de Tokyo",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Palais%20de%20Tokyo%20Paris",
+      "placeTitle": "Palais de Tokyo - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/79219351"
+    },
+    {
+      "city": "paris",
+      "landmark": "Pont Alexandre III",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Pont%20Alexandre%20III%20Paris",
+      "placeTitle": "Pont Alexandre III - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/183620685"
+    },
+    {
+      "city": "paris",
+      "landmark": "Grand Palais",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Grand%20Palais%20Paris",
+      "placeTitle": "Grand Palais - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/56185523"
+    },
+    {
+      "city": "paris",
+      "landmark": "Petit Palais",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Petit%20Palais%20Paris",
+      "placeTitle": "Petit Palais - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/2778854"
+    },
+    {
+      "city": "paris",
+      "landmark": "Musée de l’Orangerie",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Mus%C3%A9e%20de%20l%E2%80%99Orangerie%20Paris",
+      "placeTitle": "Musée de l'Orangerie - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/54188996"
+    },
+    {
+      "city": "paris",
+      "landmark": "Tuileries Garden",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Tuileries%20Garden%20Paris",
+      "placeTitle": "Jardin des Tuileries - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/53820452"
+    },
+    {
+      "city": "paris",
+      "landmark": "La Madeleine",
+      "reference": "https://www.google.com/maps/search/?api=1&query=La%20Madeleine%20Paris",
+      "placeTitle": "La Madeleine Paris - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/54180046"
+    },
+    {
+      "city": "paris",
+      "landmark": "Palais Garnier",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Palais%20Garnier%20Paris",
+      "placeTitle": "Opéra Garnier - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/node/3462104314"
+    },
+    {
+      "city": "paris",
+      "landmark": "Place Vendôme",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Place%20Vend%C3%B4me%20Paris",
+      "placeTitle": "Pl. Vendôme - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/54175774"
+    },
+    {
+      "city": "paris",
+      "landmark": "Palais Royal",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Palais%20Royal%20Paris",
+      "placeTitle": "Palais Royal - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/2172739"
+    },
+    {
+      "city": "paris",
+      "landmark": "Pont Neuf",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Pont%20Neuf%20Paris",
+      "placeTitle": "Pont Neuf - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/53574164"
+    },
+    {
+      "city": "paris",
+      "landmark": "Hôtel de Ville",
+      "reference": "https://www.google.com/maps/search/?api=1&query=H%C3%B4tel%20de%20Ville%20Paris",
+      "placeTitle": "Hôtel de Ville - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/284089"
+    },
+    {
+      "city": "paris",
+      "landmark": "Centre Pompidou",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Centre%20Pompidou%20Paris",
+      "placeTitle": "Centre Pompidou Paris - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/55503397"
+    },
+    {
+      "city": "paris",
+      "landmark": "Luxembourg Palace",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Luxembourg%20Palace%20Paris",
+      "placeTitle": "Palais du Luxembourg - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/975955"
+    },
+    {
+      "city": "paris",
+      "landmark": "Saint-Sulpice",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Saint-Sulpice%20Paris",
+      "placeTitle": "St-Sulpice - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/node/324352448"
+    },
+    {
+      "city": "paris",
+      "landmark": "Panthéon",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Panth%C3%A9on%20Paris",
+      "placeTitle": "Panthéon - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/16407465"
+    },
+    {
+      "city": "london",
+      "landmark": "St James's Park",
+      "reference": "https://www.google.com/maps/search/?api=1&query=St%20James's%20Park%20London",
+      "placeTitle": "St. James’s Park - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/374960368"
+    },
+    {
+      "city": "london",
+      "landmark": "Green Park",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Green%20Park%20London",
+      "placeTitle": "Green Park - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/863554956"
+    },
+    {
+      "city": "london",
+      "landmark": "Wellington Arch",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Wellington%20Arch%20London",
+      "placeTitle": "Wellington Arch - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/24923117"
+    },
+    {
+      "city": "london",
+      "landmark": "Piccadilly Circus",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Piccadilly%20Circus%20London",
+      "placeTitle": "Piccadilly Circus - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/8250949"
+    },
+    {
+      "city": "london",
+      "landmark": "Leicester Square",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Leicester%20Square%20London",
+      "placeTitle": "Leicester Square - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/20231127"
+    },
+    {
+      "city": "london",
+      "landmark": "British Museum",
+      "reference": "https://www.google.com/maps/search/?api=1&query=British%20Museum%20London",
+      "placeTitle": "British Museum - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/177044"
+    },
+    {
+      "city": "london",
+      "landmark": "Royal Opera House",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Royal%20Opera%20House%20London",
+      "placeTitle": "Royal Opera House - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/33721672"
+    },
+    {
+      "city": "london",
+      "landmark": "Seven Dials",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Seven%20Dials%20London",
+      "placeTitle": "Seven Dials - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/node/344093927"
+    },
+    {
+      "city": "london",
+      "landmark": "Westminster Bridge",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Westminster%20Bridge%20London",
+      "placeTitle": "Westminster Bridge - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/19306462"
+    },
+    {
+      "city": "london",
+      "landmark": "Golden Jubilee Bridges",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Golden%20Jubilee%20Bridges%20London",
+      "placeTitle": "Golden Jubilee Bridges - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/151744359"
+    },
+    {
+      "city": "london",
+      "landmark": "Royal Festival Hall",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Royal%20Festival%20Hall%20London",
+      "placeTitle": "Royal Festival Hall - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/5987419"
+    },
+    {
+      "city": "london",
+      "landmark": "National Theatre",
+      "reference": "https://www.google.com/maps/search/?api=1&query=National%20Theatre%20London",
+      "placeTitle": "Royal National Theatre - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/2023676"
+    },
+    {
+      "city": "london",
+      "landmark": "Imperial War Museum",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Imperial%20War%20Museum%20London",
+      "placeTitle": "Imperial War Museum - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/8614496"
+    },
+    {
+      "city": "london",
+      "landmark": "Churchill War Rooms",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Churchill%20War%20Rooms%20London",
+      "placeTitle": "Cabinet War Rooms - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/197206542"
+    },
+    {
+      "city": "london",
+      "landmark": "Admiralty Arch",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Admiralty%20Arch%20London",
+      "placeTitle": "Admiralty Arch - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/17074208"
+    },
+    {
+      "city": "london",
+      "landmark": "Horse Guards Parade",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Horse%20Guards%20Parade%20London",
+      "placeTitle": "Horse Guards Parade - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/4256958"
+    },
+    {
+      "city": "london",
+      "landmark": "Victoria Embankment Gardens",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Victoria%20Embankment%20Gardens%20London",
+      "placeTitle": "Victoria Embankment Gardens - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/4254099"
+    },
+    {
+      "city": "rome",
+      "landmark": "Castle of the Holy Angel",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Castle%20of%20the%20Holy%20Angel%20Rome",
+      "placeTitle": "Engelsburg - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/8035487"
+    },
+    {
+      "city": "rome",
+      "landmark": "Ponte Sant'Angelo",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Ponte%20Sant'Angelo%20Rome",
+      "placeTitle": "Aeliusbrücke - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/134399943"
+    },
+    {
+      "city": "rome",
+      "landmark": "Piazza del Popolo",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Piazza%20del%20Popolo%20Rome",
+      "placeTitle": "Piazza del Popolo - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/318583"
+    },
+    {
+      "city": "rome",
+      "landmark": "Ara Pacis",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Ara%20Pacis%20Rome",
+      "placeTitle": "Ara-Pacis-Museum - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/201291264"
+    },
+    {
+      "city": "rome",
+      "landmark": "Piazza Venezia",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Piazza%20Venezia%20Rome",
+      "placeTitle": "Piazza Venezia - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/713360712"
+    },
+    {
+      "city": "rome",
+      "landmark": "Largo di Torre Argentina",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Largo%20di%20Torre%20Argentina%20Rome",
+      "placeTitle": "Largo di Torre Argentina - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/23955329"
+    },
+    {
+      "city": "rome",
+      "landmark": "Campo de' Fiori",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Campo%20de'%20Fiori%20Rome",
+      "placeTitle": "Campo de' Fiori - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/4949430"
+    },
+    {
+      "city": "rome",
+      "landmark": "Palazzo Farnese",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Palazzo%20Farnese%20Rome",
+      "placeTitle": "Palazzo Farnese - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/22289"
+    },
+    {
+      "city": "rome",
+      "landmark": "Ponte Sisto",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Ponte%20Sisto%20Rome",
+      "placeTitle": "Ponte Sisto - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/5676442"
+    },
+    {
+      "city": "rome",
+      "landmark": "Santa Maria in Trastevere",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Santa%20Maria%20in%20Trastevere%20Rome",
+      "placeTitle": "Santa Maria in Trastevere - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/51368975"
+    },
+    {
+      "city": "rome",
+      "landmark": "Tiber Island",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Tiber%20Island%20Rome",
+      "placeTitle": "Tiberinsel - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/126146475"
+    },
+    {
+      "city": "rome",
+      "landmark": "Circus Maximus",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Circus%20Maximus%20Rome",
+      "placeTitle": "Circus Maximus - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/11384819"
+    },
+    {
+      "city": "rome",
+      "landmark": "Mouth of Truth",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Mouth%20of%20Truth%20Rome",
+      "placeTitle": "Bocca della Verità - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/node/497186177"
+    },
+    {
+      "city": "rome",
+      "landmark": "Trajan's Column",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Trajan's%20Column%20Rome",
+      "placeTitle": "Trajanssäule - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/3376015"
+    },
+    {
+      "city": "rome",
+      "landmark": "Santa Maria Maggiore",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Santa%20Maria%20Maggiore%20Rome",
+      "placeTitle": "S. Maria Maggiore - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/131564482"
+    },
+    {
+      "city": "rome",
+      "landmark": "Quirinal Palace",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Quirinal%20Palace%20Rome",
+      "placeTitle": "Quirinalspalast - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/2707110"
+    },
+    {
+      "city": "rome",
+      "landmark": "Baths of Diocletian",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Baths%20of%20Diocletian%20Rome",
+      "placeTitle": "Diokletiansthermen - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/201568922"
+    },
+    {
+      "city": "barcelona",
+      "landmark": "Hospital de Sant Pau",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Hospital%20de%20Sant%20Pau%20Barcelona",
+      "placeTitle": "Hospital de Sant Pau Barcelona - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/7422813"
+    },
+    {
+      "city": "barcelona",
+      "landmark": "Casa Vicens",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Casa%20Vicens%20Barcelona",
+      "placeTitle": "Casa Vicens - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/132514125"
+    },
+    {
+      "city": "barcelona",
+      "landmark": "La Boqueria",
+      "reference": "https://www.google.com/maps/search/?api=1&query=La%20Boqueria%20Barcelona",
+      "placeTitle": "Mercat de la Boqueria - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/6288735"
+    },
+    {
+      "city": "barcelona",
+      "landmark": "Gran Teatre del Liceu",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Gran%20Teatre%20del%20Liceu%20Barcelona",
+      "placeTitle": "Gran Teatre del Liceu - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/10426929"
+    },
+    {
+      "city": "barcelona",
+      "landmark": "Palau Güell",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Palau%20G%C3%BCell%20Barcelona",
+      "placeTitle": "Palau Güell - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/166565579"
+    },
+    {
+      "city": "barcelona",
+      "landmark": "Plaça Reial",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Pla%C3%A7a%20Reial%20Barcelona",
+      "placeTitle": "Pl. Reial - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/541071062"
+    },
+    {
+      "city": "barcelona",
+      "landmark": "Columbus Monument",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Columbus%20Monument%20Barcelona",
+      "placeTitle": "Kolumbus-Denkmal Barcelona - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/126451774"
+    },
+    {
+      "city": "barcelona",
+      "landmark": "Maritime Museum",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Maritime%20Museum%20Barcelona",
+      "placeTitle": "Museu Marítim de Barcelona - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/node/14080861534"
+    },
+    {
+      "city": "barcelona",
+      "landmark": "Barceloneta Beach",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Barceloneta%20Beach%20Barcelona",
+      "placeTitle": "Barceloneta Beach - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/7333373"
+    },
+    {
+      "city": "barcelona",
+      "landmark": "History Museum of Catalonia",
+      "reference": "https://www.google.com/maps/search/?api=1&query=History%20Museum%20of%20Catalonia%20Barcelona",
+      "placeTitle": "Museum der Geschichte Kataloniens - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/node/6742154244"
+    },
+    {
+      "city": "barcelona",
+      "landmark": "Estació de França",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Estaci%C3%B3%20de%20Fran%C3%A7a%20Barcelona",
+      "placeTitle": "Estació de França - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/306085430"
+    },
+    {
+      "city": "barcelona",
+      "landmark": "El Born Centre",
+      "reference": "https://www.google.com/maps/search/?api=1&query=El%20Born%20Centre%20Barcelona",
+      "placeTitle": "El Born Centre de Cultura i Memòria - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/136060835"
+    },
+    {
+      "city": "barcelona",
+      "landmark": "Picasso Museum",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Picasso%20Museum%20Barcelona",
+      "placeTitle": "Museu Picasso - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/188938001"
+    },
+    {
+      "city": "barcelona",
+      "landmark": "Plaça de Sant Jaume",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Pla%C3%A7a%20de%20Sant%20Jaume%20Barcelona",
+      "placeTitle": "Pl. de Sant Jaume - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/18708575"
+    },
+    {
+      "city": "barcelona",
+      "landmark": "Sant Pau del Camp",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Sant%20Pau%20del%20Camp%20Barcelona",
+      "placeTitle": "Sant Pau del Camp - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/166399"
+    },
+    {
+      "city": "barcelona",
+      "landmark": "Mercat de Sant Antoni",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Mercat%20de%20Sant%20Antoni%20Barcelona",
+      "placeTitle": "Mercat de Sant Antoni - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/249401797"
+    },
+    {
+      "city": "amsterdam",
+      "landmark": "Oude Kerk",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Oude%20Kerk%20Amsterdam",
+      "placeTitle": "Alte Kirche - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/57857592"
+    },
+    {
+      "city": "amsterdam",
+      "landmark": "Basilica of Saint Nicholas",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Basilica%20of%20Saint%20Nicholas%20Amsterdam",
+      "placeTitle": "Basilika St. Nikolaus - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/174996833"
+    },
+    {
+      "city": "amsterdam",
+      "landmark": "NEMO Science Museum",
+      "reference": "https://www.google.com/maps/search/?api=1&query=NEMO%20Science%20Museum%20Amsterdam",
+      "placeTitle": "NEMO - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/node/2741083161"
+    },
+    {
+      "city": "amsterdam",
+      "landmark": "National Maritime Museum",
+      "reference": "https://www.google.com/maps/search/?api=1&query=National%20Maritime%20Museum%20Amsterdam",
+      "placeTitle": "Schifffahrtsmuseum - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/1287492683"
+    },
+    {
+      "city": "amsterdam",
+      "landmark": "Rembrandt House Museum",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Rembrandt%20House%20Museum%20Amsterdam",
+      "placeTitle": "Rembrandt House Museum - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/node/250624673"
+    },
+    {
+      "city": "amsterdam",
+      "landmark": "Waterlooplein",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Waterlooplein%20Amsterdam",
+      "placeTitle": "Waterlooplein - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/13239097"
+    },
+    {
+      "city": "amsterdam",
+      "landmark": "Portuguese Synagogue",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Portuguese%20Synagogue%20Amsterdam",
+      "placeTitle": "Portugiesische Synagoge Amsterdams - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/57861363"
+    },
+    {
+      "city": "amsterdam",
+      "landmark": "Magere Brug",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Magere%20Brug%20Amsterdam",
+      "placeTitle": "Magere Brug - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/601096321"
+    },
+    {
+      "city": "amsterdam",
+      "landmark": "Royal Theater Carré",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Royal%20Theater%20Carr%C3%A9%20Amsterdam",
+      "placeTitle": "Theater Carré - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/node/178910348"
+    },
+    {
+      "city": "amsterdam",
+      "landmark": "H'ART Museum",
+      "reference": "https://www.google.com/maps/search/?api=1&query=H'ART%20Museum%20Amsterdam",
+      "placeTitle": "Eremitage Amsterdam - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/node/2742811299"
+    },
+    {
+      "city": "amsterdam",
+      "landmark": "Rembrandtplein",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Rembrandtplein%20Amsterdam",
+      "placeTitle": "Rembrandtplein - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/470612445"
+    },
+    {
+      "city": "amsterdam",
+      "landmark": "Munttoren",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Munttoren%20Amsterdam",
+      "placeTitle": "Munttoren - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/57862728"
+    },
+    {
+      "city": "amsterdam",
+      "landmark": "Bloemenmarkt",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Bloemenmarkt%20Amsterdam",
+      "placeTitle": "Bloemenmarkt Amsterdam - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/145953534"
+    },
+    {
+      "city": "amsterdam",
+      "landmark": "Begijnhof",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Begijnhof%20Amsterdam",
+      "placeTitle": "Begijnhof Amsterdam - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/26658363"
+    },
+    {
+      "city": "amsterdam",
+      "landmark": "Vondelpark",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Vondelpark%20Amsterdam",
+      "placeTitle": "Vondelpark - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/17080648"
+    },
+    {
+      "city": "amsterdam",
+      "landmark": "Leidseplein",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Leidseplein%20Amsterdam",
+      "placeTitle": "Leidseplein - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/1231991755"
+    },
+    {
+      "city": "amsterdam",
+      "landmark": "De Waag",
+      "reference": "https://www.google.com/maps/search/?api=1&query=De%20Waag%20Amsterdam",
+      "placeTitle": "De Waag Amsterdam - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/57857390"
+    },
+    {
+      "city": "prague",
+      "landmark": "Lennon Wall",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Lennon%20Wall%20Prague",
+      "placeTitle": "John Lennon Wall - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/629201841"
+    },
+    {
+      "city": "prague",
+      "landmark": "Church of Saint Nicholas",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Church%20of%20Saint%20Nicholas%20Prague",
+      "placeTitle": "Church of Saint Nicholas Prague - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/7645355"
+    },
+    {
+      "city": "prague",
+      "landmark": "Kampa Museum",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Kampa%20Museum%20Prague",
+      "placeTitle": "Kampa Museum - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/node/1083723494"
+    },
+    {
+      "city": "prague",
+      "landmark": "Dancing House",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Dancing%20House%20Prague",
+      "placeTitle": "Dancing House Prague - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/6751056"
+    },
+    {
+      "city": "prague",
+      "landmark": "National Theatre",
+      "reference": "https://www.google.com/maps/search/?api=1&query=National%20Theatre%20Prague",
+      "placeTitle": "Národní divadlo - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/7649971"
+    },
+    {
+      "city": "prague",
+      "landmark": "Wallenstein Garden",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Wallenstein%20Garden%20Prague",
+      "placeTitle": "Waldstein-Garten - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/19469326"
+    },
+    {
+      "city": "prague",
+      "landmark": "Petřín Lookout Tower",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Pet%C5%99%C3%ADn%20Lookout%20Tower%20Prague",
+      "placeTitle": "Aussichtsturm Petřín - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/7645353"
+    },
+    {
+      "city": "prague",
+      "landmark": "Strahov Monastery",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Strahov%20Monastery%20Prague",
+      "placeTitle": "Kloster Strahov - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/6268801"
+    },
+    {
+      "city": "prague",
+      "landmark": "Loreto",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Loreto%20Prague",
+      "placeTitle": "Prager Loreto - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/28550218"
+    },
+    {
+      "city": "prague",
+      "landmark": "Old Jewish Cemetery",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Old%20Jewish%20Cemetery%20Prague",
+      "placeTitle": "Alter Jüdischer Friedhof - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/27376003"
+    },
+    {
+      "city": "prague",
+      "landmark": "Spanish Synagogue",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Spanish%20Synagogue%20Prague",
+      "placeTitle": "Spanische Synagoge - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/28517451"
+    },
+    {
+      "city": "prague",
+      "landmark": "Municipal House",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Municipal%20House%20Prague",
+      "placeTitle": "Obecní dům - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/27124435"
+    },
+    {
+      "city": "prague",
+      "landmark": "Wenceslas Square",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Wenceslas%20Square%20Prague",
+      "placeTitle": "Václavské nám. - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/3366641"
+    },
+    {
+      "city": "prague",
+      "landmark": "Emmaus Monastery",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Emmaus%20Monastery%20Prague",
+      "placeTitle": "Emmauskloster - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/33709"
+    },
+    {
+      "city": "prague",
+      "landmark": "Kafka Museum",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Kafka%20Museum%20Prague",
+      "placeTitle": "Franz Kafka Museum - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/node/443297509"
+    },
+    {
+      "city": "prague",
+      "landmark": "Letná Metronome",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Letn%C3%A1%20Metronome%20Prague",
+      "placeTitle": "Prager Metronom - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/455283559"
+    },
+    {
+      "city": "prague",
+      "landmark": "Old Town Bridge Tower",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Old%20Town%20Bridge%20Tower%20Prague",
+      "placeTitle": "Altstädter Brückenturm - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/839278890"
+    },
+    {
+      "city": "vienna",
+      "landmark": "Belvedere Palace",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Belvedere%20Palace%20Vienna",
+      "placeTitle": "Schloss Belvedere - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/5887599"
+    },
+    {
+      "city": "vienna",
+      "landmark": "Stadtpark",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Stadtpark%20Vienna",
+      "placeTitle": "Stadtpark - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/551031461"
+    },
+    {
+      "city": "vienna",
+      "landmark": "Kursalon",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Kursalon%20Vienna",
+      "placeTitle": "Sound of Vienna - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/13394396"
+    },
+    {
+      "city": "vienna",
+      "landmark": "Museum of Applied Arts",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Museum%20of%20Applied%20Arts%20Vienna",
+      "placeTitle": "MAK - Museum für angewandte Kunst - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/328630899"
+    },
+    {
+      "city": "vienna",
+      "landmark": "Austrian National Library",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Austrian%20National%20Library%20Vienna",
+      "placeTitle": "Prunksaal der Österreichischen Nationalbibliothek - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/node/1334741420"
+    },
+    {
+      "city": "vienna",
+      "landmark": "Albertina",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Albertina%20Vienna",
+      "placeTitle": "Albertina Vienna - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/node/60438337"
+    },
+    {
+      "city": "vienna",
+      "landmark": "Burggarten",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Burggarten%20Vienna",
+      "placeTitle": "Burggarten - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/8063831"
+    },
+    {
+      "city": "vienna",
+      "landmark": "Volksgarten",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Volksgarten%20Vienna",
+      "placeTitle": "Volksgarten Vienna - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/8063768"
+    },
+    {
+      "city": "vienna",
+      "landmark": "Maria-Theresien-Platz",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Maria-Theresien-Platz%20Vienna",
+      "placeTitle": "Maria-Theresien-Platz - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/93888477"
+    },
+    {
+      "city": "vienna",
+      "landmark": "MuseumsQuartier",
+      "reference": "https://www.google.com/maps/search/?api=1&query=MuseumsQuartier%20Vienna",
+      "placeTitle": "MuseumsQuartier Wien - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/335982323"
+    },
+    {
+      "city": "vienna",
+      "landmark": "Natural History Museum",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Natural%20History%20Museum%20Vienna",
+      "placeTitle": "Naturhistorisches Museum Wien - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/11187"
+    },
+    {
+      "city": "vienna",
+      "landmark": "Votive Church",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Votive%20Church%20Vienna",
+      "placeTitle": "Votivkirche - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/9858714"
+    },
+    {
+      "city": "vienna",
+      "landmark": "Burgtheater",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Burgtheater%20Vienna",
+      "placeTitle": "Burgtheater - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/8083399"
+    },
+    {
+      "city": "vienna",
+      "landmark": "Schottenkirche",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Schottenkirche%20Vienna",
+      "placeTitle": "Basilika zu den Schotten (Schottenkirche) - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/29469492"
+    },
+    {
+      "city": "vienna",
+      "landmark": "Naschmarkt",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Naschmarkt%20Vienna",
+      "placeTitle": "Naschmarkt - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/29320733"
+    },
+    {
+      "city": "vienna",
+      "landmark": "Anker Clock",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Anker%20Clock%20Vienna",
+      "placeTitle": "Ankeruhr - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/129241327"
+    },
+    {
+      "city": "vienna",
+      "landmark": "Judenplatz",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Judenplatz%20Vienna",
+      "placeTitle": "Judenpl. - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/5372196"
+    },
+    {
+      "city": "budapest",
+      "landmark": "Shoes on the Danube Bank",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Shoes%20on%20the%20Danube%20Bank%20Budapest",
+      "placeTitle": "Schuhe am Donauufer - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/node/260536715"
+    },
+    {
+      "city": "budapest",
+      "landmark": "Liberty Square",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Liberty%20Square%20Budapest",
+      "placeTitle": "Szabadság tér - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/544527749"
+    },
+    {
+      "city": "budapest",
+      "landmark": "House of Terror",
+      "reference": "https://www.google.com/maps/search/?api=1&query=House%20of%20Terror%20Budapest",
+      "placeTitle": "Haus des Terrors - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/2203495"
+    },
+    {
+      "city": "budapest",
+      "landmark": "Margaret Bridge",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Margaret%20Bridge%20Budapest",
+      "placeTitle": "Margaretenbrücke - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/20407774"
+    },
+    {
+      "city": "budapest",
+      "landmark": "Gellért Baths",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Gell%C3%A9rt%20Baths%20Budapest",
+      "placeTitle": "Gellértbad - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/46769969"
+    },
+    {
+      "city": "budapest",
+      "landmark": "Liberty Bridge",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Liberty%20Bridge%20Budapest",
+      "placeTitle": "Liberty Bridge Budapest - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/197315957"
+    },
+    {
+      "city": "budapest",
+      "landmark": "Elisabeth Bridge",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Elisabeth%20Bridge%20Budapest",
+      "placeTitle": "Elisabethbrücke - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/197376889"
+    },
+    {
+      "city": "budapest",
+      "landmark": "Citadella",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Citadella%20Budapest",
+      "placeTitle": "Citadella Budapest - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/829110605"
+    },
+    {
+      "city": "budapest",
+      "landmark": "Hungarian National Museum",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Hungarian%20National%20Museum%20Budapest",
+      "placeTitle": "Ungarisches Nationalmuseum - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/12963"
+    },
+    {
+      "city": "budapest",
+      "landmark": "Vigadó",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Vigad%C3%B3%20Budapest",
+      "placeTitle": "Vigadó Concert Hall - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/24038230"
+    },
+    {
+      "city": "budapest",
+      "landmark": "Gresham Palace",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Gresham%20Palace%20Budapest",
+      "placeTitle": "Gresham-Palast - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/11847"
+    },
+    {
+      "city": "budapest",
+      "landmark": "Castle Garden Bazaar",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Castle%20Garden%20Bazaar%20Budapest",
+      "placeTitle": "Burggarten-Basar - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/375466378"
+    },
+    {
+      "city": "budapest",
+      "landmark": "Zero Kilometre Stone",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Zero%20Kilometre%20Stone%20Budapest",
+      "placeTitle": "Null-Kilometer-Stein - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/node/736070388"
+    },
+    {
+      "city": "budapest",
+      "landmark": "Batthyány Square",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Batthy%C3%A1ny%20Square%20Budapest",
+      "placeTitle": "Batthyány tér - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/3004255"
+    },
+    {
+      "city": "budapest",
+      "landmark": "New York Palace",
+      "reference": "https://www.google.com/maps/search/?api=1&query=New%20York%20Palace%20Budapest",
+      "placeTitle": "New York Palace Budapest - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/259011268"
+    },
+    {
+      "city": "budapest",
+      "landmark": "Buda Tower",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Buda%20Tower%20Budapest",
+      "placeTitle": "Buda Tower Budapest - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/250071203"
+    },
+    {
+      "city": "copenhagen",
+      "landmark": "Ny Carlsberg Glyptotek",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Ny%20Carlsberg%20Glyptotek%20Copenhagen",
+      "placeTitle": "Ny Carlsberg Glyptotek - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/1322262"
+    },
+    {
+      "city": "copenhagen",
+      "landmark": "National Museum of Denmark",
+      "reference": "https://www.google.com/maps/search/?api=1&query=National%20Museum%20of%20Denmark%20Copenhagen",
+      "placeTitle": "Dänisches Nationalmuseum - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/1989714"
+    },
+    {
+      "city": "copenhagen",
+      "landmark": "Thorvaldsen Museum",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Thorvaldsen%20Museum%20Copenhagen",
+      "placeTitle": "Thorvaldsens Museum - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/2351676"
+    },
+    {
+      "city": "copenhagen",
+      "landmark": "The Stock Exchange building",
+      "reference": "https://www.google.com/maps/search/?api=1&query=The%20Stock%20Exchange%20building%20Copenhagen",
+      "placeTitle": "Børsen - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/25466204"
+    },
+    {
+      "city": "copenhagen",
+      "landmark": "Black Diamond",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Black%20Diamond%20Copenhagen",
+      "placeTitle": "Die königliche Bibliothek - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/19856927"
+    },
+    {
+      "city": "copenhagen",
+      "landmark": "Royal Library Garden",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Royal%20Library%20Garden%20Copenhagen",
+      "placeTitle": "Garten der Königlichen Bibliothek - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/25451129"
+    },
+    {
+      "city": "copenhagen",
+      "landmark": "Church of Our Saviour",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Church%20of%20Our%20Saviour%20Copenhagen",
+      "placeTitle": "Vor Frelsers Kirke - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/25607908"
+    },
+    {
+      "city": "copenhagen",
+      "landmark": "Copenhagen Opera House",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Copenhagen%20Opera%20House%20Copenhagen",
+      "placeTitle": "Die königliche Oper - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/1088494374"
+    },
+    {
+      "city": "copenhagen",
+      "landmark": "Royal Danish Theatre",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Royal%20Danish%20Theatre%20Copenhagen",
+      "placeTitle": "Det Kongelige Teater - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/25466133"
+    },
+    {
+      "city": "copenhagen",
+      "landmark": "Kongens Nytorv",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Kongens%20Nytorv%20Copenhagen",
+      "placeTitle": "Kongens Nytorv - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/304697944"
+    },
+    {
+      "city": "copenhagen",
+      "landmark": "Kastellet",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Kastellet%20Copenhagen",
+      "placeTitle": "Kastell von Kopenhagen - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/175208408"
+    },
+    {
+      "city": "copenhagen",
+      "landmark": "Gefion Fountain",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Gefion%20Fountain%20Copenhagen",
+      "placeTitle": "Gefion Springbrunnen - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/167247913"
+    },
+    {
+      "city": "copenhagen",
+      "landmark": "The Little Mermaid",
+      "reference": "https://www.google.com/maps/search/?api=1&query=The%20Little%20Mermaid%20Copenhagen",
+      "placeTitle": "Die Kleine Meerjungfrau - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/node/25074274"
+    },
+    {
+      "city": "copenhagen",
+      "landmark": "Botanical Garden",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Botanical%20Garden%20Copenhagen",
+      "placeTitle": "Botanischer Garten - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/3098803"
+    },
+    {
+      "city": "copenhagen",
+      "landmark": "National Gallery of Art",
+      "reference": "https://www.google.com/maps/search/?api=1&query=National%20Gallery%20of%20Art%20Copenhagen",
+      "placeTitle": "Statens Museum for Kunst - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/25451395"
+    },
+    {
+      "city": "copenhagen",
+      "landmark": "Torvehallerne Street Market",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Torvehallerne%20Street%20Market%20Copenhagen",
+      "placeTitle": "TorvehallerneKBH - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/77037963"
+    },
+    {
+      "city": "copenhagen",
+      "landmark": "Ørstedsparken",
+      "reference": "https://www.google.com/maps/search/?api=1&query=%C3%98rstedsparken%20Copenhagen",
+      "placeTitle": "Ørstedsparken - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/3098756"
+    },
+    {
+      "city": "stockholm",
+      "landmark": "Moderna Museet",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Moderna%20Museet%20Stockholm",
+      "placeTitle": "Moderna Museet - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/node/29898032"
+    },
+    {
+      "city": "stockholm",
+      "landmark": "Skeppsholmen Church",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Skeppsholmen%20Church%20Stockholm",
+      "placeTitle": "Carl Johans kyrka - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/27742094"
+    },
+    {
+      "city": "stockholm",
+      "landmark": "Admiralty House",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Admiralty%20House%20Stockholm",
+      "placeTitle": "The Admiralty House | Stockholm - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/27742145"
+    },
+    {
+      "city": "stockholm",
+      "landmark": "Kastellet",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Kastellet%20Stockholm",
+      "placeTitle": "Kastellet Stockholm - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/49744847"
+    },
+    {
+      "city": "stockholm",
+      "landmark": "Royal Swedish Opera",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Royal%20Swedish%20Opera%20Stockholm",
+      "placeTitle": "Königliche Oper - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/16108358"
+    },
+    {
+      "city": "stockholm",
+      "landmark": "Kungsträdgården",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Kungstr%C3%A4dg%C3%A5rden%20Stockholm",
+      "placeTitle": "Königliches Arboretum - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/4490189"
+    },
+    {
+      "city": "stockholm",
+      "landmark": "Riksdag",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Riksdag%20Stockholm",
+      "placeTitle": "Reichstag - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/34395"
+    },
+    {
+      "city": "stockholm",
+      "landmark": "Riddarhuset",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Riddarhuset%20Stockholm",
+      "placeTitle": "Riddarhuset - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/8049544"
+    },
+    {
+      "city": "stockholm",
+      "landmark": "Sergels torg",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Sergels%20torg%20Stockholm",
+      "placeTitle": "Sergels torg - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/12108162"
+    },
+    {
+      "city": "stockholm",
+      "landmark": "Stockholm Concert Hall",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Stockholm%20Concert%20Hall%20Stockholm",
+      "placeTitle": "Konserthuset - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/18779818"
+    },
+    {
+      "city": "stockholm",
+      "landmark": "Hallwyl Museum",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Hallwyl%20Museum%20Stockholm",
+      "placeTitle": "The Hallwyl Museum - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/2440883"
+    },
+    {
+      "city": "stockholm",
+      "landmark": "Royal Dramatic Theatre",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Royal%20Dramatic%20Theatre%20Stockholm",
+      "placeTitle": "Königliches Dramatisches Theater - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/24210110"
+    },
+    {
+      "city": "stockholm",
+      "landmark": "Strandvägen",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Strandv%C3%A4gen%20Stockholm",
+      "placeTitle": "Strandvägen - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/1648404"
+    },
+    {
+      "city": "stockholm",
+      "landmark": "ABBA The Museum",
+      "reference": "https://www.google.com/maps/search/?api=1&query=ABBA%20The%20Museum%20Stockholm",
+      "placeTitle": "ABBA The Museum - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/33275424"
+    },
+    {
+      "city": "stockholm",
+      "landmark": "Skansen",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Skansen%20Stockholm",
+      "placeTitle": "Skansen - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/377977591"
+    },
+    {
+      "city": "stockholm",
+      "landmark": "Fjällgatan",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Fj%C3%A4llgatan%20Stockholm",
+      "placeTitle": "Fjällgatan - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/41180701"
+    },
+    {
+      "city": "stockholm",
+      "landmark": "Monteliusvägen",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Monteliusv%C3%A4gen%20Stockholm",
+      "placeTitle": "Monteliusvägen - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/144024295"
+    },
+    {
+      "city": "lisbon",
+      "landmark": "National Pantheon",
+      "reference": "https://www.google.com/maps/search/?api=1&query=National%20Pantheon%20Lisbon",
+      "placeTitle": "Igreja de Santa Engrácia - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/9253917"
+    },
+    {
+      "city": "lisbon",
+      "landmark": "São Vicente de Fora",
+      "reference": "https://www.google.com/maps/search/?api=1&query=S%C3%A3o%20Vicente%20de%20Fora%20Lisbon",
+      "placeTitle": "Kloster São Vicente de Fora - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/node/4360243210"
+    },
+    {
+      "city": "lisbon",
+      "landmark": "Miradouro da Senhora do Monte",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Miradouro%20da%20Senhora%20do%20Monte%20Lisbon",
+      "placeTitle": "Miradouro da Senhora do Monte - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/node/14243536001"
+    },
+    {
+      "city": "lisbon",
+      "landmark": "Miradouro das Portas do Sol",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Miradouro%20das%20Portas%20do%20Sol%20Lisbon",
+      "placeTitle": "Miradouro das Portas do Sol - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/565894105"
+    },
+    {
+      "city": "lisbon",
+      "landmark": "Miradouro da Graça",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Miradouro%20da%20Gra%C3%A7a%20Lisbon",
+      "placeTitle": "Miradouro da Graça - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/19112367"
+    },
+    {
+      "city": "lisbon",
+      "landmark": "Church of São Roque",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Church%20of%20S%C3%A3o%20Roque%20Lisbon",
+      "placeTitle": "Igreja de São Roque - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/1350027072"
+    },
+    {
+      "city": "lisbon",
+      "landmark": "Restauradores Square",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Restauradores%20Square%20Lisbon",
+      "placeTitle": "Praça dos Restauradores - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/1340657685"
+    },
+    {
+      "city": "lisbon",
+      "landmark": "Elevador da Glória",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Elevador%20da%20Gl%C3%B3ria%20Lisbon",
+      "placeTitle": "Elevador da Glória - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/1378927509"
+    },
+    {
+      "city": "lisbon",
+      "landmark": "Avenida da Liberdade",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Avenida%20da%20Liberdade%20Lisbon",
+      "placeTitle": "Av. da Liberdade - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/1340657686"
+    },
+    {
+      "city": "lisbon",
+      "landmark": "Time Out Market",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Time%20Out%20Market%20Lisbon",
+      "placeTitle": "Time Out Market Lisboa - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/1286260412"
+    },
+    {
+      "city": "lisbon",
+      "landmark": "Cais das Colunas",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Cais%20das%20Colunas%20Lisbon",
+      "placeTitle": "Cais das Colunas - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/189781497"
+    },
+    {
+      "city": "lisbon",
+      "landmark": "Museu do Fado",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Museu%20do%20Fado%20Lisbon",
+      "placeTitle": "Museu do Fado - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/1101604733"
+    },
+    {
+      "city": "lisbon",
+      "landmark": "Cais do Sodré",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Cais%20do%20Sodr%C3%A9%20Lisbon",
+      "placeTitle": "Cais do Sodre - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/285355889"
+    },
+    {
+      "city": "lisbon",
+      "landmark": "Praça Luís de Camões",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Pra%C3%A7a%20Lu%C3%ADs%20de%20Cam%C3%B5es%20Lisbon",
+      "placeTitle": "Praça Luís de Camões - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/97306179"
+    },
+    {
+      "city": "lisbon",
+      "landmark": "Museu Nacional de Arte Contemporânea",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Museu%20Nacional%20de%20Arte%20Contempor%C3%A2nea%20Lisbon",
+      "placeTitle": "Museu Nacional de Arte Contemporânea Lisbon - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/node/11047643391"
+    },
+    {
+      "city": "lisbon",
+      "landmark": "Jardim do Príncipe Real",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Jardim%20do%20Pr%C3%ADncipe%20Real%20Lisbon",
+      "placeTitle": "Jardim do Príncipe Real - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/160122832"
+    },
+    {
+      "city": "lisbon",
+      "landmark": "Botanical Garden of Lisbon",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Botanical%20Garden%20of%20Lisbon%20Lisbon",
+      "placeTitle": "Botanischer Garten Lissabon - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/40705510"
+    },
+    {
+      "city": "madrid",
+      "landmark": "Temple of Debod",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Temple%20of%20Debod%20Madrid",
+      "placeTitle": "Tempel von Debod - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/549109296"
+    },
+    {
+      "city": "madrid",
+      "landmark": "Plaza de España",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Plaza%20de%20Espa%C3%B1a%20Madrid",
+      "placeTitle": "Plaza de España - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/1057036687"
+    },
+    {
+      "city": "madrid",
+      "landmark": "Sabatini Gardens",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Sabatini%20Gardens%20Madrid",
+      "placeTitle": "Sabatini-Gärten - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/2061818"
+    },
+    {
+      "city": "madrid",
+      "landmark": "Royal Theatre",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Royal%20Theatre%20Madrid",
+      "placeTitle": "Teatro Real - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/4328975"
+    },
+    {
+      "city": "madrid",
+      "landmark": "Mercado de San Miguel",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Mercado%20de%20San%20Miguel%20Madrid",
+      "placeTitle": "Mercado de San Miguel Madrid - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/4518846"
+    },
+    {
+      "city": "madrid",
+      "landmark": "Basilica of San Francisco el Grande",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Basilica%20of%20San%20Francisco%20el%20Grande%20Madrid",
+      "placeTitle": "Königliche Basilika des Heiligen Franziskus des Großen - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/28702618"
+    },
+    {
+      "city": "madrid",
+      "landmark": "El Rastro",
+      "reference": "https://www.google.com/maps/search/?api=1&query=El%20Rastro%20Madrid",
+      "placeTitle": "El Rastro Madrid - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/12953502"
+    },
+    {
+      "city": "madrid",
+      "landmark": "Reina Sofía Museum",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Reina%20Sof%C3%ADa%20Museum%20Madrid",
+      "placeTitle": "Museo Reina Sofía - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/991444051"
+    },
+    {
+      "city": "madrid",
+      "landmark": "Atocha Station",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Atocha%20Station%20Madrid",
+      "placeTitle": "Atocha Station Madrid - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/255246387"
+    },
+    {
+      "city": "madrid",
+      "landmark": "Royal Botanical Garden",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Royal%20Botanical%20Garden%20Madrid",
+      "placeTitle": "Real Jardín Botánico de Madrid - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/15244804"
+    },
+    {
+      "city": "madrid",
+      "landmark": "Neptune Fountain",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Neptune%20Fountain%20Madrid",
+      "placeTitle": "Fuente de Neptuno - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/553098274"
+    },
+    {
+      "city": "madrid",
+      "landmark": "Thyssen-Bornemisza Museum",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Thyssen-Bornemisza%20Museum%20Madrid",
+      "placeTitle": "Museo Thyssen-Bornemisza - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/1869336"
+    },
+    {
+      "city": "madrid",
+      "landmark": "Congress of Deputies",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Congress%20of%20Deputies%20Madrid",
+      "placeTitle": "Congress of Deputies of Spain - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/1054301402"
+    },
+    {
+      "city": "madrid",
+      "landmark": "Monument to Alfonso XII",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Monument%20to%20Alfonso%20XII%20Madrid",
+      "placeTitle": "Monument nach Calle de Alfonso XII - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/722360391"
+    },
+    {
+      "city": "madrid",
+      "landmark": "Palacio de Velázquez",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Palacio%20de%20Vel%C3%A1zquez%20Madrid",
+      "placeTitle": "Velázquez Palace - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/23595002"
+    },
+    {
+      "city": "madrid",
+      "landmark": "Puerta de Toledo",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Puerta%20de%20Toledo%20Madrid",
+      "placeTitle": "Puerta de Toledo - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/335232793"
+    },
+    {
+      "city": "edinburgh",
+      "landmark": "National Museum of Scotland",
+      "reference": "https://www.google.com/maps/search/?api=1&query=National%20Museum%20of%20Scotland%20Edinburgh",
+      "placeTitle": "Royal Museum - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/467226683"
+    },
+    {
+      "city": "edinburgh",
+      "landmark": "Greyfriars Kirk",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Greyfriars%20Kirk%20Edinburgh",
+      "placeTitle": "Greyfriars Kirk - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/287130390"
+    },
+    {
+      "city": "edinburgh",
+      "landmark": "Grassmarket",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Grassmarket%20Edinburgh",
+      "placeTitle": "Grassmarket - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/192212388"
+    },
+    {
+      "city": "edinburgh",
+      "landmark": "Camera Obscura",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Camera%20Obscura%20Edinburgh",
+      "placeTitle": "Camera Obscura - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/node/268408103"
+    },
+    {
+      "city": "edinburgh",
+      "landmark": "Writers' Museum",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Writers'%20Museum%20Edinburgh",
+      "placeTitle": "The Writers' Museum - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/node/4618730690"
+    },
+    {
+      "city": "edinburgh",
+      "landmark": "Museum of Childhood",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Museum%20of%20Childhood%20Edinburgh",
+      "placeTitle": "Museum of Childhood - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/node/2955931322"
+    },
+    {
+      "city": "edinburgh",
+      "landmark": "John Knox House",
+      "reference": "https://www.google.com/maps/search/?api=1&query=John%20Knox%20House%20Edinburgh",
+      "placeTitle": "John Knox House - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/293890858"
+    },
+    {
+      "city": "edinburgh",
+      "landmark": "Museum of Edinburgh",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Museum%20of%20Edinburgh%20Edinburgh",
+      "placeTitle": "Museum of Edinburgh Edinburgh - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/259067386"
+    },
+    {
+      "city": "edinburgh",
+      "landmark": "Canongate Kirk",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Canongate%20Kirk%20Edinburgh",
+      "placeTitle": "Canongate Kirk - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/4330157"
+    },
+    {
+      "city": "edinburgh",
+      "landmark": "Dynamic Earth",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Dynamic%20Earth%20Edinburgh",
+      "placeTitle": "Dynamic Earth - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/25946269"
+    },
+    {
+      "city": "edinburgh",
+      "landmark": "Holyrood Abbey",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Holyrood%20Abbey%20Edinburgh",
+      "placeTitle": "Holyrood Abbey - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/41893742"
+    },
+    {
+      "city": "edinburgh",
+      "landmark": "Nelson Monument",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Nelson%20Monument%20Edinburgh",
+      "placeTitle": "Nelson Monument - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/465938528"
+    },
+    {
+      "city": "edinburgh",
+      "landmark": "Scottish National Portrait Gallery",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Scottish%20National%20Portrait%20Gallery%20Edinburgh",
+      "placeTitle": "Scottish National Portrait Gallery - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/73090302"
+    },
+    {
+      "city": "edinburgh",
+      "landmark": "St Andrew Square Garden",
+      "reference": "https://www.google.com/maps/search/?api=1&query=St%20Andrew%20Square%20Garden%20Edinburgh",
+      "placeTitle": "St. Andrew Square Garden - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/78693281"
+    },
+    {
+      "city": "edinburgh",
+      "landmark": "West Princes Street Gardens",
+      "reference": "https://www.google.com/maps/search/?api=1&query=West%20Princes%20Street%20Gardens%20Edinburgh",
+      "placeTitle": "Princes Street Gardens - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/963806"
+    },
+    {
+      "city": "edinburgh",
+      "landmark": "Usher Hall",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Usher%20Hall%20Edinburgh",
+      "placeTitle": "Usher Hall - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/230567157"
+    },
+    {
+      "city": "edinburgh",
+      "landmark": "Dean Village",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Dean%20Village%20Edinburgh",
+      "placeTitle": "Dean Village Edinburgh - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/node/248497841"
+    },
+    {
+      "city": "venice",
+      "landmark": "Ca' d'Oro",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Ca'%20d'Oro%20Venice",
+      "placeTitle": "Ca' d'Oro Venice - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/162227289"
+    },
+    {
+      "city": "venice",
+      "landmark": "Ca' Pesaro",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Ca'%20Pesaro%20Venice",
+      "placeTitle": "Ca' Pesaro - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/2382783"
+    },
+    {
+      "city": "venice",
+      "landmark": "Basilica dei Frari",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Basilica%20dei%20Frari%20Venice",
+      "placeTitle": "Santa Maria Gloriosa dei Frari - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/138841819"
+    },
+    {
+      "city": "venice",
+      "landmark": "Campo San Polo",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Campo%20San%20Polo%20Venice",
+      "placeTitle": "Campo San Polo Venice - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/8706530"
+    },
+    {
+      "city": "venice",
+      "landmark": "Madonna dell’Orto",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Madonna%20dell%E2%80%99Orto%20Venice",
+      "placeTitle": "Madonna dell’Orto Venice - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/142378731"
+    },
+    {
+      "city": "venice",
+      "landmark": "Mercato di Rialto",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Mercato%20di%20Rialto%20Venice",
+      "placeTitle": "Rialto Market - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/233887039"
+    },
+    {
+      "city": "venice",
+      "landmark": "Palazzo Fortuny",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Palazzo%20Fortuny%20Venice",
+      "placeTitle": "Palazzo Fortuny - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/2373322"
+    },
+    {
+      "city": "venice",
+      "landmark": "Palazzo Grassi",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Palazzo%20Grassi%20Venice",
+      "placeTitle": "Palazzo Grassi - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/173619525"
+    },
+    {
+      "city": "venice",
+      "landmark": "Ca' Rezzonico",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Ca'%20Rezzonico%20Venice",
+      "placeTitle": "Ca’ Rezzonico - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/1927025"
+    },
+    {
+      "city": "venice",
+      "landmark": "Campo Santa Margherita",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Campo%20Santa%20Margherita%20Venice",
+      "placeTitle": "Campo Santa Margherita - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/4207323"
+    },
+    {
+      "city": "venice",
+      "landmark": "San Sebastiano",
+      "reference": "https://www.google.com/maps/search/?api=1&query=San%20Sebastiano%20Venice",
+      "placeTitle": "San Sebastiano - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/138843118"
+    },
+    {
+      "city": "venice",
+      "landmark": "Peggy Guggenheim Collection",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Peggy%20Guggenheim%20Collection%20Venice",
+      "placeTitle": "Peggy Guggenheim Collection - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/node/5366368715"
+    },
+    {
+      "city": "venice",
+      "landmark": "Punta della Dogana",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Punta%20della%20Dogana%20Venice",
+      "placeTitle": "Punta della Dogana - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/2317795"
+    },
+    {
+      "city": "venice",
+      "landmark": "San Giorgio Maggiore",
+      "reference": "https://www.google.com/maps/search/?api=1&query=San%20Giorgio%20Maggiore%20Venice",
+      "placeTitle": "San Giorgio Maggiore - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/138804537"
+    },
+    {
+      "city": "venice",
+      "landmark": "Santa Maria Formosa",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Santa%20Maria%20Formosa%20Venice",
+      "placeTitle": "Santa Maria Formosa Venice - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/138804512"
+    },
+    {
+      "city": "venice",
+      "landmark": "Santi Giovanni e Paolo",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Santi%20Giovanni%20e%20Paolo%20Venice",
+      "placeTitle": "Santi Giovanni e Paolo Venice - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/153483298"
+    },
+    {
+      "city": "venice",
+      "landmark": "Venetian Arsenal",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Venetian%20Arsenal%20Venice",
+      "placeTitle": "Arsenal - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/175653199"
+    },
+    {
+      "city": "athens",
+      "landmark": "Hadrian's Library",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Hadrian's%20Library%20Athens",
+      "placeTitle": "Hadriansbibliothek - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/729674865"
+    },
+    {
+      "city": "athens",
+      "landmark": "Roman Agora",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Roman%20Agora%20Athens",
+      "placeTitle": "Römische Agora - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/11197557"
+    },
+    {
+      "city": "athens",
+      "landmark": "National Historical Museum",
+      "reference": "https://www.google.com/maps/search/?api=1&query=National%20Historical%20Museum%20Athens",
+      "placeTitle": "Nationales Historisches Museum Athen - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/19040143"
+    },
+    {
+      "city": "athens",
+      "landmark": "Monastiraki Square",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Monastiraki%20Square%20Athens",
+      "placeTitle": "Monastiraki-Platz - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/6354054"
+    },
+    {
+      "city": "athens",
+      "landmark": "Metropolitan Cathedral",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Metropolitan%20Cathedral%20Athens",
+      "placeTitle": "Kathedrale Mariä Verkündigung - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/713354220"
+    },
+    {
+      "city": "athens",
+      "landmark": "Hadrian's Arch",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Hadrian's%20Arch%20Athens",
+      "placeTitle": "Hadrianstor - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/175107932"
+    },
+    {
+      "city": "athens",
+      "landmark": "Zappeion",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Zappeion%20Athens",
+      "placeTitle": "Zappeion - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/9919585"
+    },
+    {
+      "city": "athens",
+      "landmark": "National Garden",
+      "reference": "https://www.google.com/maps/search/?api=1&query=National%20Garden%20Athens",
+      "placeTitle": "Nationalgarten - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/11505137"
+    },
+    {
+      "city": "athens",
+      "landmark": "Benaki Museum",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Benaki%20Museum%20Athens",
+      "placeTitle": "Benaki Museum Athens - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/2429041"
+    },
+    {
+      "city": "athens",
+      "landmark": "Museum of Cycladic Art",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Museum%20of%20Cycladic%20Art%20Athens",
+      "placeTitle": "Museum für kykladische Kunst - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/220890927"
+    },
+    {
+      "city": "athens",
+      "landmark": "Byzantine and Christian Museum",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Byzantine%20and%20Christian%20Museum%20Athens",
+      "placeTitle": "Byzantinisches und Christliches Museum - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/318587297"
+    },
+    {
+      "city": "athens",
+      "landmark": "Technopolis",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Technopolis%20Athens",
+      "placeTitle": "Technopolis City of Athens - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/215710614"
+    },
+    {
+      "city": "athens",
+      "landmark": "Numismatic Museum",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Numismatic%20Museum%20Athens",
+      "placeTitle": "Numismatisches Museum Athen - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/node/3844131091"
+    },
+    {
+      "city": "athens",
+      "landmark": "Stoa of Attalos",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Stoa%20of%20Attalos%20Athens",
+      "placeTitle": "Stoa des Attalos - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/975219800"
+    },
+    {
+      "city": "athens",
+      "landmark": "Philopappos Monument",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Philopappos%20Monument%20Athens",
+      "placeTitle": "Philopappos Denkmal - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/442128059"
+    },
+    {
+      "city": "athens",
+      "landmark": "Pnyx",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Pnyx%20Athens",
+      "placeTitle": "Pnyx - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/317915132"
+    },
+    {
+      "city": "athens",
+      "landmark": "Kerameikos",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Kerameikos%20Athens",
+      "placeTitle": "Ausgrabungsstätte Keramikos - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/node/850935197"
+    },
+    {
+      "city": "bengaluru",
+      "landmark": "Vidhana Soudha",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Vidhana%20Soudha%20Bengaluru",
+      "placeTitle": "Vidhana Soudha Bengaluru - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/5284317",
+      "reviewed": "2026-10-26"
+    },
+    {
+      "city": "bengaluru",
+      "landmark": "Karnataka High Court",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Karnataka%20High%20Court%20Bengaluru",
+      "placeTitle": "Karnataka High Court Bengaluru - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/446900",
+      "reviewed": "2026-10-26"
+    },
+    {
+      "city": "bengaluru",
+      "landmark": "Cubbon Park",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Cubbon%20Park%20Bengaluru",
+      "placeTitle": "Cubbon Park Bengaluru - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/22895320",
+      "reviewed": "2026-10-26"
+    },
+    {
+      "city": "bengaluru",
+      "landmark": "State Central Library",
+      "reference": "https://www.google.com/maps/search/?api=1&query=State%20Central%20Library%20Bengaluru",
+      "placeTitle": "STATE CENTRAL LIBRARY - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/52032473",
+      "reviewed": "2026-10-26"
+    },
+    {
+      "city": "bengaluru",
+      "landmark": "Government Museum",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Government%20Museum%20Bengaluru",
+      "placeTitle": "Government Museum - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/52032467",
+      "reviewed": "2026-10-26"
+    },
+    {
+      "city": "bengaluru",
+      "landmark": "Visvesvaraya Industrial and Technological Museum",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Visvesvaraya%20Industrial%20and%20Technological%20Museum%20Bengaluru",
+      "placeTitle": "Visvesvaraya Industrial & Technological Museum - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/327551780",
+      "reviewed": "2026-10-26"
+    },
+    {
+      "city": "bengaluru",
+      "landmark": "UB City",
+      "reference": "https://www.google.com/maps/search/?api=1&query=UB%20City%20Bengaluru",
+      "placeTitle": "UB City - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/38773290",
+      "reviewed": "2026-10-26"
+    },
+    {
+      "city": "bengaluru",
+      "landmark": "M. Chinnaswamy Stadium",
+      "reference": "https://www.google.com/maps/search/?api=1&query=M.%20Chinnaswamy%20Stadium%20Bengaluru",
+      "placeTitle": "M. Chinnaswamy Stadium - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/28126916",
+      "reviewed": "2026-10-26"
+    },
+    {
+      "city": "bengaluru",
+      "landmark": "Sree Kanteerava Stadium",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Sree%20Kanteerava%20Stadium%20Bengaluru",
+      "placeTitle": "Sree Kanteerava Stadion - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/relation/446504",
+      "reviewed": "2026-10-26"
+    },
+    {
+      "city": "bengaluru",
+      "landmark": "St. Mark's Cathedral",
+      "reference": "https://www.google.com/maps/search/?api=1&query=St.%20Mark's%20Cathedral%20Bengaluru",
+      "placeTitle": "St. Mark's Cathedral Bengaluru - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/38773816",
+      "reviewed": "2026-10-26"
+    },
+    {
+      "city": "bengaluru",
+      "landmark": "St. Mary's Basilica",
+      "reference": "https://www.google.com/maps/search/?api=1&query=St.%20Mary's%20Basilica%20Bengaluru",
+      "placeTitle": "Marienbasilika - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/400483216",
+      "reviewed": "2026-10-26"
+    },
+    {
+      "city": "bengaluru",
+      "landmark": "Commercial Street",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Commercial%20Street%20Bengaluru",
+      "placeTitle": "Commercial Street - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/143240402",
+      "reviewed": "2026-10-26"
+    },
+    {
+      "city": "bengaluru",
+      "landmark": "Russell Market",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Russell%20Market%20Bengaluru",
+      "placeTitle": "Russell Market Bengaluru - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/36913441",
+      "reviewed": "2026-10-26"
+    },
+    {
+      "city": "bengaluru",
+      "landmark": "Rangoli Metro Art Center",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Rangoli%20Metro%20Art%20Center%20Bengaluru",
+      "placeTitle": "Rangoli Metro Art Center - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/327534040",
+      "reviewed": "2026-10-26"
+    },
+    {
+      "city": "bengaluru",
+      "landmark": "Mayo Hall",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Mayo%20Hall%20Bengaluru",
+      "placeTitle": "City Civil Courts Mayo Hall Unit - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/208693355",
+      "reviewed": "2026-10-26"
+    },
+    {
+      "city": "bengaluru",
+      "landmark": "Garuda Mall",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Garuda%20Mall%20Bengaluru",
+      "placeTitle": "Garuda Mall Bengaluru - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/111997549",
+      "reviewed": "2026-10-26"
+    },
+    {
+      "city": "bengaluru",
+      "landmark": "Freedom Park",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Freedom%20Park%20Bengaluru",
+      "placeTitle": "Freedom Park - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/36884560",
+      "reviewed": "2026-10-26"
+    },
+    {
+      "city": "bengaluru",
+      "landmark": "Jawaharlal Nehru Planetarium",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Jawaharlal%20Nehru%20Planetarium%20Bengaluru",
+      "placeTitle": "Jawaharlal Nehru Planetarium - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/38871248",
+      "reviewed": "2026-10-26"
+    },
+    {
+      "city": "bengaluru",
+      "landmark": "National Gallery of Modern Art",
+      "reference": "https://www.google.com/maps/search/?api=1&query=National%20Gallery%20of%20Modern%20Art%20Bengaluru",
+      "placeTitle": "National Gallery of Modern Art (Bengaluru) - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/121883114",
+      "reviewed": "2026-10-26"
+    },
+    {
+      "city": "bengaluru",
+      "landmark": "Bangalore Palace",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Bangalore%20Palace%20Bengaluru",
+      "placeTitle": "Bengaluru Palace - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/143384387",
+      "reviewed": "2026-10-26"
+    },
+    {
+      "city": "bengaluru",
+      "landmark": "Tipu Sultan's Summer Palace",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Tipu%20Sultan's%20Summer%20Palace%20Bengaluru",
+      "placeTitle": "Tipu Sultan's Summer Palace - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/38751028",
+      "reviewed": "2026-10-26"
+    },
+    {
+      "city": "bengaluru",
+      "landmark": "Bangalore Fort",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Bangalore%20Fort%20Bengaluru",
+      "placeTitle": "Bengaluru Fort - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/38751029",
+      "reviewed": "2026-10-26"
+    },
+    {
+      "city": "bengaluru",
+      "landmark": "Lalbagh Glass House",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Lalbagh%20Glass%20House%20Bengaluru",
+      "placeTitle": "Glass House (Lalbagh) - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/node/347241683",
+      "reviewed": "2026-10-26"
+    },
+    {
+      "city": "bengaluru",
+      "landmark": "Town Hall",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Town%20Hall%20Bengaluru",
+      "placeTitle": "TOWN HALL - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/148016872",
+      "reviewed": "2026-10-26"
+    },
+    {
+      "city": "bengaluru",
+      "landmark": "Venkatappa Art Gallery",
+      "reference": "https://www.google.com/maps/search/?api=1&query=Venkatappa%20Art%20Gallery%20Bengaluru",
+      "placeTitle": "Venkatappa Art Gallery Bengaluru - Google Maps",
+      "mapSource": "https://www.openstreetmap.org/way/1156298790",
+      "reviewed": "2026-10-26"
+    }
+  ]
+}
