@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<base href="/">
+<script src="/api/profile/bootstrap"></script><script src="/shared/profiles.js"></script>
+<script src="/shared/gamepad-std.js" data-exit="/index.html"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Chess Quest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/games/chess-quest/styles.css">
+</head>
+<body>
+<div id="wrap"><canvas id="cv"></canvas></div>
+<canvas id="fx"></canvas>
+<div id="playBtns" class="hidden"><button id="btnHint" title="Hint" tabindex="-1">💡</button><button id="btnPause" title="Pause" tabindex="-1">⏸</button></div>
+
+<div class="screen" id="title">
+  <div class="card">
+    <div class="hero"><img id="heroL" class="bounce d2" alt=""><img id="heroM" class="bounce" alt=""><img id="heroR" class="bounce d3" alt=""></div>
+    <h1>Chess Quest</h1>
+    <p>Let’s play chess!</p>
+    <div class="home-modes">
+      <button class="btn" id="btnFree">🤖 Play Computer</button>
+      <button class="btn blue" id="btnTwo">🎮 Two Players</button>
+      <button class="btn blue" id="btnPlay">⭐ Lessons</button>
+    </div>
+    <div class="row"><button class="btn blue" id="btnWho">👤 <span id="whoName">Player</span></button></div>
+    <div class="ctrl">D-pad / arrows choose · A / Space plays · B / Esc goes back</div>
+  </div>
+</div>
+
+<div class="screen hidden" id="players">
+  <div class="card">
+    <h2>Who is playing?</h2>
+    <div id="plist"></div>
+    <div class="row"><button class="btn blue" id="btnNew">＋ New player</button></div>
+    <form id="newRow" class="row hidden" autocomplete="off"><input id="newName" maxlength="12" placeholder="NAME"><button class="btn" id="btnNewOk" type="submit">OK</button></form>
+    <div class="small">Grown-ups: type a name and press Enter. ✕ removes a player.</div>
+  </div>
+</div>
+
+<div class="screen hidden" id="map">
+  <div class="card">
+    <h2><span id="mapPlayer">Player</span>'s Lessons</h2>
+    <div class="stats">💎 <span id="mapGems">0</span> / 30</div>
+    <div id="mapArea"></div>
+    <div class="row"><button class="btn blue" id="btnHome">🏠 Home</button></div>
+  </div>
+</div>
+
+<div class="screen hidden" id="hint">
+  <div class="card">
+    <h2 id="hintTitle">Level 1</h2>
+    <img id="hintImg" alt="">
+    <p id="hintText"></p>
+    <div class="row"><button class="btn big" id="btnGo">GO! ▶</button></div>
+  </div>
+</div>
+
+<div class="screen hidden" id="pause">
+  <div class="card">
+    <h1>Paused</h1>
+    <div class="row" style="flex-direction:column">
+      <button class="btn big" id="btnResume">▶ Keep Playing</button>
+      <div class="row">
+        <button class="btn blue" id="btnRestart">↺ Start again</button>
+        <button class="btn blue" id="btnMap">🏠 Home</button>
+        <button class="btn blue" id="btnMusic">🎵 Music: On</button>
+        <button class="btn blue" id="btnPlayers">👤 Players</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="screen hidden" id="clear">
+  <div class="card">
+    <div class="hero"><img id="clearImg" class="bounce" alt=""></div>
+    <h1 id="clearTitle">Super, Player!</h1>
+    <p id="clearText">Level complete!</p>
+    <div class="gemrow" id="clearGems"></div>
+    <div class="row"><button class="btn big" id="btnNext">Next ▶</button><button class="btn blue" id="btnClearMap">🏠 Home</button></div>
+  </div>
+</div>
+
+
+<script src="/games/chess-quest/game.js"></script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+:root { --bg1:#3bb3ff; --bg2:#0b3d91; --gold:#ffcf40; --red:#ff4d4d; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; min-height:100%; background: linear-gradient(180deg, var(--bg1), var(--bg2)) fixed; font-family: Nunito, system-ui, sans-serif; color:#143; }
+  h1 { font-family: "Lilita One", Nunito, sans-serif; color:#fff; text-align:center; font-size: clamp(36px, 6vw, 72px); margin: 24px 0 6px; text-shadow: 0 4px 0 #0b3d91, 0 8px 18px rgba(0,0,0,.35); }
+  .hint { text-align:center; color:#e8f4ff; font-size:18px; margin-bottom:18px; }
+  .grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap:18px; padding: 0 24px 40px; max-width: 1500px; margin: 0 auto; }
+  .tile { display:block; text-decoration:none; background: linear-gradient(180deg, #fff, #e9f3ff); border: 5px solid #ffffffaa; border-radius: 22px; padding: 16px 14px 14px; color:#143; box-shadow: 0 8px 0 #0b3d91aa, 0 12px 24px rgba(0,0,0,.3); transition: transform .12s, border-color .12s; outline: none; }
+  .tile[hidden], .section[hidden] { display: none; }
+  .tile .emoji { font-size: 54px; line-height: 1; display:block; text-align:center; margin-bottom: 8px; }
+  .tile .name { font-family: "Lilita One", Nunito, sans-serif; font-size: 26px; color: var(--red); text-shadow: 0 2px 0 var(--gold); text-align:center; display:block; }
+  .tile .desc { display:block; text-align:center; font-size: 15px; margin-top: 6px; color:#345; min-height: 2.6em; }
+  .tile .tags { display:block; text-align:center; font-size: 13px; margin-top: 8px; color:#678; }
+  .tile.focus, .tile:hover { transform: scale(1.06); border-color: var(--gold); box-shadow: 0 0 0 6px var(--gold), 0 12px 0 #0b3d91aa, 0 16px 28px rgba(0,0,0,.35); }
+  .section { grid-column: 1 / -1; color:#fff; font-family: "Lilita One", Nunito, sans-serif; font-size: 30px; margin: 10px 0 -6px; text-shadow: 0 3px 0 #0b3d91; }
+.phone-exit{display:none}@media(pointer:coarse){.phone-exit{display:block;text-align:center;color:#e8f4ff;font-size:14px;margin:0 18px 18px}.hint{display:none}}

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<base href="/">
+<script src="/api/profile/bootstrap"></script><script src="/shared/profiles.js"></script>
+<script src="/shared/gamepad-std.js" data-exit="/index.html"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Rocket Pals</title>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/games/rocket-pals/styles.css">
+</head>
+<body>
+<div id="stage">
+  <canvas id="c"></canvas>
+  <div id="hud"><span class="p p1" id="hudP1">P1</span><span id="hudMid"></span><span class="p p2" id="hudP2">P2</span></div>
+  <button id="pauseBtn" type="button" title="Pause">⏸</button>
+  <div id="sndBadge">🔇 Press any key for sound</div>
+  <div id="touch">
+    <div class="tgroup left"><button class="tbtn" type="button" data-k="left">◀</button><button class="tbtn" type="button" data-k="right">▶</button></div>
+    <div class="tgroup right"><button class="tbtn" type="button" data-k="boost">🚀</button><button class="tbtn big" type="button" data-k="gas">GO</button></div>
+  </div>
+</div>
+
+<div class="ov" id="ov-title"><div class="card">
+  <svg class="hero" viewBox="0 0 560 220" aria-hidden="true">
+    <defs>
+      <linearGradient id="gR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff8a80"/><stop offset=".5" stop-color="#ff4d4d"/><stop offset="1" stop-color="#c62828"/></linearGradient>
+      <linearGradient id="gB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fd3ff"/><stop offset=".5" stop-color="#29a3ff"/><stop offset="1" stop-color="#1565c0"/></linearGradient>
+      <linearGradient id="gRoad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a0a6b8"/><stop offset="1" stop-color="#6b7184"/></linearGradient>
+      <linearGradient id="gFl" gradientUnits="userSpaceOnUse" x1="-20" y1="0" x2="-75" y2="0"><stop offset="0" stop-color="#fff176"/><stop offset=".5" stop-color="#ff9800"/><stop offset="1" stop-color="#ff3d00" stop-opacity=".2"/></linearGradient>
+    </defs>
+    <rect x="0" y="150" width="560" height="60" rx="18" fill="url(#gRoad)" stroke="rgba(20,24,40,.55)" stroke-width="4"/>
+    <path d="M20 182 H540" stroke="#ffd23c" stroke-width="6" stroke-dasharray="26 22" stroke-linecap="round" opacity=".9"/>
+    <g id="kart1" transform="translate(60,70)">
+      <path d="M-20 60 L-70 60" stroke="url(#gFl)" stroke-width="22" stroke-linecap="round"/>
+      <path d="M-18 60 L-48 60" stroke="#fff176" stroke-width="9" stroke-linecap="round"/>
+      <ellipse cx="60" cy="98" rx="78" ry="10" fill="rgba(0,0,0,.2)"/>
+      <path d="M-4 44 L-16 22 L16 22 Z" fill="#ffd23c" stroke="rgba(20,24,40,.55)" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M-8 78 Q-16 50 10 42 L100 38 Q150 40 158 62 L160 78 Q160 92 146 92 L4 92 Q-8 92 -8 78 Z" fill="url(#gR)" stroke="rgba(20,24,40,.55)" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M12 50 L96 46" stroke="rgba(255,255,255,.4)" stroke-width="8" stroke-linecap="round"/>
+      <circle cx="80" cy="34" r="22" fill="#fff" stroke="rgba(20,24,40,.55)" stroke-width="4"/>
+      <path d="M60 32 Q80 14 100 32" fill="#ff4d4d" stroke="rgba(20,24,40,.55)" stroke-width="3"/>
+      <circle cx="72" cy="38" r="3" fill="#12203a"/><circle cx="88" cy="38" r="3" fill="#12203a"/>
+      <path d="M74 46 Q80 52 86 46" stroke="#12203a" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <circle cx="66" cy="44" r="4" fill="#ffb3b3" opacity=".8"/><circle cx="94" cy="44" r="4" fill="#ffb3b3" opacity=".8"/>
+      <circle cx="26" cy="92" r="20" fill="#262a38" stroke="rgba(20,24,40,.7)" stroke-width="4"/><circle cx="26" cy="92" r="9" fill="#cfd8e3"/>
+      <circle cx="126" cy="92" r="20" fill="#262a38" stroke="rgba(20,24,40,.7)" stroke-width="4"/><circle cx="126" cy="92" r="9" fill="#cfd8e3"/>
+    </g>
+    <g id="kart2" transform="translate(330,70)">
+      <path d="M-20 60 L-70 60" stroke="url(#gFl)" stroke-width="22" stroke-linecap="round"/>
+      <path d="M-18 60 L-48 60" stroke="#fff176" stroke-width="9" stroke-linecap="round"/>
+      <ellipse cx="60" cy="98" rx="78" ry="10" fill="rgba(0,0,0,.2)"/>
+      <path d="M-4 44 L-16 22 L16 22 Z" fill="#ffd23c" stroke="rgba(20,24,40,.55)" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M-8 78 Q-16 50 10 42 L100 38 Q150 40 158 62 L160 78 Q160 92 146 92 L4 92 Q-8 92 -8 78 Z" fill="url(#gB)" stroke="rgba(20,24,40,.55)" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M12 50 L96 46" stroke="rgba(255,255,255,.4)" stroke-width="8" stroke-linecap="round"/>
+      <circle cx="80" cy="34" r="22" fill="#fff" stroke="rgba(20,24,40,.55)" stroke-width="4"/>
+      <path d="M60 32 Q80 14 100 32" fill="#29a3ff" stroke="rgba(20,24,40,.55)" stroke-width="3"/>
+      <circle cx="72" cy="38" r="3" fill="#12203a"/><circle cx="88" cy="38" r="3" fill="#12203a"/>
+      <path d="M74 46 Q80 52 86 46" stroke="#12203a" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <circle cx="66" cy="44" r="4" fill="#ffb3b3" opacity=".8"/><circle cx="94" cy="44" r="4" fill="#ffb3b3" opacity=".8"/>
+      <circle cx="26" cy="92" r="20" fill="#262a38" stroke="rgba(20,24,40,.7)" stroke-width="4"/><circle cx="26" cy="92" r="9" fill="#cfd8e3"/>
+      <circle cx="126" cy="92" r="20" fill="#262a38" stroke="rgba(20,24,40,.7)" stroke-width="4"/><circle cx="126" cy="92" r="9" fill="#cfd8e3"/>
+    </g>
+    <g fill="#ffd23c" stroke="rgba(20,24,40,.4)" stroke-width="2">
+      <path d="M250 30 l6 14 15 1 -12 10 4 15 -13 -8 -13 8 4 -15 -12 -10 15 -1z"/>
+      <path d="M520 20 l5 11 12 1 -9 8 3 12 -11 -6 -11 6 3 -12 -9 -8 12 -1z"/>
+      <path d="M20 30 l5 11 12 1 -9 8 3 12 -11 -6 -11 6 3 -12 -9 -8 12 -1z"/>
+    </g>
+  </svg>
+  <h1>ROCKET PALS</h1>
+  <p>Two rocket pals race across sixteen lands. Finish together to win!</p>
+  <div class="row">
+    <button class="btn big" id="btnPlay2" type="button">▶ PLAY · 🎮🎮 2 PLAYERS</button>
+    <button class="btn" id="btnPlay1" type="button">1 PLAYER</button>
+  </div>
+  <div class="row">
+
+  </div>
+  <div class="ctrl"><span class="k1">🎮 A go · ✛ steer · X rocket · B back</span><span class="k2">Pad 2 = Player 2</span><span>Keys: Arrows · Space go · X rocket · P2: WASD + Shift</span></div>
+</div></div>
+
+<div class="ov" id="ov-profile"><div class="card">
+  <h2>Who is playing?</h2>
+  <div id="plist"></div>
+  <form id="newForm" class="row" autocomplete="off"><input type="text" id="newName" maxlength="12" placeholder="New name"><button class="btn sec" type="submit">Add player</button></form>
+  <p class="small">Player 2 is called <input type="text" id="p2name" maxlength="12" placeholder="BUDDY"></p>
+  <button class="btn sec" id="btnProfBack" type="button">Back</button>
+</div></div>
+
+<div class="ov" id="ov-map"><div class="card">
+  <h2>Pick a track, <span id="mapPlayer">Player</span>!</h2>
+  <div class="row"><button class="btn sec" id="btnTourPrev" type="button">◀ First tour</button><b id="tourName">First tour · 1–8</b><button class="btn sec" id="btnTourNext" type="button">Star tour ▶</button></div>
+  <div id="mapwrap"><svg viewBox="0 0 860 320" preserveAspectRatio="none"><path id="mapRoad" d="" fill="none" stroke="#6b7184" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/><path id="mapRoad2" d="" fill="none" stroke="#ffd23c" stroke-width="5" stroke-dasharray="18 16" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  <p class="small">⭐ Stars found: <b id="statStars">0</b> / <span class="starTotal">48</span></p>
+  <button class="btn sec" id="btnMapBack" type="button">Back</button>
+</div></div>
+
+<div class="ov light" id="ov-hint"><div class="card" style="max-width:720px">
+  <h2 id="hintName">Track</h2>
+  <div id="toyDemo" role="img">
+    <span class="demoA">A</span><span class="demoArrow">➜</span>
+    <svg class="demoKart" viewBox="0 0 100 70" aria-hidden="true"><circle cx="25" cy="57" r="11" fill="#233954"/><circle cx="77" cy="57" r="11" fill="#233954"/><rect x="8" y="30" width="82" height="28" rx="12" fill="#ff6377" stroke="#233954" stroke-width="4"/><circle cx="47" cy="22" r="16" fill="#fff4df" stroke="#233954" stroke-width="3"/><path d="M31 20a16 16 0 0132 0" fill="#ff6377"/><circle cx="54" cy="23" r="3" fill="#233954"/><path d="M48 31q5 5 10 0" fill="none" stroke="#233954" stroke-width="2"/></svg>
+    <img id="toyDemoImg" alt=""><span id="toyDemoResult"></span>
+  </div>
+  <p id="hintText">Hint</p>
+  <div class="ctrl"><span class="k1">🎮 A go · ✛ steer · X rocket · B pause</span><span class="k2">Keys: ◀ ▶ steer · Space go · X rocket</span></div>
+  <button class="btn big" id="btnGo" type="button">▶ GO!</button>
+</div></div>
+
+<div class="ov" id="ov-pause"><div class="card" style="max-width:620px">
+  <h2>Paused</h2>
+  <p id="pauseName" class="small"></p>
+  <div class="row"><button class="btn" id="btnResume" type="button">▶ Keep racing</button></div>
+  <div class="row">
+    <button class="btn sec" id="btnProfiles" type="button">👥 Who is playing?</button>
+    <button class="btn sec hidden" id="btnMusic" type="button">🎵 Music: On</button>
+    <button class="btn sec" id="btnRestart" type="button">↻ Restart track</button>
+    <button class="btn sec" id="btnToMap" type="button">🗺 World map</button>
+    <button class="btn sec" id="btnMusic2" type="button">🎵 Music: On</button>
+    <button class="btn sec" id="btnTitle" type="button">🏠 Title</button>
+  </div>
+</div></div>
+
+<div class="ov" id="ov-clear"><div class="card">
+  <h1>TRACK CLEAR!</h1>
+  <h2 id="clearName"></h2><div id="clearToy" style="font-size:2rem"></div>
+  <p id="clearText"></p>
+  <div class="stars"><span id="s0">⭐</span><span id="s1">⭐</span><span id="s2">⭐</span></div>
+  <div class="row">
+    <button class="btn big" id="btnNext" type="button">Next track ➜</button>
+    <button class="btn sec" id="btnAgain" type="button">↻ Race again</button>
+    <button class="btn sec" id="btnClearMap" type="button">🗺 World map</button>
+  </div>
+</div></div>
+
+<div class="ov" id="ov-win"><div class="card">
+  <h1>YOU DID IT!</h1>
+  <h2 id="winName"></h2>
+  <p>King Grump gave up being grumpy. Now he is your pal! 👑💛</p>
+  <p class="small">⭐ Stars found: <b id="winStars">0</b> / <span class="starTotal">48</span>. Find them all on the world map!</p>
+  <div class="row"><button class="btn big" id="btnWinMap" type="button">🗺 World map</button><button class="btn sec" id="btnWinTitle" type="button">🏠 Title</button></div>
+</div></div>
+
+<script src="/games/rocket-pals/game.js"></script>
+</body>
+</html>

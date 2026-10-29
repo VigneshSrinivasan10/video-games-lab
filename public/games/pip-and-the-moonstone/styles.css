@@ -1,0 +1,13 @@
+:root { box-sizing: border-box; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
+    --bg: #0B1026; --ink: #EAF4FF; --btn-bg: rgba(20, 28, 60, 0.85); --btn-ink: #EAF4FF; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #0B1026; } }
+  :root[data-theme="dark"] { --bg: #0B1026; }
+  html { height: 100%; scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body { margin: 0; height: 100%; overflow: hidden; background: var(--bg); color: var(--ink);
+    font-family: "Baloo 2", "Nunito", "Segoe UI", system-ui, sans-serif; touch-action: none; }
+  canvas { display: block; width: 100%; height: 100%; }
+  #fs { position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    font: 600 16px "Baloo 2", "Nunito", "Segoe UI", system-ui, sans-serif; padding: 10px 16px; border: 0; border-radius: 999px;
+    cursor: pointer; background: var(--btn-bg); color: var(--btn-ink); opacity: 0.85; }
+  #fs:hover, #fs:focus-visible { opacity: 1; outline: 3px solid #7FE7FF; outline-offset: 2px; }
+  #fs[hidden] { display: none; }

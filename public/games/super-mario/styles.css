@@ -1,0 +1,115 @@
+:root {
+    --bg: #5FB8F2; --ink: #23304A; --card: #FFFDF6; --accent: #FF6B35; --accent2: #FFC83D;
+    --green: #4CC26A; --blue: #3B8BEB; --purple: #8E5BEA; --shadow: rgba(20, 30, 60, 0.35);
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; overflow: hidden; }
+  body { background: radial-gradient(circle at 50% 15%, #8FDBFF 0%, #4FA9EA 55%, #2B6BB8 100%); color: var(--ink); font-family: "Nunito", "Segoe UI", system-ui, sans-serif;
+    touch-action: none; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent;
+    transition: background 0.6s; }
+  #stage { position: fixed; inset: 0; display: grid; place-items: center; }
+  canvas#game { display: block; box-sizing: content-box; border-radius: 18px; border: 6px solid #FFC83D; background: #8ce8ff;
+    box-shadow: 0 0 0 5px #B8860B, 0 18px 50px rgba(0,0,0,0.4); filter: saturate(1.12) contrast(1.04); image-rendering: auto; }
+
+  /* ---------- overlays ---------- */
+  .overlay { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; padding: 16px;
+    z-index: 20; overflow: auto; }
+  .overlay.show { display: flex; }
+  .overlay.dim { background: rgba(8, 25, 55, 0.55); backdrop-filter: blur(4px); }
+  .card { background: linear-gradient(#ffffff, #eaf6ff); border-radius: 28px; padding: 26px 28px; max-width: 560px; width: 100%;
+    border: 6px solid #FFC83D; box-shadow: 0 0 0 5px #B8860B, 0 26px 50px var(--shadow); text-align: center;
+    animation: pop 0.45s cubic-bezier(.2,1.4,.4,1) both; }
+  @keyframes pop { from { transform: scale(0.6) translateY(30px); } to { transform: none; } }
+  h1, h2 { font-family: "Lilita One", "Nunito", sans-serif; font-weight: 400; margin: 0; letter-spacing: 0.5px; }
+  h1 { font-size: clamp(42px, 9vw, 84px); line-height: 0.95; color: #fff;
+    text-shadow: 0 4px 0 #D94A1E, 0 8px 0 #8E2D0C, 0 14px 24px rgba(0,0,0,0.35);
+    background: none; }
+  h1 .top { display: block; font-size: 0.5em; color: #FFE66D; text-shadow: 0 3px 0 #C9941B, 0 6px 0 #7A5A0C, 0 10px 18px rgba(0,0,0,0.3);
+    letter-spacing: 4px; transform: rotate(-3deg); }
+  h2 { font-size: clamp(30px, 6vw, 48px); color: #E63946; text-shadow: 0 4px 0 #FFC83D, 0 8px 0 rgba(184,134,11,0.45), 0 12px 18px rgba(0,0,0,0.18); }
+  p { font-size: 18px; font-weight: 700; margin: 10px 0; line-height: 1.4; }
+  .btn { font-family: "Lilita One", "Nunito", sans-serif; font-size: 26px; letter-spacing: 1px; color: #fff; border: 0;
+    border-radius: 999px; padding: 14px 38px; margin: 8px 6px; cursor: pointer; background: linear-gradient(#FFE873, #FFC21A); color: #5A3A00;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.5); box-shadow: 0 6px 0 #B8860B, 0 12px 20px rgba(0,0,0,0.25); transition: transform 0.12s, box-shadow 0.12s; }
+  .btn:hover, .btn:focus-visible { transform: translateY(-2px) scale(1.04); outline: 4px solid #fff; }
+  .btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #B8860B, 0 6px 10px rgba(0,0,0,0.25); }
+  .btn.orange, .btn.blue { color: #fff; text-shadow: 0 2px 0 rgba(0,0,0,0.25); }
+  .btn.orange { background: var(--accent); box-shadow: 0 6px 0 #B9441B, 0 12px 20px rgba(0,0,0,0.25); }
+  .btn.orange:active { box-shadow: 0 2px 0 #B9441B, 0 6px 10px rgba(0,0,0,0.25); }
+  .btn.blue { background: var(--blue); box-shadow: 0 6px 0 #235DA8, 0 12px 20px rgba(0,0,0,0.25); }
+  .btn.blue:active { box-shadow: 0 2px 0 #235DA8, 0 6px 10px rgba(0,0,0,0.25); }
+  .btn.small { font-size: 18px; padding: 10px 22px; }
+  .btn.ghost { background: #fff; color: var(--ink); box-shadow: 0 5px 0 #CFCFC6, 0 10px 16px rgba(0,0,0,0.15); }
+  .btn.big { font-size: 34px; padding: 18px 56px; }
+  .row { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 4px; }
+
+  /* title */
+  #title .card { background: transparent; box-shadow: none; border: 0; max-width: 760px; padding: 0; }
+  #title .hero { width: min(300px, 55vw); height: auto; margin: -10px auto 0; filter: drop-shadow(0 12px 16px rgba(0,0,0,0.35)); animation: bob 1.6s ease-in-out infinite; }
+  @keyframes bob { 0%,100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-14px) rotate(2deg); } }
+  #title .sub { color: #fff; font-size: 20px; text-shadow: 0 2px 0 rgba(0,0,0,0.35); margin-top: 6px; }
+  #title .pill { display: inline-block; background: rgba(255,255,255,0.9); color: var(--ink); border-radius: 999px; padding: 6px 16px; font-size: 15px; margin-top: 14px; }
+
+  /* map */
+  #map .card { max-width: 980px; padding: 18px 18px 14px; }
+  #map .mapwrap { position: relative; width: 100%; aspect-ratio: 16 / 8; margin: 6px auto 8px; border-radius: 22px; overflow: hidden;
+    background: radial-gradient(circle at 20% 20%, #CDEFB9, #9ED98A 55%, #7FC776); box-shadow: inset 0 0 0 4px #fff, inset 0 10px 30px rgba(0,0,0,0.12); }
+  #map svg.path { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .node { position: absolute; width: 62px; height: 62px; transform: translate(-50%, -50%); border-radius: 50%; border: 0;
+    background: #fff; cursor: pointer; display: grid; place-items: center; font-family: "Lilita One", sans-serif; font-size: 26px;
+    color: var(--ink); box-shadow: 0 5px 0 #A7A79C, 0 10px 18px rgba(0,0,0,0.25); transition: transform 0.15s; }
+  .node:hover, .node:focus-visible { transform: translate(-50%, -50%) scale(1.12); outline: 4px solid #fff; }
+  .node.done { background: #FFE66D; box-shadow: 0 5px 0 #C9941B, 0 10px 18px rgba(0,0,0,0.25); }
+  .node.next { background: #FF6B35; color: #fff; box-shadow: 0 5px 0 #B9441B, 0 10px 18px rgba(0,0,0,0.25); animation: pulse 1.2s infinite; }
+  @keyframes pulse { 0%,100% { box-shadow: 0 5px 0 #B9441B, 0 0 0 0 rgba(255,107,53,0.6); } 50% { box-shadow: 0 5px 0 #B9441B, 0 0 0 14px rgba(255,107,53,0); } }
+  .node.locked { background: #CFD6DD; color: #8A96A3; cursor: not-allowed; box-shadow: 0 5px 0 #98A2AC; }
+  .node .gems { position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%); display: flex; gap: 2px; }
+  .node .gems i { width: 12px; height: 12px; background: #C5CAD3; display: block; clip-path: polygon(50% 0, 100% 40%, 50% 100%, 0 40%); }
+  .node .gems i.on { background: linear-gradient(135deg, #FF5DA2, #FFC83D, #4CC26A, #3B8BEB); }
+  .node .lbl { position: absolute; top: -26px; left: 50%; transform: translateX(-50%); white-space: nowrap; font-family: "Nunito"; font-weight: 900;
+    font-size: 13px; color: #23304A; background: rgba(255,255,255,0.85); padding: 2px 8px; border-radius: 999px; pointer-events: none; opacity: 0; transition: opacity 0.2s; }
+  .node:hover .lbl, .node.next .lbl, .node:focus-visible .lbl { opacity: 1; }
+  #heroMarker { position: absolute; width: 44px; height: 44px; margin-left: 14px; margin-top: -26px; z-index: 3; pointer-events: none; transition: left 0.5s, top 0.5s;
+    animation: bob 1.2s ease-in-out infinite; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.3)); }
+  #map .foot { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; }
+  #map .foot .stat { font-weight: 900; font-size: 17px; display: flex; align-items: center; gap: 8px; }
+  #map .foot .stat b { color: var(--accent); font-size: 22px; }
+
+  /* clear */
+  #clear .gemrow { display: flex; justify-content: center; gap: 14px; margin: 14px 0 6px; }
+  #clear .gemrow .g { width: 54px; height: 54px; background: #D7DBE2; clip-path: polygon(50% 0, 100% 40%, 50% 100%, 0 40%); opacity: 0.6; transform: scale(0.6); transition: transform 0.4s cubic-bezier(.2,1.6,.4,1), opacity 0.3s; }
+  #clear .gemrow .g.on { background: linear-gradient(135deg, #FF5DA2, #FFC83D, #4CC26A, #3B8BEB); opacity: 1; transform: scale(1); }
+  #clear .coins { font-size: 22px; font-weight: 900; }
+  #clear .coins span { color: #C9941B; }
+  .tip { background: #FFF5CC; border-radius: 14px; padding: 8px 14px; font-size: 16px; color: #6B4E00; margin-top: 10px; }
+
+  /* touch controls */
+  #touch { position: fixed; inset: 0; pointer-events: none; z-index: 15; display: none; }
+  #touch.show { display: block; }
+  .tbtn { position: absolute; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); width: 84px; height: 84px; border-radius: 50%;
+    background: rgba(255,255,255,0.55); border: 4px solid rgba(255,255,255,0.8); pointer-events: auto; display: grid; place-items: center;
+    font-size: 34px; color: #23304A; box-shadow: 0 6px 16px rgba(0,0,0,0.25); touch-action: none; }
+  .tbtn:active, .tbtn.on { background: rgba(255,230,109,0.9); transform: scale(0.95); }
+  #tLeft { left: calc(18px + env(safe-area-inset-left, 0px)); }
+  #tRight { left: calc(118px + env(safe-area-inset-left, 0px)); }
+  #tJump { right: calc(18px + env(safe-area-inset-right, 0px)); width: 104px; height: 104px; font-size: 40px; background: rgba(76,194,106,0.65); }
+  #pauseBtn { position: fixed; top: calc(10px + env(safe-area-inset-top, 0px)); right: calc(12px + env(safe-area-inset-right, 0px)); z-index: 16;
+    width: 48px; height: 48px; border-radius: 50%; border: 3px solid #fff; background: rgba(255,255,255,0.55); font-size: 20px; cursor: pointer; display: none; color: #23304A; }
+  #pauseBtn.show { display: block; }
+  .btn:focus, .node:focus, .pbtn:focus { outline: 5px solid #FFE66D; outline-offset: 3px; box-shadow: 0 0 0 9px rgba(255,107,53,0.55), 0 6px 0 rgba(0,0,0,0.25); transform: scale(1.06); z-index: 2; }
+  .node:focus { transform: translate(-50%, -50%) scale(1.18); }
+  .node:focus .lbl { opacity: 1; }
+  .hint-keys { font-size: 14px; color: #6A7390; font-weight: 800; margin-top: 6px; }
+  .hidden { display: none !important; }
+  .pill.player { font-size: 17px; }
+  .pill.player b { color: var(--accent); }
+  .plist { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 14px 0; }
+  .pbtn { position: relative; font-family: "Lilita One", sans-serif; font-size: 24px; letter-spacing: 1px; color: var(--ink); background: #fff; border: 4px solid #E3E6EC;
+    border-radius: 20px; padding: 14px 22px 10px; min-width: 150px; cursor: pointer; box-shadow: 0 6px 0 #CFCFC6; transition: transform 0.12s; }
+  .pbtn:hover, .pbtn:focus-visible { transform: translateY(-3px); outline: 4px solid #FFE66D; }
+  .pbtn.current { border-color: var(--accent); background: #FFF3EA; }
+  .pbtn small { display: block; font-family: "Nunito"; font-size: 13px; font-weight: 800; color: #6A7390; margin-top: 2px; }
+  .pbtn .del { position: absolute; top: -10px; right: -10px; width: 26px; height: 26px; border-radius: 50%; border: 0; background: #E3E6EC; color: #6A7390; font-size: 14px; cursor: pointer; }
+  .pbtn .del:hover { background: #FF6B35; color: #fff; }
+  #newName { font: 800 18px "Nunito", sans-serif; padding: 10px 14px; border-radius: 999px; border: 3px solid #E3E6EC; width: 200px; text-align: center; text-transform: uppercase; }
+  #newName:focus { outline: none; border-color: var(--blue); }

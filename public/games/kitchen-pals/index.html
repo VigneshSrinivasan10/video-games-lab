@@ -1,0 +1,9 @@
+<!doctype html>
+<html lang="en"><head>
+<base href="/">
+<script src="/api/profile/bootstrap"></script><script src="/shared/profiles.js"></script>
+<script src="/shared/gamepad-std.js" data-exit="/index.html"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Kitchen Pals</title><link rel="icon" href="data:,"><link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/games/kitchen-pals/styles.css"></head><body>
+<div id="app"><header id="hud"><div class="ticket"><div id="dish"></div><div id="recipe"></div><div id="count"></div></div><button id="pause" aria-label="Pause">Ⅱ</button></header><div id="stage"><canvas id="game" width="900" height="700" aria-label="Kitchen with two chefs, ingredients and cooking stations"></canvas></div><div id="status" aria-live="polite"></div><nav id="controls" aria-label="Touch controls"><div class="dpad"><button data-key="left" aria-label="Move left">◀</button><button data-key="up" aria-label="Move up">▲</button><button data-key="down" aria-label="Move down">▼</button><button data-key="right" aria-label="Move right">▶</button></div><button class="action" data-key="A" aria-label="Cook or confirm">A</button></nav></div>
+<div id="overlay"><section class="card" id="panel" aria-label="Game menu"></section></div>
+<script src="/games/kitchen-pals/game.js"></script></body></html>

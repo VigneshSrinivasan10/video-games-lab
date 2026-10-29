@@ -34,3 +34,9 @@ node_modules/
 .DS_Store
 /launcher.png
 /.tools/*-shot.png
+
+# Reorganized local installations and machine-specific configuration
+/local-games/
+/.local/
+/docs/HOSTING.local.md
+/tests/browser/launcher.png

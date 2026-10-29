@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<base href="/">
+<script src="/api/profile/bootstrap"></script><script src="/shared/profiles.js"></script>
+<script src="/shared/gamepad-std.js" data-exit="/index.html"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Super Mario</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/games/super-mario/styles.css">
+</head>
+<body>
+<div id="stage"><canvas id="game" width="1000" height="600"></canvas></div>
+<button id="pauseBtn" title="Pause">❚❚</button>
+<div id="touch">
+  <div class="tbtn" id="tLeft">◀</div>
+  <div class="tbtn" id="tRight">▶</div>
+  <div class="tbtn" id="tJump">⬆</div>
+</div>
+
+<div class="overlay show" id="title">
+  <div class="card">
+    <h1><span class="top">SUPER</span>MARIO</h1>
+    <svg class="hero" viewBox="0 0 120 110" aria-hidden="true">
+      <ellipse cx="60" cy="104" rx="34" ry="6" fill="rgba(0,0,0,0.25)"/>
+      <path d="M38 32 Q31 44 40 57 L48 53 Q42 44 46 32 Z" fill="#5C3317" stroke="#33190A" stroke-width="3" stroke-linejoin="round"/>
+      <g transform="rotate(28 31 56)">
+        <rect x="24" y="52" width="14" height="24" rx="7" fill="#E63946" stroke="#9E1B29" stroke-width="3"/>
+        <circle cx="31" cy="79" r="8" fill="#fff" stroke="#C27A3E" stroke-width="3"/>
+      </g>
+      <rect x="38" y="72" width="16" height="22" rx="5" fill="#2F6BE0" stroke="#1B3E9E" stroke-width="3"/>
+      <rect x="64" y="72" width="16" height="22" rx="5" fill="#2F6BE0" stroke="#1B3E9E" stroke-width="3"/>
+      <rect x="33" y="88" width="25" height="13" rx="6" fill="#5C3317" stroke="#33190A" stroke-width="3"/>
+      <rect x="62" y="88" width="27" height="13" rx="6" fill="#5C3317" stroke="#33190A" stroke-width="3"/>
+      <rect x="32" y="44" width="54" height="28" rx="12" fill="#E63946" stroke="#9E1B29" stroke-width="3"/>
+      <rect x="36" y="56" width="48" height="26" rx="10" fill="#2F6BE0" stroke="#1B3E9E" stroke-width="3"/>
+      <rect x="44" y="44" width="10" height="18" rx="3" fill="#2F6BE0" stroke="#1B3E9E" stroke-width="3"/>
+      <rect x="66" y="44" width="10" height="18" rx="3" fill="#2F6BE0" stroke="#1B3E9E" stroke-width="3"/>
+      <circle cx="49" cy="63" r="3.5" fill="#FFD93D" stroke="#B8860B" stroke-width="2"/>
+      <circle cx="71" cy="63" r="3.5" fill="#FFD93D" stroke="#B8860B" stroke-width="2"/>
+      <g transform="rotate(-32 89 50)">
+        <rect x="82" y="48" width="14" height="24" rx="7" fill="#E63946" stroke="#9E1B29" stroke-width="3"/>
+        <circle cx="89" cy="75" r="8" fill="#fff" stroke="#C27A3E" stroke-width="3"/>
+      </g>
+      <circle cx="62" cy="36" r="20" fill="#FFCFA3" stroke="#C27A3E" stroke-width="3"/>
+      <circle cx="44" cy="39" r="5.5" fill="#FFCFA3" stroke="#C27A3E" stroke-width="3"/>
+      <circle cx="60" cy="47" r="4" fill="#FF8FA3" opacity="0.7"/>
+      <circle cx="70" cy="32" r="7" fill="#fff"/><circle cx="72.5" cy="32" r="3.5" fill="#23304A"/>
+      <circle cx="81" cy="41" r="7.5" fill="#FFCFA3" stroke="#C27A3E" stroke-width="3"/>
+      <path d="M64 47 Q74 41 88 48 Q80 55 72 52 Q67 52 64 47 Z" fill="#5C3317" stroke="#33190A" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M40 24 Q62 -2 86 24 L88 30 L38 30 Z" fill="#E63946" stroke="#9E1B29" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M80 26 L110 34 L108 40 L78 34 Z" fill="#E63946" stroke="#9E1B29" stroke-width="3" stroke-linejoin="round"/>
+      <circle cx="62" cy="18" r="8" fill="#fff" stroke="#9E1B29" stroke-width="2"/>
+      <text x="62" y="22" text-anchor="middle" font-family="Lilita One, sans-serif" font-size="11" fill="#E63946">M</text>
+    </svg>
+    <p class="sub">Help Mario the plumber get the Rainbow Gems back from King Blobby!</p>
+    <div class="row">
+      <button class="btn big orange" id="btnPlay">PLAY!</button>
+    </div>
+    <div class="row"><span class="pill player">👤 Player: <b id="titlePlayer">Player</b></span><button class="btn small ghost" id="btnProfiles">Change player</button></div>
+    <div class="pill">⬅ ➡ run &nbsp;·&nbsp; SPACE jump &nbsp;·&nbsp; jump on Blobbies to squish them!</div>
+    <div class="pill">🎮 ✛ move &nbsp;·&nbsp; A jump &nbsp;·&nbsp; B back / pause</div>
+  </div>
+</div>
+
+<div class="overlay" id="profile">
+  <div class="card">
+    <h2>Who is playing?</h2>
+    <p>Each player has their own worlds, gems and coins.</p>
+    <div class="plist" id="plist"></div>
+    <form class="row" id="newForm">
+      <input id="newName" maxlength="12" placeholder="New player name" autocomplete="off">
+      <button class="btn small blue" type="submit">+ Add</button>
+    </form>
+    <div class="row"><button class="btn ghost small" id="btnProfBack">Back</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="map">
+  <div class="card">
+    <h2><span id="mapPlayer">Player</span>'s Worlds</h2>
+    <div class="mapwrap" id="mapwrap">
+      <svg class="path" viewBox="0 0 160 80" preserveAspectRatio="none"><path id="mapPath" d="" fill="none" stroke="#fff" stroke-width="2.2" stroke-dasharray="3 2.5" stroke-linecap="round" opacity="0.9"/></svg>
+      <svg id="heroMarker" viewBox="0 0 120 110"><use href="#heroSym"/></svg>
+    </div>
+    <div class="hint-keys">⬅ ➡ / ✛ choose a world &nbsp;·&nbsp; SPACE / A to play &nbsp;·&nbsp; ESC / B back</div>
+    <div class="foot">
+      <div class="stat">💎 <b id="statGems">0</b> / 24 gems</div>
+      <div class="row"><button class="btn small ghost" id="btnTitle">Title</button><button class="btn small ghost" id="btnMusic">🎵 Music: On</button></div>
+      <div class="stat">🪙 <b id="statCoins">0</b> coins</div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay dim" id="pause">
+  <div class="card">
+    <h2>Paused</h2>
+    <p id="pauseName"></p>
+    <div class="row">
+      <button class="btn" id="btnResume">Keep Playing</button>
+      <button class="btn blue small" id="btnRestart">Restart Level</button>
+      <button class="btn ghost small" id="btnToMap">World Map</button>
+    </div>
+    <div class="row"><button class="btn ghost small" id="btnMusic2">🎵 Music: On</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="clear">
+  <div class="card">
+    <h2 id="clearTitle">LEVEL CLEAR!</h2>
+    <p id="clearPlayer" style="margin:0;color:#FF6B35;font-weight:900"></p>
+    <p id="clearName"></p>
+    <div class="gemrow"><div class="g" id="g0"></div><div class="g" id="g1"></div><div class="g" id="g2"></div></div>
+    <div class="coins">🪙 <span id="clearCoins">0</span> coins collected</div>
+    <div class="tip" id="clearTip"></div>
+    <div class="row">
+      <button class="btn big orange" id="btnNext">Next World ➜</button>
+      <button class="btn ghost small" id="btnClearMap">World Map</button>
+      <button class="btn ghost small" id="btnAgain">Play Again</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay dim" id="win">
+  <div class="card">
+    <h2>YOU DID IT! 🎉</h2>
+    <p>Mario got all the way to King Blobby's castle, and now the Blobbies and Mario are best friends!</p>
+    <p>The Rainbow Gems are safe. You are a SUPER hero!</p>
+    <div class="row"><button class="btn orange" id="btnWinMap">World Map</button></div>
+  </div>
+</div>
+
+<svg width="0" height="0" style="position:absolute"><defs><symbol id="heroSym" viewBox="0 0 120 110">
+  <path d="M38 32 Q31 44 40 57 L48 53 Q42 44 46 32 Z" fill="#5C3317" stroke="#33190A" stroke-width="3" stroke-linejoin="round"/>
+  <g transform="rotate(28 31 56)">
+    <rect x="24" y="52" width="14" height="24" rx="7" fill="#E63946" stroke="#9E1B29" stroke-width="3"/>
+    <circle cx="31" cy="79" r="8" fill="#fff" stroke="#C27A3E" stroke-width="3"/>
+  </g>
+  <rect x="38" y="72" width="16" height="22" rx="5" fill="#2F6BE0" stroke="#1B3E9E" stroke-width="3"/>
+  <rect x="64" y="72" width="16" height="22" rx="5" fill="#2F6BE0" stroke="#1B3E9E" stroke-width="3"/>
+  <rect x="33" y="88" width="25" height="13" rx="6" fill="#5C3317" stroke="#33190A" stroke-width="3"/>
+  <rect x="62" y="88" width="27" height="13" rx="6" fill="#5C3317" stroke="#33190A" stroke-width="3"/>
+  <rect x="32" y="44" width="54" height="28" rx="12" fill="#E63946" stroke="#9E1B29" stroke-width="3"/>
+  <rect x="36" y="56" width="48" height="26" rx="10" fill="#2F6BE0" stroke="#1B3E9E" stroke-width="3"/>
+  <rect x="44" y="44" width="10" height="18" rx="3" fill="#2F6BE0" stroke="#1B3E9E" stroke-width="3"/>
+  <rect x="66" y="44" width="10" height="18" rx="3" fill="#2F6BE0" stroke="#1B3E9E" stroke-width="3"/>
+  <circle cx="49" cy="63" r="3.5" fill="#FFD93D" stroke="#B8860B" stroke-width="2"/>
+  <circle cx="71" cy="63" r="3.5" fill="#FFD93D" stroke="#B8860B" stroke-width="2"/>
+  <g transform="rotate(-32 89 50)">
+    <rect x="82" y="48" width="14" height="24" rx="7" fill="#E63946" stroke="#9E1B29" stroke-width="3"/>
+    <circle cx="89" cy="75" r="8" fill="#fff" stroke="#C27A3E" stroke-width="3"/>
+  </g>
+  <circle cx="62" cy="36" r="20" fill="#FFCFA3" stroke="#C27A3E" stroke-width="3"/>
+  <circle cx="44" cy="39" r="5.5" fill="#FFCFA3" stroke="#C27A3E" stroke-width="3"/>
+  <circle cx="60" cy="47" r="4" fill="#FF8FA3" opacity="0.7"/>
+  <circle cx="70" cy="32" r="7" fill="#fff"/><circle cx="72.5" cy="32" r="3.5" fill="#23304A"/>
+  <circle cx="81" cy="41" r="7.5" fill="#FFCFA3" stroke="#C27A3E" stroke-width="3"/>
+  <path d="M64 47 Q74 41 88 48 Q80 55 72 52 Q67 52 64 47 Z" fill="#5C3317" stroke="#33190A" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M40 24 Q62 -2 86 24 L88 30 L38 30 Z" fill="#E63946" stroke="#9E1B29" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M80 26 L110 34 L108 40 L78 34 Z" fill="#E63946" stroke="#9E1B29" stroke-width="3" stroke-linejoin="round"/>
+  <circle cx="62" cy="18" r="8" fill="#fff" stroke="#9E1B29" stroke-width="2"/>
+  <text x="62" y="22" text-anchor="middle" font-family="Lilita One, sans-serif" font-size="11" fill="#E63946">M</text>
+</symbol></defs></svg>
+<script src="/games/super-mario/game.js"></script>
+</body>
+</html>
