@@ -19,7 +19,7 @@
     $('waiting').classList.toggle('hidden',!!ready);
     $('status').textContent=room ? `${names[room.game]} · Door ${room.door} · You are ${room.role==='host'?'Player 1':'Player 2'} · ${ready?'Together!':'Waiting…'}`:'';
     if(room?.role==='guest') { $('waitTitle').textContent='Waiting for the host';$('waitText').textContent='The game pauses while we reconnect. Keep this page open.'; }
-    else if(started && presence.guest===false){$('waitTitle').textContent='Waiting for family';$('waitText').textContent='Your family can choose this game and join your door. If disconnected, reload their game to reconnect.';}
+    else if(started && presence.guest===false){$('waitTitle').textContent='Waiting for another player';$('waitText').textContent='Invite another player to choose this game and join your door. If disconnected, they can reload their game to reconnect.';}
   }
   function stream() {
     if(closed)return;
@@ -76,13 +76,13 @@
         }
         if(oldID) (list.querySelector(`[data-room="${oldID}"]`)||list.firstElementChild||$('createDoor')).focus();
       }
-      $('doorHint').textContent=data.rooms.length?'Someone is waiting! Choose their door.':'No one is waiting yet. Open a door for your family!';
+      $('doorHint').textContent=data.rooms.length?'Someone is waiting! Choose their door.':'No one is waiting yet. Open a door and invite a friend!';
       $('error').textContent='';
       if(focus)(list.firstElementChild||$('createDoor')).focus();
     }catch(e){$('error').textContent=e.message;}finally{listing=false;}
   }
   async function joinDoor(id){if(entering)return;entering=true;try{await join(id);}finally{entering=false;}}
-  function chooseGame(game){selectedGame=game;$('games').hidden=true;$('doors').hidden=false;$('doorTitle').textContent=names[game];$('doorList').replaceChildren();delete $('doorList').dataset.signature;$('doorHint').textContent='Looking for family…';$('createDoor').focus();refreshDoors(true);}
+  function chooseGame(game){selectedGame=game;$('games').hidden=true;$('doors').hidden=false;$('doorTitle').textContent=names[game];$('doorList').replaceChildren();delete $('doorList').dataset.signature;$('doorHint').textContent='Looking for players…';$('createDoor').focus();refreshDoors(true);}
   function back(){
     if(!room&&selectedGame){const game=selectedGame;selectedGame=null;$('doors').hidden=true;$('games').hidden=false;$('error').textContent='';document.querySelector(`[data-game="${game}"]`).focus();}
     else leave();

@@ -9,7 +9,7 @@ const port = Number(process.env.ARCADE_PORT || 8777);
 const upstreamPort = Number(process.env.ARCADE_UPSTREAM_PORT || 8780);
 http.createServer((req, res) => {
   if (!/^(localhost|127\.0\.0\.1)(:\d+)?$/.test(req.headers.host || '')) {
-    res.writeHead(403); res.end('Use the family arcade link for remote play.'); return;
+    res.writeHead(403); res.end('Use the Video Games Lab link for remote play.'); return;
   }
   const value = (Date.now() + 60000) + '.' + randomBytes(16).toString('hex');
   const signature = createHmac('sha256', secret).update(value).digest('hex');
