@@ -60,13 +60,13 @@ class Handler(osmium.SimpleHandler):
      try:height=float(t.get('building:levels',''))*3.2*.36
      except:height={'garage':1.4,'garages':1.4,'house':3.2,'detached':3.2,'church':14,'school':7,'hospital':12,'commercial':8,'retail':5,'industrial':5}.get(t.get('building'),7+int(a.orig_id())%6)
     f['h']=round(max(1,min(150,height)),1);f['c']=int(a.orig_id())%8
-    if t.get('name'):f['n']=t['name']
+    if t.get('name'):f['n']=t.get('name:en',t['name'])
     cat=t.get('amenity',t.get('shop',t.get('building')))
     if cat in ('hospital','school','mall','university','train_station'):f['cat']=cat
    elif k=='park':f['pitch']=t.get('leisure')=='pitch';f['trees']=t.get('landuse')=='forest' or t.get('natural')=='wood' or t.get('leisure') in ('park','garden');f['name']=t.get('name','')
    features.append(f)
 h=Handler();h.apply_file(sys.argv[1],locations=True,idx='flex_mem')
 from collections import Counter
-result={'source':'OpenStreetMap contributors / BBBike / Geofabrik, 2026-10-24','bounds':config['bounds'],'origin':config['origin'],'city':config['id'],'scale':.36,'features':features,'pois':list(pois.values())}
+result={'source':config.get('source','OpenStreetMap contributors / BBBike / Geofabrik, 2026-10-24'),'bounds':config['bounds'],'origin':config['origin'],'city':config['id'],'scale':.36,'features':features,'pois':list(pois.values())}
 open(sys.argv[2],'w').write(json.dumps(result,ensure_ascii=False,separators=(',',':')))
 print(Counter(f['k'] for f in features),'POIs',len(pois),flush=True)

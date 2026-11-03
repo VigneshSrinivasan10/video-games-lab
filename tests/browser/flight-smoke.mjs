@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import { launch } from '../helpers/cdp.mjs';
 import { startTestServer } from '../helpers/server.mjs';
-const server=await startTestServer(), b=await launch({args:['--window-size=800,600']});
+const server=await startTestServer(), b=await launch({headed:true,args:['--headless=new','--ozone-platform=headless','--use-angle=gl-egl','--enable-gpu','--ignore-gpu-blocklist','--window-size=800,600']});
 const cities=JSON.parse(await fs.readFile(new URL('../../public/games/city-flight/cities.json',import.meta.url)));
 const selected=process.argv[2]?.split(',');
 const cases=[...cities.map(c=>[c.id,'world-flight/game.html?city='+c.id+'&test','FlightTest']),['berlin','berlin-city-flight.html?test','BerlinTest']].filter(([id])=>!selected||selected.includes(id));
@@ -12,7 +12,7 @@ try{
  await b.addInit(await fs.readFile(new URL('../helpers/fakepad.js',import.meta.url),'utf8'));
  await b.signIn(server.base,'flight-check');await b.goto(server.base+'/index.html');
  await b.eval('ArcadeProfile.storage.setItem("world-flight.graphics","Performance");ArcadeProfile.storage.setItem("berlin-city-flight.graphics","Performance");ArcadeProfile.sync()');
- await b.goto(server.base+'/world-flight/index.html');assert.equal(await b.eval('document.querySelectorAll(".fly").length'),17);
+ await b.goto(server.base+'/world-flight/index.html');assert.equal(await b.eval('document.querySelectorAll(".fly").length'),cities.length+1);
  for(const [id,page,hook] of cases){
   console.log('Testing flight:',id);const begin=b.logs.length;
   await b.goto(server.base+'/'+page);

@@ -129,7 +129,7 @@
   let repeatAt=0;
   function frame(now){
     requestAnimationFrame(frame);
-    const pads=GamepadStd.read('family'); const p=pads[0];
+    const p=GamepadStd.readActive('family');
     if(p?.any)adapter?.unlock?.();
     if(!room || !R.ready){if(p){const nav=GamepadStd.navRepeat(p,'family');for(const k of ['left','right','up','down'])if(nav[k])keyboard({code:'Arrow'+k[0].toUpperCase()+k.slice(1),target:document.body,preventDefault(){}},true);if(p.just.A)document.activeElement?.click();if(p.just.B)back();}return;}
     if(room.role==='guest'){

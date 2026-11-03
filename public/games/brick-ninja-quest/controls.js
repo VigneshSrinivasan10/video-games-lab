@@ -395,17 +395,25 @@
       document.body.dispatchEvent(ev);
     });
   }
-  const padPrev = { left: false, right: false };
+  const padPrev = { left: false, right: false, jump: false };
   function pollPad() {
     if (!window.GamepadStd) return;
-    for (const p of GamepadStd.read("game")) {
+    const pads = GamepadStd.readPlayers("game", 1);
+    if (!pads.length) {
+      for (const key of ["left", "right", "jump"]) {
+        if (padPrev[key]) input[key] = false;
+        padPrev[key] = false;
+      }
+    }
+    for (const p of pads) {
       if (p.any || p.left || p.right || p.up || p.down) ensureAudio();
       const nav = GamepadStd.navRepeat(p, "game");
       if (p.left !== padPrev.left) input.left = p.left;
       if (p.right !== padPrev.right) input.right = p.right;
       padPrev.left = p.left;
       padPrev.right = p.right;
-      if (p.released.A) input.jump = false;
+      if (padPrev.jump && !p.A) input.jump = false;
+      padPrev.jump = p.A;
       if (gameState === "play") {
         if (p.just.A) {
           if (!input.jump) jumpQueued = true;

@@ -125,11 +125,12 @@ function readInputs() {
   if (keys.KeyD) inp[1].move += 1;
   if (pressed.has('Enter') || pressed.has('Space')) inp[0].action = true;
   if (pressed.has('KeyW')) inp[1].action = true;
-  // Controllers via the shared standard (AGENTS.md §9): pad in slot 0 = player 1, slot 1 = player 2.
+  // Keep each local basket's controller assigned when another pad disconnects.
   // D-pad or left stick = move, A = go / join, B = pause-resume (back), Start = pause-resume.
-  const pads = GamepadStd.read('game');
+  const pads = GamepadStd.readPlayers('game', FAMILY ? 1 : 2, players[1].active ? 2 : 1);
   for (let slot = 0; slot < Math.min(2, pads.length); slot++) {
     const p = pads[slot];
+    if (!p) continue;
     let ax = p.ax;                              // analog stick for smooth basket movement
     if (p.left && ax > -0.5) ax = -1;           // d-pad overrides when the stick is centred
     if (p.right && ax < 0.5) ax = 1;

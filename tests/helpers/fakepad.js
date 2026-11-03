@@ -10,9 +10,10 @@
     return { id: 'Zikway HID gamepad (Vendor: 3537 Product: 1041)', index: index, connected: true, mapping: '', timestamp: 0, buttons: btn, axes: [0, 0, 0, 0, -1, -1, 0, 0] };
   }
   var pads = [makePad(0)];
+  var defaultIndex = 0;
   navigator.getGamepads = function () { return pads.slice(); };
   function set(name, down, p) {
-    var g = pads[p || 0]; if (!g) return;
+    var g = pads[p == null ? defaultIndex : p]; if (!g) return;
     if (name in DIN) { var b = g.buttons[DIN[name]]; b.pressed = !!down; b.touched = !!down; b.value = down ? 1 : 0; }
     else if (name === 'up') g.axes[7] = down ? -1 : 0;
     else if (name === 'down') g.axes[7] = down ? 1 : 0;
@@ -23,12 +24,13 @@
   }
   window.__fake = {
     pads: pads,
+    usePad: function (p) { defaultIndex = p; },
     set: set,
-    stick: function (x, y, p) { var g = pads[p || 0]; g.axes[0] = x; g.axes[1] = y; g.timestamp = performance.now(); },
+    stick: function (x, y, p) { var g = pads[p == null ? defaultIndex : p]; g.axes[0] = x; g.axes[1] = y; g.timestamp = performance.now(); },
     // press for ms (default 120) then release, resolve 80 ms later so the game has polled the release
     tap: function (name, ms, p) { set(name, true, p); return new Promise(function (r) { setTimeout(function () { set(name, false, p); setTimeout(r, 80); }, ms || 120); }); },
     hold: function (name, ms, p) { return this.tap(name, ms, p); },
     addPad: function () { var g = makePad(pads.length); pads.push(g); return g.index; },
-    disconnect: function (p) { pads[p || 0].connected = false; }
+    disconnect: function (p) { pads[p == null ? defaultIndex : p].connected = false; }
   };
 })();

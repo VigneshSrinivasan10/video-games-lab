@@ -18,7 +18,7 @@ async function playUntil(expression) {
   throw Error('Could not enter gameplay: '+expression);
 }
 const cases = [
- ['sudoku-safari','sudoku-kids/',async()=>{await until('typeof board!=="undefined" && board.length===16');const before=await b.eval('board.filter(Boolean).length');await click('hint');await click('hint');assert.ok(await b.eval('board.filter(Boolean).length')>before);}],
+ ['sudoku-safari','sudoku-kids/',async()=>{await until('typeof board!=="undefined" && board.length===16');const before=await b.eval('board.filter(Boolean).length');await click('hint');await tap('A');assert.ok(await b.eval('board.filter(Boolean).length')>before);}],
  ['sudoku','sudoku.html',async()=>{await until('typeof board!=="undefined" && !!board && !loading');const before=await b.eval('board.values.filter(Boolean).length');await click('hint');await click('applyHint');assert.ok(await b.eval('board.values.filter(Boolean).length')>before);}],
  ['nonograms','nonograms.html',async()=>{await until('document.querySelectorAll(".ncell").length===25');await b.eval('document.querySelector(".ncell").click()');assert.equal(await b.eval('document.querySelectorAll(".ncell.mark").length'),1);await click('undo');assert.equal(await b.eval('document.querySelectorAll(".ncell.mark").length'),0);}],
  ['mahjong','mahjong.html',async()=>{await until('document.querySelectorAll("#board .tile").length>0');const before=await b.eval('document.querySelectorAll("#board .tile").length');await click('hint');const pair=await b.eval('Array.from(document.querySelectorAll(".tile.hinted"),t=>t.dataset.index)');assert.equal(pair.length,2);for(const id of pair)await b.eval(`document.querySelector('[data-index="${id}"]').click()`);await until(`document.querySelectorAll('#board .tile').length===${before-2}`);}],
@@ -35,6 +35,7 @@ const cases = [
 ];
 try {
  await b.addInit(await fs.readFile(new URL('../helpers/fakepad.js',import.meta.url),'utf8'));
+ if(process.env.ARCADE_TEST_PAD==='replacement')await b.addInit('__fake.addPad();__fake.pads[0]=null;__fake.usePad(1)');
  await b.signIn(server.base,'refactor-player');
  for(const [name,page,exercise] of cases) {
   if(only&&!only.includes(name))continue;

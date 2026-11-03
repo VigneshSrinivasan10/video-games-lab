@@ -16,7 +16,9 @@ async function loadingStage(percent,message){
 async function loadingWork(percent,message){if(performance.now()-loadingYield>16)await loadingStage(percent,message);}
 await loadingStage(2,'Opening the city map…');
 const cityList=await fetch('cities.json').then(r=>{if(!r.ok)throw new Error('City list unavailable');return r.json();});
-const cityId=new URLSearchParams(location.search).get('city')||'paris',CITY=cityList.find(c=>c.id===cityId);
+const cityId=new URLSearchParams(location.search).get('city')||'paris';
+let CITY=cityList.find(c=>c.id===cityId);
+if(!CITY)CITY=(await fetch('archived-cities.json').then(r=>r.ok?r.json():[])).find(c=>c.id===cityId);
 if(!CITY)throw new Error('Unknown city');
 document.title=CITY.name+' · City Flight';document.querySelector('.city').textContent=CITY.name.toUpperCase();document.querySelector('.footer').textContent=CITY.name.toUpperCase()+' · THE GRAND TOUR';
 const mapResponse=await fetch('data/'+CITY.id+'.bin');if(!mapResponse.ok)throw new Error('City map unavailable');const mapBytes=await mapResponse.arrayBuffer();
@@ -24,19 +26,19 @@ const CITY_MAP=await new Response(new Blob([mapBytes]).stream().pipeThrough(new 
 await loadingStage(10,'Building '+CITY.name+'’s neighborhoods…');
 const $=s=>document.querySelector(s),T=THREE,clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),lerp=(a,b,t)=>a+(b-a)*t,TAU=Math.PI*2;
 let seed=92731;function rnd(){seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;}
-const scene=new T.Scene();scene.fog=new T.FogExp2('#c4e2ed',.00062);
+const STYLE=CityStyles.forCity(CITY);const scene=new T.Scene();scene.fog=new T.FogExp2(STYLE.haze,.00105);
 let renderer;
 try{renderer=new T.WebGLRenderer({canvas:$('#view'),antialias:true,powerPreference:'high-performance'});}catch(e){$('#error').classList.remove('hidden');$('#error').innerHTML='<section class="card"><h2>This scene needs 3D graphics</h2><p>Please enable hardware acceleration in your browser, or try Chrome on another device.</p><button onclick="location.href=\'index.html\'">↩ Arcade</button></section>';$('#error button').focus();return;}
-renderer.setPixelRatio(1);renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.04;renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=false;
+renderer.setPixelRatio(1);renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=.98;renderer.shadowMap.enabled=true;renderer.shadowMap.autoUpdate=false;
+const daylight=CityDaylight.create({T,renderer,scene,style:STYLE});
+const environment=CityEnvironment.create({T,renderer,style:STYLE,daylight}),aerial=CityBuildings.create({T,renderer,environment,style:STYLE}),WATER_LEVEL=-1.15;
 const camera=new T.PerspectiveCamera(54,1,1,4200),look=new T.Vector3(),desired=new T.Vector3();
 const qualityModes=['Balanced','High','Performance'];let quality='Balanced';try{const stored=ArcadeProfile.storage.getItem('world-flight.graphics');if(qualityModes.includes(stored))quality=stored;}catch{}
-function resize(){const w=innerWidth,h=innerHeight,budget=quality==='High'?2560*1440:quality==='Performance'?1280*720:1920*1080,scale=Math.min(devicePixelRatio||1,quality==='High'?2:1.5,Math.sqrt(budget/(w*h)));renderer.setSize(Math.round(w*scale),Math.round(h*scale),false);camera.aspect=w/h;camera.updateProjectionMatrix();}addEventListener('resize',resize);resize();
-scene.add(new T.HemisphereLight(0xc4e2ff,0x77795c,1.45));
-const sun=new T.DirectionalLight(0xffe6be,2.65);sun.position.set(-330,430,190);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-330,right:330,top:330,bottom:-330,near:1,far:1400});sun.shadow.bias=-.00035;sun.shadow.normalBias=.5;scene.add(sun,sun.target);
-const sky=new T.Mesh(new T.SphereGeometry(3500,24,12),new T.ShaderMaterial({side:T.BackSide,toneMapped:false,depthWrite:false,uniforms:{top:{value:new T.Color('#398bd0')},bottom:{value:new T.Color('#d1e2e8')}},vertexShader:'varying vec3 v;void main(){v=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',fragmentShader:'varying vec3 v;uniform vec3 top;uniform vec3 bottom;void main(){vec3 dir=normalize(v);float h=smoothstep(-.08,.85,dir.y);vec3 col=mix(bottom,top,pow(h,.65));float glow=pow(max(0.,dot(dir,normalize(vec3(-.6,.75,.25)))),24.);col+=vec3(.13,.09,.035)*glow;gl_FragColor=vec4(col,1.);\n#include <tonemapping_fragment>\n#include <colorspace_fragment>\n}'}));scene.add(sky);
+function resize(){const w=innerWidth,h=innerHeight,budget=quality==='High'?2560*1440:quality==='Performance'?1280*720:CITY.id==='bengaluru'?1600*900:1920*1080,scale=Math.min(devicePixelRatio||1,quality==='High'?2:1.5,Math.sqrt(budget/(w*h)));renderer.setSize(Math.round(w*scale),Math.round(h*scale),false);camera.aspect=w/h;camera.updateProjectionMatrix();}addEventListener('resize',resize);resize();
+const sky=new T.Mesh(new T.SphereGeometry(3500,24,12),environment.sky());sky.renderOrder=-2;scene.add(sky);
 const mats=new Map(),batches=new Map(),dummy=new T.Object3D(),cube=new T.BoxGeometry(1,1,1),leafGeo=new T.IcosahedronGeometry(1,1),rockGeo=new T.IcosahedronGeometry(1,0),cylGeo=new T.CylinderGeometry(1,1,1,10),sphereGeo=new T.SphereGeometry(1,16,10);
-function mat(color,opts={}){const key=color+JSON.stringify(opts);if(!mats.has(key))mats.set(key,new T.MeshStandardMaterial({color,roughness:.82,...opts}));return mats.get(key);}
-function stamp(geo,material,x,y,z,sx=1,sy=1,sz=1,ry=0,rx=0,rz=0,shadow=true){const key=geo.uuid+material.uuid+shadow+':'+Math.floor(x/500)+':'+Math.floor(z/500);let b=batches.get(key);if(!b){b={geo,material,matrices:[],shadow};batches.set(key,b);}dummy.position.set(x,y,z);dummy.rotation.set(rx,ry,rz);dummy.scale.set(sx,sy,sz);dummy.updateMatrix();b.matrices.push(dummy.matrix.clone());}
+function mat(color,opts={}){return environment.surface(color,opts);}
+function stamp(geo,material,x,y,z,sx=1,sy=1,sz=1,ry=0,rx=0,rz=0,shadow=true){if(material.vertexColors&&!geo.attributes.color)geo.setAttribute('color',new T.Float32BufferAttribute(new Float32Array(geo.attributes.position.count*3).fill(1),3));const key=geo.uuid+material.uuid+shadow+':'+Math.floor(x/500)+':'+Math.floor(z/500);let b=batches.get(key);if(!b){b={geo,material,matrices:[],shadow};batches.set(key,b);}dummy.position.set(x,y,z);dummy.rotation.set(rx,ry,rz);dummy.scale.set(sx,sy,sz);dummy.updateMatrix();b.matrices.push(dummy.matrix.clone());}
 function box(x,y,z,w,h,d,c,ry=0,shadow=true){stamp(cube,typeof c==='string'?mat(c):c,x,y,z,w,h,d,ry,0,0,shadow);}
 function cylinder(x,y,z,r,h,c,r2=r){if(r2===r)stamp(cylGeo,mat(c),x,y,z,r,h,r);else{const g=new T.CylinderGeometry(r2,r,h,12);stamp(g,mat(c),x,y,z);}}
 function sphere(x,y,z,rx,ry,rz,c){stamp(sphereGeo,typeof c==='string'?mat(c):c,x,y,z,rx,ry,rz);}
@@ -65,23 +67,34 @@ const grassTex=texture((c,w,h)=>{c.fillStyle='#8fae63';c.fillRect(0,0,w,h);for(l
 // Real map geometry: local east/north projection, uniformly scaled for flight.
 const geo=(lon,lat)=>({x:(lon-CITY.origin[0])*111320*Math.cos(CITY.origin[1]*Math.PI/180)*.36,z:(CITY.origin[1]-lat)*111320*.36});
 const first=geo(CITY.landmarks[0].lon,CITY.landmarks[0].lat);
-const TITLE={x:first.x-55,z:first.z+150,y:Math.max(46,CITY.landmarks[0].height*.36+20),heading:0};
+const TITLE={x:first.x-55,z:first.z+150,y:Math.min(180,Math.max(46,CITY.landmarks[0].height*.36+20)),heading:0};
+// Approach Rialto along the mapped Grand Canal, with the water and quays in view.
+if(CITY.id==='venice')Object.assign(TITLE,{x:first.x-104,z:first.z+69.45,heading:.982});
 const TAKEOFF={...TITLE};
 const nw=geo(CITY.bounds[0],CITY.bounds[3]),se=geo(CITY.bounds[2],CITY.bounds[1]);
-const obstacles=[],cityChunks=[],cityLabels=[];
-const ground=new T.Mesh(new T.PlaneGeometry(11000,11000),mat('#c7c8b3',{roughness:1}));ground.rotation.x=-Math.PI/2;ground.position.y=-.6;ground.receiveShadow=true;scene.add(ground);
+const obstacles=[],cityChunks=[],cityLabels=[],backgroundScenery=[];
+const ground=new T.Mesh(new T.PlaneGeometry(11000,11000),mat(STYLE.ground,{roughness:1,depthWrite:false}));ground.rotation.x=-Math.PI/2;ground.position.y=-.6;ground.receiveShadow=true;ground.renderOrder=-1;scene.add(ground);
 const copper='#548f7d',stone='#d8c7a5',gold='#d7ae42';
 const trees=[];
 // Model helpers from the original game are retained for landmark silhouettes.
-function tree(x,z,h=14,variant=0){trees.push({x,z,h});if(isBengaluru&&variant===0){cylinder(x,h*.55,z,.35,h*1.1,'#94724f');for(let j=0;j<6;j++){const a=j*TAU/6;stamp(leafGeo,mat('#51845c',{flatShading:true}),x+Math.cos(a)*h*.22,h*1.05,z+Math.sin(a)*h*.22,h*.38,h*.08,h*.12,-a);}return;}if(isRome&&variant%3===0){cylinder(x,h*.4,z,.35,h*.8,'#8a7952');sphere(x,h*.8,z,h*.19,h*.7,h*.19,'#49684b');return;}cylinder(x,h*.25+3,z,.6,h*.5,'#8a7952');const greens=['#7eaa38','#91b540','#5d983d','#a8b74b','#669b46'];for(let j=0;j<2;j++){const a=j*2.4+variant,xx=x+Math.cos(a)*h*.18,zz=z+Math.sin(a)*h*.16;stamp(leafGeo,mat(greens[(variant+j)%5],{flatShading:true}),xx,h*.68+3+(j%2)*h*.13,zz,h*(.27+rnd()*.1),h*(.29+rnd()*.12),h*.32,rnd()*3);}}
+function tree(x,z,h=14,variant=0,compact=false){trees.push({x,z,h});
+ const place=(g,m,p,s,r)=>stamp(g,m,...p,...s,r[1],r[0],r[2],m!==environment.materials.contact);
+ if(STYLE.palms&&variant%3===0){
+  cylinder(x,h*.46,z,h*.025,h*.92,environment.materials.trunk,h*.018);
+  for(let j=0;j<9;j++){const a=j*TAU/9;
+   for(let k=0;k<3;k++){const t=(k+1)/3,r=h*.32*t;stamp(leafGeo,environment.materials.leaves[j%3],x+Math.cos(a)*r,h*(.97-.16*t*t),z+Math.sin(a)*r,h*.15,h*.022,h*.07,-a,0,Math.sin(a)*.1);}}
+ }else if(STYLE.cypress&&variant%3===0){cylinder(x,h*.3,z,h*.025,h*.6,environment.materials.trunk);sphere(x,h*.6,z,h*.16,h*.55,h*.16,environment.materials.leaves[2]);}
+ else environment.tree(x,z,h,variant,place,false,compact);
+}
 function plaza(x,z,w,d){box(x,1.1,z,w,2,d,'#d9d3b9');box(x,2.2,z,w-8,.2,d-8,'#e9dec5');for(let j=-2;j<=2;j++)box(x+j*w/6,2.35,z,.7,.1,d-10,'#c4bda5');}
 function greenDome(x,y,z,r,h){const profile=[];for(let j=0;j<=12;j++){const a=j*Math.PI/24;profile.push(new T.Vector2(Math.cos(a)*r,Math.sin(a)*h));}stamp(new T.LatheGeometry(profile,24),mat(copper,{metalness:.2,roughness:.55}),x,y,z);for(let j=0;j<12;j++){const a=j*TAU/12;let prev=new T.Vector3(x+r*Math.cos(a),y,z+r*Math.sin(a));for(let k=1;k<=6;k++){const b=k*Math.PI/12,p=new T.Vector3(x+r*Math.cos(b)*Math.cos(a),y+h*Math.sin(b),z+r*Math.cos(b)*Math.sin(a));beam(prev,p,.25,'#90b4a0');prev=p;}}cylinder(x,y+h+3,z,r*.12,6,'#d8c8a7');sphere(x,y+h+6,z,r*.15,2.5,r*.15,copper);box(x,y+h+11,z,.5,7,.5,gold);box(x,y+h+12,z,4,.5,.5,gold);}
 // Landmark silhouettes use metre dimensions at the same scale as the street map.
-const landmarkModels=CITY.landmarks.map((l,index)=>{const bridge=['bridge','suspension','rialto','sighs'].includes(l.kind),boost=l.mapped?1:bridge?1:Math.max(l.width,l.depth)<45?1.85:l.height>150?1.08:1.35,vertical=l.mapped?1:bridge?1.8:boost;const a=l.angle||0,wx=(Math.abs(Math.cos(a))*l.width+Math.abs(Math.sin(a))*l.depth)*.18*boost,dz=(Math.abs(Math.sin(a))*l.width+Math.abs(Math.cos(a))*l.depth)*.18*boost;return {...l,index,...geo(l.lon,l.lat),boost,vertical,wx,dz,modelHeight:l.height*.36*vertical,r:Math.hypot(wx,dz),y:l.height*.36*vertical+22};});
+const landmarkModels=CITY.landmarks.map((l,index)=>{const bridge=['bridge','suspension','rialto','sighs'].includes(l.kind),boost=l.mapped||CITY.id==='dubai'?1:bridge?1:Math.max(l.width,l.depth)<45?1.85:l.height>150?1.08:1.35,vertical=l.mapped?1:bridge?1.8:boost;const a=l.angle||0,wx=(Math.abs(Math.cos(a))*l.width+Math.abs(Math.sin(a))*l.depth)*.18*boost,dz=(Math.abs(Math.sin(a))*l.width+Math.abs(Math.cos(a))*l.depth)*.18*boost;return {...l,index,...geo(l.lon,l.lat),boost,vertical,wx,dz,modelHeight:l.height*.36*vertical,r:Math.hypot(wx,dz),y:l.height*.36*vertical+22};});
 const extraPlaces=[],featured=[];
 const coneCache=new Map();
 function cone(x,y,z,r,h,c,n=12){const key=n;let g=coneCache.get(key);if(!g){g=new T.ConeGeometry(1,1,n);coneCache.set(key,g);}stamp(g,mat(c),x,y,z,r,h,r,n===4?Math.PI/4:0);}
 function makeLandmark(l){
+ if(CITY.id==='dubai'&&DubaiLandmarks.build(l,{T,stamp,box,cylinder,beam,texture,environment}))return;
  const w=l.width,d=l.depth,h=l.height,k=l.kind,cream='#e1d2b6',trim='#f3e6cd',dark='#53646a',bronze='#866342',brick='#ab7158',glass='#83bcc8';
  const B=(x,y,z,a,b,c,col=cream)=>box(x,y,z,a,b,c,col),C=(x,y,z,r,hh,col=cream)=>cylinder(x,y,z,r,hh,col);
  const rod=(a,b,r=.7,col=bronze)=>beam(new T.Vector3(...a),new T.Vector3(...b),r,col);
@@ -177,8 +190,14 @@ function makeLandmark(l){
   const shape=new T.Shape();shape.moveTo(-w/2,0);shape.lineTo(-w/2,3);shape.lineTo(0,12);shape.lineTo(w/2,3);shape.lineTo(w/2,0);shape.lineTo(w*.35,0);shape.quadraticCurveTo(0,17,-w*.35,0);shape.closePath();
   const arch=new T.ExtrudeGeometry(shape,{depth:d,bevelEnabled:false,curveSegments:24});stamp(arch,mat('#fff0d2'),0,0,-d/2);
   for(let i=0;i<24;i++){const x=-w*.49+(i+.5)*w*.98/24,y=3+9*(1-Math.abs(x)/(w*.5));B(x,y,0,w/24,1,d,trim);for(const side of [-1,1])B(x,y+1.2,side*d*.48,w/24,.7,.8,cream);}
-  for(const side of [-1,1])for(let j=0;j<6;j++)for(const half of [-1,1]){const x=half*(4+j*3),y=3+9*(1-Math.abs(x)/(w*.5));B(x,y+2.1,side*d*.28,2.9,4.2,d*.24,'#ead1aa');B(x,y+2.2,side*d*.405,1.5,2.6,.12,'#584c42');roof(x,y+4.2,side*d*.28,3.1,1.2,d*.27,'#bd6f45');}
-  for(const z of [-d*.3,d*.3]){for(const x of [-3,3])C(x,15,z,.7,6,trim);roof(0,18,z,9,3,7,trim);}return;
+  for(const side of [-1,1])for(let j=0;j<6;j++)for(const half of [-1,1]){const x=half*(4+j*3),y=3+9*(1-Math.abs(x)/(w*.5));B(x,y+2.1,side*d*.28,2.9,4.2,d*.24,'#ead1aa');B(x,y+2.2,side*d*.405,1.5,2.6,.12,'#584c42');}
+  for(const side of [-1,1])for(const half of [-1,1]){
+   const vertices=[],za=side*d*.28-d*.135,zb=side*d*.28+d*.135,zm=side*d*.28;
+   const point=(x,z,ridge)=>[x,7.3+9*(1-Math.abs(x)/(w*.5))+(ridge?.85:0),z],a=point(half*2,za,0),b=point(half*21,za,0),c=point(half*21,zm,1),e=point(half*2,zm,1),f=point(half*21,zb,0),g=point(half*2,zb,0);
+   for(const tri of [[a,b,c],[a,c,e],[e,c,f],[e,f,g]])vertices.push(...tri.flat());
+   const rg=new T.BufferGeometry();rg.setAttribute('position',new T.Float32BufferAttribute(vertices,3));rg.setAttribute('uv',new T.Float32BufferAttribute(vertices.flatMap((v,i)=>i%3===0?[v/4,vertices[i+2]/4]:[]),2));rg.computeVertexNormals();stamp(rg,mat('#ac8065',{side:T.DoubleSide}),0,0,0);
+  }
+  for(const z of [-d*.3,d*.3]){for(const x of [-3,3])C(x,15,z,.7,6,trim);roof(0,18,z,9,1.4,7,trim);}return;
  }
 
  if(k==='eiffel'){
@@ -298,16 +317,12 @@ for(const l of landmarkModels){
 
 // Chunked merged geometry keeps tens of thousands of real buildings affordable.
 const chunks=new Map();
-const wallMat=new T.MeshStandardMaterial({map:facades[3].map,vertexColors:true,roughness:.9,side:T.DoubleSide});
-const roofMat=new T.MeshStandardMaterial({vertexColors:true,roughness:.92,side:T.DoubleSide});
-const groundMat=new T.MeshStandardMaterial({vertexColors:true,roughness:1,side:T.DoubleSide});
-const facadeTints=['#fff2df','#f1ddc6','#d7d8d2','#e9c4ae','#cad8d5','#eee6d7','#d6c2b5','#cbd4dd'].map(c=>new T.Color(c));
-const roofPalettes={limestone:['#74808a','#7a8288','#92918b','#797e83','#64808b'],brick:['#6c7375','#866354','#777b7a','#a27864','#717574'],terracotta:['#ac7256','#bc8666','#a46b51','#c38b6a','#8d7365'],sandstone:['#ae795e','#b58d71','#98816a','#b58162','#8f8175'],dutch:['#6a655f','#97634e','#826655','#aa7358','#696c68'],copper:['#8b705a','#a77c61','#758c7e','#b28669','#687f77'],nordic:['#807264','#b8875c','#676d6b','#987454','#668a7b'],stone:['#697273','#7d807b','#706d65','#7e766a','#677475'],venetian:['#b47758','#c08a65','#a16b52','#c99b77','#a4785e'],marble:['#bab6a9','#b4b6b0','#c9c5b6','#adad9f','#b8ae99']};
-const roofTints=(roofPalettes[CITY.theme]||roofPalettes.limestone).map(c=>new T.Color(c));
-if(isRome||isVenice){const palette=isRome?['#e4bc7c','#f2d19a','#ce9d70','#e8c397','#dca574','#f2dab1','#c9906b','#d8b48a']:['#fff2d9','#eda28d','#f8dd9a','#fff4e3','#d8886c','#fff8e8','#e7ae99','#f6dfbe'];palette.forEach((c,i)=>facadeTints[i].set(c));}
-const cityTint=new T.Color(({'garden-city':'#e8efdb',brick:'#e1cfbe',dutch:'#d8c2ad',terracotta:'#f4d4ad',venetian:'#f0c69f',stone:'#c8c6b7',marble:'#fff9ea',nordic:'#eed7ae'})[CITY.theme]||'#fff4e4');facadeTints.forEach(c=>c.multiply(cityTint));
-function batchFor(kind,x,z){const key=kind+':'+Math.floor(x/320)+':'+Math.floor(z/320);let b=chunks.get(key);if(!b){b={kind,x,z,p:[],uv:[],c:[]};chunks.set(key,b);}return b;}
-function vertex(b,x,y,z,u,v,c){b.p.push(x,y,z);b.uv.push(u,v);b.c.push(c.r,c.g,c.b);}
+const wallMat=aerial.walls;
+const roofMat=aerial.roofs;
+const groundMat=new T.MeshStandardMaterial({map:environment.grain,vertexColors:true,roughness:1,side:T.DoubleSide});
+const roofTints=STYLE.roofs.map(c=>new T.Color(c));
+function batchFor(kind,x,z){const key=kind+':'+Math.floor(x/320)+':'+Math.floor(z/320);let b=chunks.get(key);if(!b){b={kind,x,z,p:[],uv:[],c:[],n:[],style:[],elevation:[]};chunks.set(key,b);}return b;}
+function vertex(b,x,y,z,u,v,c){b.p.push(x,y,z);b.uv.push(u,v);b.c.push(c.r,c.g,c.b);if(b.kind==='roof')b.n.push(0,1,0);}
 function polygon(f,y,color,kind='ground'){
  const p=f.p,holes=f.holes||[];if(p.length<3)return;
  const contours=p.map(v=>new T.Vector2(...v)),holeVec=holes.map(h=>h.map(v=>new T.Vector2(...v))),all=[...p,...holes.flat()],tris=T.ShapeUtils.triangulateShape(contours,holeVec),b=batchFor(kind,p[0][0],p[0][1]),c=typeof color==='string'?new T.Color(color):color;
@@ -327,16 +342,14 @@ for(const f of buildings){
  if(++builtCount%256===0)await loadingWork(16+20*builtCount/buildings.length,'Building '+CITY.name+'’s neighborhoods…');
  if(landmarkModels.some(l=>!l.mapped&&Math.abs(f.x-l.x)<f.w+l.wx+5&&Math.abs(f.z-l.z)<f.d+l.dz+5))continue;
  const adjacent=landmarkModels.find(l=>!l.mapped&&Math.abs(f.x-l.x)<f.w+l.wx+28&&Math.abs(f.z-l.z)<f.d+l.dz+28);
- const height=Math.min(f.h,isVenice?12:isRome?17:160,adjacent?Math.max(5,adjacent.modelHeight*.55):160),cat=f.cat,base=facadeTints[f.c],color=cat==='hospital'?new T.Color('#d2e6e2'):cat==='mall'?new T.Color('#dbb3a5'):base;
- const b=batchFor('wall',f.x,f.z);
+ const height=Math.min(f.h,isVenice?12:isRome?17:160,adjacent?Math.max(5,adjacent.modelHeight*.55):160),cat=f.cat,base=new T.Color('#ffffff'),color=cat==='hospital'?new T.Color('#e0e9e3'):base;
+ const b=batchFor('wall',f.x,f.z),family=(height>28? (f.c%2?4:7):f.c)+(Math.abs(Math.floor(f.x*3+f.z))%2)*8;
  for(const ring of [f.p,...(f.holes||[])])for(let j=0;j<ring.length;j++){
-  const a=ring[j],d=ring[(j+1)%ring.length],len=Math.hypot(d[0]-a[0],d[1]-a[1]),u=Math.max(.25,len/18),v=Math.max(.25,height/11);
-  for(const [x,y,z,uu,vv] of [[a[0],.25,a[1],0,0],[d[0],.25,d[1],u,0],[d[0],height,d[1],u,v],[a[0],.25,a[1],0,0],[d[0],height,d[1],u,v],[a[0],height,a[1],0,v]])vertex(b,x,y,z,uu,vv,color);
+  const a=ring[j],d=ring[(j+1)%ring.length],len=Math.hypot(d[0]-a[0],d[1]-a[1]),u=Math.max(.25,len/6.4),v=Math.max(.25,height/7.2);
+  for(const [x,y,z,uu,vv] of [[a[0],.25,a[1],0,0],[d[0],.25,d[1],u,0],[d[0],height,d[1],u,v],[a[0],.25,a[1],0,0],[d[0],height,d[1],u,v],[a[0],height,a[1],0,v]]){vertex(b,x,y,z,uu,vv,color);b.style.push(family);b.elevation.push(y/height);}
  }
- let roofRise=0;
- if((isRome||isVenice)&&!f.holes?.length&&f.p.length<=10&&f.w<24&&f.d<24&&f.w>1.4&&f.d>1.4){roofRise=Math.min(3.4,Math.min(f.w,f.d)*.42);const roofBatch=batchFor('roof',f.x,f.z),col=roofTints[f.c%5];for(let j=0;j<f.p.length;j++){const a=f.p[j],b=f.p[(j+1)%f.p.length];for(const [x,y,z] of [[a[0],height,a[1]],[f.x,height+roofRise,f.z],[b[0],height,b[1]]])vertex(roofBatch,x,y,z,x/8,z/8,col);}}
- else polygon(f,height,roofTints[f.c%5],'roof');
- obstacles.push({x:f.x,z:f.z,w:f.w+1,d:f.d+1,h:height+roofRise+2});
+ const raisedRoof=aerial.roof({...f,h:height},batchFor('roof',f.x,f.z),vertex,box,contains);if(!raisedRoof)polygon(f,height,roofTints[f.c%5],'roof');
+ obstacles.push({x:f.x,z:f.z,w:f.w+1,d:f.d+1,h:height+(raisedRoof?4.3:2)});
 }
 facades[3].map.wrapS=facades[3].map.wrapT=T.RepeatWrapping;
 const waterPositions=[],waterIndices=[];
@@ -344,9 +357,8 @@ function contains(p,ring){let inside=false;for(let i=0,j=ring.length-1;i<ring.le
 // Keep vegetation off streets and the open former airfield.
 await loadingStage(37,'Laying out streets and parks…');
 let featureCount=0;
-const streetCells=new Map();for(const f of CITY_MAP.features){if(++featureCount%512===0)await loadingWork(38,'Laying out streets and parks…');if(!['road','runway'].includes(f.k)||f.w<3)continue;for(let i=1;i<f.p.length;i++){const a=f.p[i-1],b=f.p[i],r=f.w/2+2,seg={a,b,r};for(let x=Math.floor((Math.min(a[0],b[0])-r)/40);x<=Math.floor((Math.max(a[0],b[0])+r)/40);x++)for(let z=Math.floor((Math.min(a[1],b[1])-r)/40);z<=Math.floor((Math.max(a[1],b[1])+r)/40);z++){const key=x+':'+z;if(!streetCells.has(key))streetCells.set(key,[]);streetCells.get(key).push(seg);}}}
-function onStreet(p){return (streetCells.get(Math.floor(p[0]/40)+':'+Math.floor(p[1]/40))||[]).some(({a,b,r})=>{const dx=b[0]-a[0],dz=b[1]-a[1],u=clamp(((p[0]-a[0])*dx+(p[1]-a[1])*dz)/(dx*dx+dz*dz||1),0,1);return Math.hypot(p[0]-a[0]-u*dx,p[1]-a[1]-u*dz)<r;});}
-let treeCount=0;const treeCandidates=[];const buildingCells=new Map();for(const f of buildings){for(let x=Math.floor((f.x-f.w)/40);x<=Math.floor((f.x+f.w)/40);x++)for(let z=Math.floor((f.z-f.d)/40);z<=Math.floor((f.z+f.d)/40);z++){const key=x+':'+z;if(!buildingCells.has(key))buildingCells.set(key,[]);buildingCells.get(key).push(f);}}
+const excludePlanting=(x,z)=>landmarkModels.some(l=>!l.mapped&&Math.abs(x-l.x)<l.wx+7&&Math.abs(z-l.z)<l.dz+7);
+const planting=CityPlanting.plan({features:CITY_MAP.features,buildings,cityId:CITY.id,focuses:landmarkModels,limit:STYLE.desert?5000:12000,avenueLimit:isVenice?100:700,exclude:excludePlanting});
 featureCount=0;
 for(const f of CITY_MAP.features){
  if(++featureCount%256===0)await loadingWork(40+14*featureCount/CITY_MAP.features.length,'Laying out streets and parks…');
@@ -354,26 +366,28 @@ for(const f of CITY_MAP.features){
   const p=f.p,holes=f.holes||[],all=[...p,...holes.flat()],tris=T.ShapeUtils.triangulateShape(p.map(v=>new T.Vector2(...v)),holes.map(h=>h.map(v=>new T.Vector2(...v)))),offset=waterPositions.length/3;
   for(const p of all)waterPositions.push(p[0],-p[1],0);for(const t of tris)waterIndices.push(...t.map(i=>offset+i));
  }else if(f.k==='park'){
-  polygon(f,.04,f.pitch?'#80a483':'#95ad79');
-  if(!f.pitch&&f.trees){const xs=f.p.map(p=>p[0]),zs=f.p.map(p=>p[1]),minx=Math.min(...xs),maxx=Math.max(...xs),minz=Math.min(...zs),maxz=Math.max(...zs);let attempts=0;
-   for(let x=minx+5;x<maxx&&attempts<1800;x+=9)for(let z=minz+5;z<maxz&&attempts++<1800;z+=9){const p=[x+rnd()*5,z+rnd()*5];if(onStreet(p)||rnd()>.55||!contains(p,f.p)||(f.holes||[]).some(h=>contains(p,h)))continue;if(landmarkModels.some(l=>!l.mapped&&Math.abs(p[0]-l.x)<l.wx+7&&Math.abs(p[1]-l.z)<l.dz+7))continue;if((buildingCells.get(Math.floor(p[0]/40)+':'+Math.floor(p[1]/40))||[]).some(f=>Math.abs(p[0]-f.x)<f.w+2&&Math.abs(p[1]-f.z)<f.d+2))continue;treeCandidates.push({p,rank:rnd()});}
-  }
+  polygon(f,.04,f.pitch?'#889b7b':STYLE.park);
  }else if(['road','rail','runway'].includes(f.k)){
-  const y=f.bridge?2.3:f.k==='runway'?.28:f.k==='rail'?.20:f.w<2?.10:.16,col=f.k==='rail'?'#777a76':f.k==='runway'?'#67787d':f.w<2?'#d9cfb7':'#92968f';
-  for(let i=1;i<f.p.length;i++){const a=f.p[i-1],b=f.p[i];if(landmarkModels.some(l=>{if(!['bridge','suspension','rialto','sighs'].includes(l.kind))return false;const dx=(a[0]+b[0])/2-l.x,dz=(a[1]+b[1])/2-l.z,c=Math.cos(l.angle||0),sn=Math.sin(l.angle||0);return Math.abs(c*dx-sn*dz)<l.width*.18&&Math.abs(sn*dx+c*dz)<l.depth*.18+1;}))continue;if(f.w>=3&&f.k==='road')strip(a,b,f.w+1.8,y-.03,'#ded9c9');strip(a,b,f.w,y,col);if(f.k==='runway')strip(a,b,.4,y+.02,'#eee8d7');}
+  const y=f.bridge?2.3:f.k==='runway'?.28:f.k==='rail'?.20:f.w<2?.10:.16,col=f.k==='rail'?'#777a76':f.k==='runway'?'#67787d':f.w<2?'#cdd2d4':'#808683';
+  for(let i=1;i<f.p.length;i++){const a=f.p[i-1],b=f.p[i];if(landmarkModels.some(l=>{if(!['bridge','suspension','rialto','sighs'].includes(l.kind))return false;const dx=(a[0]+b[0])/2-l.x,dz=(a[1]+b[1])/2-l.z,c=Math.cos(l.angle||0),sn=Math.sin(l.angle||0);return Math.abs(c*dx-sn*dz)<l.width*.18&&Math.abs(sn*dx+c*dz)<l.depth*.18+1;}))continue;if(f.w>=3&&f.k==='road')strip(a,b,f.w+1.8,y-.03,'#d9dddf');strip(a,b,f.w,y,col);if(f.k==='runway')strip(a,b,.4,y+.02,'#eee8d7');}
  }
 }
-treeCandidates.sort((a,b)=>a.rank-b.rank);for(const {p} of treeCandidates.slice(0,2200))tree(p[0],p[1],4+rnd()*4,treeCount++%5);buildingCells.clear();streetCells.clear();treeCandidates.length=0;
+for(const p of planting.trees)tree(p.x,p.z,p.h,p.variant,true);
+const treeCount=planting.trees.length+planting.avenues.length;
+const streetscape=CityStreetscape.build({T,environment,features:CITY_MAP.features,planting,tree,box,stamp,strip,cityId:CITY.id,focuses:landmarkModels,exclude:excludePlanting});
+const transit=CityTransit.build({T,scene,environment,features:CITY_MAP.features,landmarks:landmarkModels,cityId:CITY.id});
+const streetDetails=CityStreets.build({T,scene,environment,cityId:CITY.id,waterLevel:WATER_LEVEL,features:CITY_MAP.features,box,buildings,landmarks:[TITLE,...landmarkModels],exclude:(x,z)=>landmarkModels.some(l=>!l.mapped&&Math.abs(x-l.x)<l.wx+1&&Math.abs(z-l.z)<l.dz+1)});
+const waterfront=CityWaterfront.build({T,scene,environment,features:CITY_MAP.features,obstacles,waterLevel:WATER_LEVEL,exclusions:landmarkModels.filter(l=>['bridge','suspension','rialto','sighs'].includes(l.kind))});
 await loadingStage(55,'Preparing city scenery…');
 let chunkCount=0;const totalChunks=chunks.size;
 for(const b of chunks.values()){
  if(++chunkCount%12===0)await loadingWork(55+8*chunkCount/totalChunks,'Preparing city scenery…');
- const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(b.p,3));g.setAttribute('uv',new T.Float32BufferAttribute(b.uv,2));g.setAttribute('color',new T.Float32BufferAttribute(b.c,3));g.computeVertexNormals();g.computeBoundingSphere();
+ const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(b.p,3));g.setAttribute('uv',new T.Float32BufferAttribute(b.uv,2));g.setAttribute('color',new T.Float32BufferAttribute(b.c,3));if(b.kind==='wall'){g.setAttribute('facadeStyle',new T.Float32BufferAttribute(b.style,1));g.setAttribute('elevation',new T.Float32BufferAttribute(b.elevation,1));}if(b.kind==='roof')g.setAttribute('normal',new T.Float32BufferAttribute(b.n,3));else g.computeVertexNormals();g.computeBoundingSphere();
  const m=new T.Mesh(g,b.kind==='wall'?wallMat:b.kind==='roof'?roofMat:groundMat);m.castShadow=b.kind!=='ground';m.receiveShadow=true;scene.add(m);cityChunks.push(m);
 }chunks.clear();
 const wg=new T.BufferGeometry();wg.setAttribute('position',new T.Float32BufferAttribute(waterPositions,3));wg.setIndex(waterIndices);wg.computeVertexNormals();
-const normals=(()=>{const n=128,data=new Uint8Array(n*n*4);for(let y=0;y<n;y++)for(let x=0;x<n;x++){const i=(y*n+x)*4,a=x/n*TAU,b=y/n*TAU;data[i]=128+Math.sin(a*3+b*2)*22+Math.sin(a*7-b*5)*11+Math.cos(a*11+b*3)*7;data[i+1]=128+Math.cos(a*3+b*2)*18+Math.cos(a*7-b*5)*13+Math.sin(a*5+b*9)*7;data[i+2]=245;data[i+3]=255;}const t=new T.DataTexture(data,n,n);t.wrapS=t.wrapT=T.RepeatWrapping;t.magFilter=T.LinearFilter;t.minFilter=T.LinearMipmapLinearFilter;t.generateMipmaps=true;t.needsUpdate=true;return t;})();
-const water=new Water(wg,{textureWidth:512,textureHeight:512,waterNormals:normals,sunDirection:new T.Vector3(-.6,.75,.25).normalize(),sunColor:0xfff3d4,waterColor:isVenice?0x159f9a:isRome?0x557e69:0x287f89,distortionScale:.48,fog:true});water.rotation.x=-Math.PI/2;water.position.y=.05;water.material.side=T.DoubleSide;water.material.uniforms.size.value=3.4;scene.add(water);
+const normals=environment.normals();
+const water=new Water(wg,{textureWidth:512,textureHeight:512,waterNormals:normals,sunDirection:daylight.direction,sunColor:daylight.sunColor,waterColor:STYLE.water,distortionScale:2.1,fog:true});water.rotation.x=-Math.PI/2;water.position.y=WATER_LEVEL;water.material.side=T.DoubleSide;environment.waterMaterial(water);scene.add(water);
 const reflect=water.onBeforeRender;let renderCount=0;water.onBeforeRender=function(...args){if(renderCount%(quality==='High'?1:quality==='Performance'?4:2)===0||renderCount<3)reflect.apply(this,args);};
 
 // Labels identify mapped civic places without replacing their actual footprints.
@@ -395,18 +409,17 @@ function nearbyObstacles(x,z){return obstacleCells.get(Math.floor(x/50)+':'+Math
 // The river is drawn from map polygons; boat paths follow a short central Spree reach.
 function riverPoint(){return {x:0,z:0,heading:0};}
 function riverX(){return TITLE.x;}
-for(let i=0;i<30;i++){const x=-2300+rnd()*4400,z=1700-rnd()*2900,y=260+rnd()*90;for(let j=0;j<3;j++)stamp(leafGeo,mat('#fffaf0',{emissive:'#b2d1e1',emissiveIntensity:.22}),x+j*24,y+(j===1?8:0),z,30,8+rnd()*8,17,rnd(),0,0,false);}
 
 // Small local details share the existing instance batches; no extra render pass.
 let localProps=0;
 if(isVenice){
  const waterAreas=CITY_MAP.features.filter(f=>f.k==='water');const onWater=(x,z)=>waterAreas.some(f=>contains([x,z],f.p)&&!(f.holes||[]).some(h=>contains([x,z],h)));
  const sites=[];for(const f of waterAreas){for(let i=0;i<f.p.length;i+=Math.max(1,Math.floor(f.p.length/100))){const p=f.p[i];if(Math.hypot(...p)>600)continue;for(const [dx,dz] of [[4,0],[-4,0],[0,4],[0,-4]]){const x=p[0]+dx,z=p[1]+dz;if(onWater(x,z)&&onWater(x+1,z+1)&&onWater(x-1,z-1)&&!sites.some(s=>Math.hypot(s.x-x,s.z-z)<22)){sites.push({x,z});break;}}if(sites.length>=34)break;}if(sites.length>=34)break;}
- for(const [i,p] of sites.entries()){const a=i*2.399;stamp(sphereGeo,mat('#223c3c'),p.x,.65,p.z,.8,.35,3.4,a);box(p.x,.9,p.z,1,.3,1.6,'#a05c42',a,false);const dx=Math.sin(a)*3.1,dz=Math.cos(a)*3.1;cylinder(p.x+dx,.95,p.z+dz,.09,.8,'#e3ce9f');localProps++;}
+ for(const [i,p] of sites.entries()){const a=i*2.399;stamp(sphereGeo,mat('#223c3c'),p.x,WATER_LEVEL+.65,p.z,.8,.35,3.4,a);box(p.x,WATER_LEVEL+.9,p.z,1,.3,1.6,'#a05c42',a,false);const dx=Math.sin(a)*3.1,dz=Math.cos(a)*3.1;cylinder(p.x+dx,WATER_LEVEL+.95,p.z+dz,.09,.8,'#e3ce9f');localProps++;}
 }
 
 // One draw call per geometry/material, including all facade details and tree canopies.
-for(const b of batches.values()){const mesh=new T.InstancedMesh(b.geo,b.material,b.matrices.length);b.matrices.forEach((m,i)=>mesh.setMatrixAt(i,m));mesh.castShadow=b.shadow;mesh.receiveShadow=true;mesh.computeBoundingSphere();scene.add(mesh);}batches.clear();
+for(const b of batches.values()){const mesh=new T.InstancedMesh(b.geo,b.material,b.matrices.length);b.matrices.forEach((m,i)=>mesh.setMatrixAt(i,m));mesh.castShadow=b.shadow;mesh.receiveShadow=true;mesh.computeBoundingSphere();scene.add(mesh);backgroundScenery.push(mesh);}batches.clear();
 function mesh(geo,m,parent=scene,x=0,y=0,z=0){const o=new T.Mesh(geo,m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o;}
 function dbox(parent,x,y,z,w,h,d,m){const o=mesh(cube,m,parent,x,y,z);o.scale.set(w,h,d);return o;}
 const paint=new T.MeshPhysicalMaterial({color:'#c93120',roughness:.29,metalness:.12,clearcoat:.65}),cream=new T.MeshPhysicalMaterial({color:'#fff0cf',roughness:.38,clearcoat:.45}),rubber=mat('#273c43',{roughness:.75}),steel=mat('#82979d',{metalness:.65,roughness:.35});
@@ -437,7 +450,7 @@ for(const l of landmarkModels){
  }
  hoopData.push(best);
 }
-Object.assign(TAKEOFF,{x:hoopData[0].x,z:hoopData[0].z+140,y:hoopData[0].y,heading:0});
+Object.assign(TAKEOFF,isVenice?{...TITLE,y:hoopData[0].y,heading:Math.atan2(hoopData[0].x-TITLE.x,TITLE.z-hoopData[0].z)}:{x:hoopData[0].x,z:hoopData[0].z+140,y:hoopData[0].y,heading:0});
 Object.assign(TITLE,TAKEOFF);
 const hoops=hoopData.map((p,i)=>{const m=new T.MeshStandardMaterial({color:'#ffc739',metalness:.55,roughness:.25,emissive:'#e5a620',emissiveIntensity:.08,transparent:true});const ring=mesh(new T.TorusGeometry(15,1.2,8,48),m,scene,p.x,p.y,p.z);const prev=i?hoopData[i-1]:TAKEOFF;ring.rotation.y=-Math.atan2(p.x-prev.x,prev.z-p.z);const inside=mesh(new T.TorusGeometry(13.8,.15,4,48),mat('#fff5c0',{emissive:'#fff0a0',emissiveIntensity:.5}),ring);return ring;});
 // A broad flight ribbon with large, outlined chevrons; all geometry is reused.
@@ -448,18 +461,49 @@ const ribbon=new T.Mesh(ribbonGeo,new T.MeshBasicMaterial({color:'#ffd34d',trans
 const arrowShape=new T.Shape();arrowShape.moveTo(0,3.8);arrowShape.lineTo(3.8,-.8);arrowShape.lineTo(2.1,-2.2);arrowShape.lineTo(0,.45);arrowShape.lineTo(-2.1,-2.2);arrowShape.lineTo(-3.8,-.8);arrowShape.closePath();
 const arrowGeo=new T.ShapeGeometry(arrowShape),routeArrows=new T.InstancedMesh(arrowGeo,new T.MeshBasicMaterial({color:'#ffe26b',side:T.DoubleSide,depthTest:false}),12),routeOutlines=new T.InstancedMesh(arrowGeo,new T.MeshBasicMaterial({color:'#284d64',side:T.DoubleSide,depthTest:false}),12);
 routeArrows.renderOrder=12;routeOutlines.renderOrder=11;routeArrows.frustumCulled=routeOutlines.frustumCulled=false;scene.add(routeArrows,routeOutlines);
-function guidePath(){const visible=S.mode==='flight'&&!S.free&&S.stage==='air';ribbon.visible=routeArrows.visible=routeOutlines.visible=visible;if(!visible)return;const p=S.stage==='ground'?{x:TAKEOFF.x+160,y:14,z:TAKEOFF.z}:hoopData[S.next];if(!p){ribbon.visible=routeArrows.visible=routeOutlines.visible=false;return;}const from=new T.Vector3(S.x,S.y,S.z),end=new T.Vector3(p.x,p.y,p.z),len=from.distanceTo(end),forward=new T.Vector3(Math.sin(S.heading),0,-Math.cos(S.heading)),control=from.clone().addScaledVector(forward,Math.min(60,len*.3));control.y=lerp(S.y,p.y,.45);const curve=new T.QuadraticBezierCurve3(from,control,end),begin=Math.min(.7,30/Math.max(1,len));
-for(let i=0;i<40;i++){const t=lerp(begin,1,i/39),pos=curve.getPoint(t),tangent=curve.getTangent(t),side=new T.Vector3().crossVectors(tangent,new T.Vector3(0,1,0)).normalize().multiplyScalar(3.5);ribbonPositions.set([pos.x-side.x,pos.y-side.y,pos.z-side.z,pos.x+side.x,pos.y+side.y,pos.z+side.z],i*6);}ribbonGeo.attributes.position.needsUpdate=true;
+const routeCurve=new T.QuadraticBezierCurve3(),routeForward=new T.Vector3(),routePos=new T.Vector3(),routeTangent=new T.Vector3(),routeSide=new T.Vector3(),routeUp=new T.Vector3(0,1,0),routeScreen=new T.Vector3(),routeAhead=new T.Vector3();
+function guidePath(){const visible=S.mode==='flight'&&!S.free&&S.stage==='air';ribbon.visible=routeArrows.visible=routeOutlines.visible=visible;if(!visible)return;const p=S.stage==='ground'?{x:TAKEOFF.x+160,y:14,z:TAKEOFF.z}:hoopData[S.next];if(!p){ribbon.visible=routeArrows.visible=routeOutlines.visible=false;return;}const from=routeCurve.v0.copy(aircraft.position),end=routeCurve.v2.set(p.x,p.y,p.z),len=from.distanceTo(end),forward=routeForward.set(Math.sin(S.heading),0,-Math.cos(S.heading)),control=routeCurve.v1.copy(from).addScaledVector(forward,Math.min(60,len*.3));control.y=lerp(from.y,p.y,.45);const curve=routeCurve,begin=Math.min(.7,30/Math.max(1,len));
+for(let i=0;i<40;i++){const t=lerp(begin,1,i/39),pos=curve.getPoint(t,routePos),tangent=curve.getTangent(t,routeTangent),side=routeSide.crossVectors(tangent,routeUp).normalize().multiplyScalar(3.5);ribbonPositions.set([pos.x-side.x,pos.y-side.y,pos.z-side.z,pos.x+side.x,pos.y+side.y,pos.z+side.z],i*6);}ribbonGeo.attributes.position.needsUpdate=true;
 const count=len<38?0:clamp(Math.round(len/28),3,12);routeArrows.count=routeOutlines.count=count;
-for(let i=0;i<count;i++){const t=lerp(begin,.94,(i+.2)/count),pos=curve.getPoint(t),screen=pos.clone().project(camera),ahead=curve.getPoint(Math.min(1,t+.035)).project(camera),dx=ahead.x-screen.x,dy=ahead.y-screen.y,rot=Math.hypot(dx,dy)>.003?Math.atan2(-dx*camera.aspect,dy):0;dummy.position.copy(pos);dummy.quaternion.copy(camera.quaternion);dummy.rotateZ(rot);const size=.8+Math.sin(S.time*5-i*.7)*.12;dummy.scale.setScalar(size);dummy.updateMatrix();routeArrows.setMatrixAt(i,dummy.matrix);dummy.scale.setScalar(size*1.28);dummy.updateMatrix();routeOutlines.setMatrixAt(i,dummy.matrix);}routeArrows.instanceMatrix.needsUpdate=routeOutlines.instanceMatrix.needsUpdate=true;}
+for(let i=0;i<count;i++){const t=lerp(begin,.94,(i+.2)/count),pos=curve.getPoint(t,routePos),screen=routeScreen.copy(pos).project(camera),ahead=curve.getPoint(Math.min(1,t+.035),routeAhead).project(camera),dx=ahead.x-screen.x,dy=ahead.y-screen.y,rot=Math.hypot(dx,dy)>.003?Math.atan2(-dx*camera.aspect,dy):0;dummy.position.copy(pos);dummy.quaternion.copy(camera.quaternion);dummy.rotateZ(rot);const size=.8+Math.sin(S.time*5-i*.7)*.12;dummy.scale.setScalar(size);dummy.updateMatrix();routeArrows.setMatrixAt(i,dummy.matrix);dummy.scale.setScalar(size*1.28);dummy.updateMatrix();routeOutlines.setMatrixAt(i,dummy.matrix);}routeArrows.instanceMatrix.needsUpdate=routeOutlines.instanceMatrix.needsUpdate=true;}
 const glintsGeo=new T.BufferGeometry(),glintsData=[];for(let i=0;i<0;i++){const p=riverPoint(rnd());glintsData.push(p.x+(rnd()-.5)*3,.15,p.z);}glintsGeo.setAttribute('position',new T.Float32BufferAttribute(glintsData,3));const glints=new T.Points(glintsGeo,new T.ShaderMaterial({transparent:true,depthWrite:false,uniforms:{time:{value:0}},vertexShader:'uniform float time;varying float a;void main(){vec4 p=modelViewMatrix*vec4(position,1.);a=smoothstep(.65,1.,sin(time*1.7+position.x*13.+position.z*7.));gl_PointSize=clamp(220./-p.z,1.,3.5);gl_Position=projectionMatrix*p;}',fragmentShader:'varying float a;void main(){vec2 p=abs(gl_PointCoord-.5);gl_FragColor=vec4(1.,.98,.85,a*(1.-smoothstep(.15,.5,p.x+p.y))*.9);}'}));scene.add(glints);
 const fleckGeo=new T.BufferGeometry(),fleckPositions=new Float32Array(180*3),fleckColors=new Float32Array(180*3),fleckVelocity=new Float32Array(180*3);for(let i=0;i<180;i++){const c=new T.Color(['#ffce4b','#f77b68','#ffffff','#7adac3'][i%4]);fleckColors.set([c.r,c.g,c.b],i*3);}fleckGeo.setAttribute('position',new T.BufferAttribute(fleckPositions,3));fleckGeo.setAttribute('color',new T.BufferAttribute(fleckColors,3));const confetti=new T.Points(fleckGeo,new T.PointsMaterial({size:1.1,vertexColors:true,transparent:true,opacity:1,depthWrite:false}));confetti.frustumCulled=false;confetti.visible=false;scene.add(confetti);
 let db;try{db=JSON.parse(ArcadeProfile.storage.getItem('world-flight.'+CITY.id+'.v1'));}catch{}
-if(!db?.profiles?.length)db={tourVersion:6,current:0,profiles:[{name:ArcadeProfile.name,best:0,resume:null,music:true}]};
+const tourVersion=CITY.routeVersion||6;
+if(!db?.profiles?.length)db={tourVersion,current:0,profiles:[{name:ArcadeProfile.name,best:0,resume:null,music:true}]};
 db.current=clamp(db.current||0,0,db.profiles.length-1);
-if(db.tourVersion!==6){for(const p of db.profiles){p.previousTours={...p.previousTours,[db.tourVersion||'original']:{best:p.best||0,resume:p.resume?{...p.resume}:null}};if(db.tourVersion!==5)p.best=0;if(p.resume)p.resume.next=0;p.routeNotice=true;}db.tourVersion=6;}
+if(db.tourVersion!==tourVersion){for(const p of db.profiles){p.previousTours={...p.previousTours,[db.tourVersion||'original']:{best:p.best||0,resume:p.resume?{...p.resume}:null}};if((db.tourVersion||0)<5)p.best=0;if(p.resume)p.resume.next=0;p.routeNotice=true;}db.tourVersion=tourVersion;}
 let save=db.profiles[db.current];
 const S={mode:'loading',x:TITLE.x,z:TITLE.z,y:TITLE.y,heading:TITLE.heading,speed:0,turn:0,vy:0,bank:0,time:0,stage:'air',next:0,roll:0,fx:0,toast:0,saveT:0,free:false,invincible:0};let held={},touch={},pad={},menuButtons=[],focus=0,backAction=null,acc=0,last=performance.now(),audio=null,musicT=0,musicI=0,engine,engineGain,navReady=true,renderMs=0,renderFrames=0;
+const previousPose={...S},cameraAim=new T.Vector3();let visualY=S.y,renderDt=1/60;
+function flightPose(snap){
+ if(snap){Object.assign(previousPose,S);visualY=S.y;}
+ const alpha=snap?1:clamp(acc*120,0,1),x=lerp(previousPose.x,S.x,alpha),z=lerp(previousPose.z,S.z,alpha),targetY=lerp(previousPose.y,S.y,alpha);
+ if(!snap)visualY+=clamp((targetY-visualY)*(1-Math.exp(-14*renderDt)),-32*renderDt,32*renderDt);
+ return {x,y:visualY,z,heading:previousPose.heading+angle(S.heading-previousPose.heading)*alpha,bank:lerp(previousPose.bank,S.bank,alpha),vy:lerp(previousPose.vy,S.vy,alpha),speed:lerp(previousPose.speed,S.speed,alpha)};
+}
+
+// Anticipate nearby roofs instead of teleporting upward or braking on contact.
+let clearanceWait=0,clearanceRate=0,clearanceVelocity=0;
+function resetClearance(){clearanceWait=0;clearanceRate=0;clearanceVelocity=0;}
+function clearanceClimb(dt){
+ if(S.invincible>0){S.invincible=Math.max(0,S.invincible-dt);resetClearance();return 0;}
+ clearanceWait-=dt;
+ if(clearanceWait<=0){
+  clearanceWait=.1;clearanceRate=0;
+  const goal=!S.free&&hoopData[S.next],distance=goal?Math.hypot(goal.x-S.x,goal.z-S.z):Infinity;
+  const horizon=Math.min(Math.max(60,S.speed*5),distance),steps=Math.max(1,Math.ceil(horizon/12));
+  for(let i=0;i<=steps;i++){
+   const d=horizon*i/steps,t=d/Math.max(14,S.speed),heading=S.heading+S.turn*t*.5,x=S.x+Math.sin(heading)*d,z=S.z-Math.cos(heading)*d;
+   for(const o of nearbyObstacles(x,z))if(Math.abs(x-o.x)<o.w+3&&Math.abs(z-o.z)<o.d+3)clearanceRate=Math.max(clearanceRate,(o.h+6-S.y)/Math.max(.6,t));
+  }
+  clearanceRate=clamp(clearanceRate,0,28);
+ }
+ clearanceVelocity+=clamp(clearanceRate-clearanceVelocity,-35*dt,35*dt);
+ return clearanceVelocity;
+}
+function steeringAxis(value,positive,negative){value=Number(value)||0;return Math.abs(value)>.3?Math.sign(value)*(Math.abs(value)-.3)/.7:(positive?1:0)-(negative?1:0);}
+
 function persist(){try{ArcadeProfile.storage.setItem('world-flight.'+CITY.id+'.v1',JSON.stringify(db));}catch{}}
 function snapshot(){if(['flight','pause'].includes(S.mode))save.resume={x:S.x,y:S.y,z:S.z,heading:S.heading,stage:S.stage,speed:S.speed,next:S.next,free:S.free};persist();}
 function audioUnlock(){try{if(!audio){audio=new(window.AudioContext||window.webkitAudioContext)();engine=audio.createOscillator();engine.type='triangle';engineGain=audio.createGain();engineGain.gain.value=0;engine.connect(engineGain).connect(audio.destination);engine.start();}if(audio.state==='suspended')audio.resume().catch(()=>{});}catch{}}
@@ -481,14 +525,14 @@ function closeLandmark(){inspectLandmark=null;resume();positionCamera(true);}
 spotlight.onclick=()=>openLandmark();
 function updateLandmarkMarkers(){
  const active=featuredLandmark(),nearest=closestLandmark(),inFlight=S.mode==='flight';spotlight.classList.toggle('hidden',!inFlight);
- if(inFlight){const meters=Math.round(Math.hypot(active.x-S.x,active.z-S.z)/.36/10)*10;spotlight.textContent='⌖ '+active.name+' · '+meters+' m  |  Y / L · Look';}
+ if(inFlight){const meters=Math.round(Math.hypot(active.x-S.x,active.z-S.z)/.36/10)*10;const text='⌖ '+active.name+' · '+meters+' m  |  Y / L · Look';if(spotlight.textContent!==text)spotlight.textContent=text;}
  for(const label of cityLabels){const l=label.userData.landmark,dist=label.position.distanceTo(camera.position);label.visible=!inspectLandmark&&S.mode!=='landmark'&&dist<900&&(l===active||l===nearest);const width=clamp(dist*.22,16,130);label.scale.set(width,width*72/512,1);}
  for(const m of landmarkMarkers){const near=Math.hypot(m.landmark.x-S.x,m.landmark.z-S.z)<650;m.halo.visible=inspectLandmark?m.landmark===inspectLandmark:near&&(m.landmark===active||m.landmark===nearest||Math.hypot(m.landmark.x-S.x,m.landmark.z-S.z)<100);m.line.visible=!inspectLandmark&&near&&(m.landmark===active||m.landmark===nearest);}
 }
 
 let leavingCity=false;
 function chooseCity(){if(leavingCity)return;leavingCity=true;snapshot();location.replace('index.html?from='+encodeURIComponent(CITY.id));}
-function title(){S.mode='title';S.x=TITLE.x;S.z=TITLE.z;S.y=TITLE.y;S.heading=TITLE.heading;S.bank=0;S.stage='air';S.next=0;S.speed=0;positionCamera(true);menu('title',`<section class="card intro"><p class="eyebrow">${CITY.name} · The grand tour</p><h1>${isRome?'Ancient wonders.<br>Golden rooftops.':isVenice?'Canals below.<br>Palaces ahead.':'A new city.<br>A new adventure.'}</h1><p>${isRome?'Fly past ancient arenas, domes and sunlit terracotta rooftops.':isVenice?'Follow turquoise canals past stone bridges, palaces and gondolas.':'Explore '+CITY.name+' along its mapped streets and waterways.'} Follow ${hoopData.length} golden hoops.</p>${save.routeNotice?'<p>Nearby sights are now spread through the tour. Your saved plane position is kept; the reordered route starts at stop 1.</p>':''}<button id="play"><span class="key">A</span> ${save.resume?'Continue flying':'Let’s fly'}</button><p class="controls">A / Space — fly · Directions — turn & climb<br>X — barrel roll · Y / L — look at landmark · B / Esc — pause</p></section>`,chooseCity);bind('play',()=>start(!!save.resume));}
+function title(){S.mode='title';S.x=TITLE.x;S.z=TITLE.z;S.y=TITLE.y;S.heading=TITLE.heading;S.bank=0;S.stage='air';S.next=0;S.speed=0;positionCamera(true);menu('title',`<section class="card intro"><p class="eyebrow">${CITY.name} · The grand tour</p><h1>${isRome?'Ancient wonders.<br>Golden rooftops.':isVenice?'Canals below.<br>Palaces ahead.':'A new city.<br>A new adventure.'}</h1><p>${isRome?'Fly past ancient arenas, domes and sunlit terracotta rooftops.':isVenice?'Follow turquoise canals past stone bridges, palaces and gondolas.':'Explore '+CITY.name+' along its mapped streets and waterways.'} Follow ${hoopData.length} golden hoops.</p>${tourVersion>=7?'<p>Start at '+escapeHTML(CITY.landmarks[0].name)+' and finish at '+escapeHTML(CITY.landmarks.at(-1).name)+'.</p>':''}${save.routeNotice?'<p>Your saved position is kept. The revised tour begins at stop 1.</p>':''}<div class="actions vertical"><button id="play"><span class="key">A</span> ${save.resume?'Continue flying':'Let’s fly'}</button>${save.resume&&tourVersion>=7?'<button id="fresh-tour">Start at '+escapeHTML(CITY.landmarks[0].name)+'</button>':''}</div><p class="controls">A / Space — fly · Directions — turn & climb<br>X — barrel roll · Y / L — look at landmark · B / Esc — pause</p></section>`,chooseCity);bind('play',()=>start(!!save.resume));if($('#fresh-tour'))bind('fresh-tour',()=>start(false));}
 function showPause(){if(S.mode==='flight')snapshot();menu('pause',`<section class="card"><p class="eyebrow">${CITY.name} City Flight</p><h2>A little breather</h2><div class="actions vertical"><button id="resume">▶ Keep flying</button><button id="restart">🛫 Start the tour</button><button id="scenic">☀ Scenic flight</button><button id="profiles">👤 Who is flying?</button><button id="music">${save.music?'♫':'🔇'} Music ${save.music?'on':'off'}</button><button id="graphics">Graphics: ${quality}</button><button id="places">⌖ Explore places</button><button id="cities">🌍 Choose a city</button><button id="arcade">↩ Arcade</button></div></section>`,resume);bind('resume',resume);bind('restart',()=>start(false));bind('scenic',()=>start(false,true));bind('profiles',profiles);bind('music',()=>{save.music=!save.music;persist();showPause();focusButton(4);});bind('graphics',()=>{quality=qualityModes[(qualityModes.indexOf(quality)+1)%qualityModes.length];try{ArcadeProfile.storage.setItem('world-flight.graphics',quality);}catch{}resize();showPause();focusButton(5);});bind('places',()=>placesMenu());bind('cities',chooseCity);bind('arcade',()=>{snapshot();location.href='../index.html';});}
 function placesMenu(category=null){
  const spots=category?cityPOIs.filter(p=>p.type===category).sort((a,b)=>Math.hypot(a.x-S.x,a.z-S.z)-Math.hypot(b.x-S.x,b.z-S.z)).slice(0,30):[...featured,...landmarkModels];
@@ -498,37 +542,44 @@ function placesMenu(category=null){
  if(!category)categories.forEach(([id])=>bind('cat-'+id,()=>placesMenu(id)));bind('places-back',category?()=>placesMenu():showPause);
 }
 function profiles(){ArcadeProfile.switchPlayer();}
-function start(restore=false,free=false){if(!startupReady)return;save.routeNotice=false;inspectLandmark=null;const r=restore?save.resume:null;Object.assign(S,{x:r?.x??(free?TITLE.x:TAKEOFF.x),z:r?.z??(free?TITLE.z:TAKEOFF.z),y:r?.y??TAKEOFF.y,heading:r?.heading??(free?TITLE.heading:TAKEOFF.heading),stage:r?.stage??'air',speed:r?.speed??22,next:clamp(r?.next??0,0,hoopData.length-1),free:r?.free??free,turn:0,vy:0,bank:0,roll:0,fx:0,invincible:0,saveT:0});confetti.visible=false;resume();positionCamera(true);snapshot();}
+function start(restore=false,free=false){if(!startupReady)return;resetClearance();save.routeNotice=false;inspectLandmark=null;const r=restore?save.resume:null;Object.assign(S,{x:r?.x??(free?TITLE.x:TAKEOFF.x),z:r?.z??(free?TITLE.z:TAKEOFF.z),y:r?.y??TAKEOFF.y,heading:r?.heading??(free?TITLE.heading:TAKEOFF.heading),stage:r?.stage??'air',speed:r?.speed??22,next:clamp(r?.next??0,0,hoopData.length-1),free:r?.free??free,turn:0,vy:0,bank:0,roll:0,fx:0,invincible:0,saveT:0});confetti.visible=false;resume();positionCamera(true);snapshot();}
 function resume(){S.mode='flight';$('#overlay').innerHTML='';$('#overlay').className='';$('#pause').classList.remove('hidden');$('#hud').classList.remove('hidden');$('#guide').classList.remove('hidden');$('#touch').classList.remove('hidden');held={};touch={};updateHUD();}
 function back(){if(S.mode==='flight')showPause();else backAction?.();}
 function confirm(){if(S.mode!=='flight'&&document.activeElement?.tagName!=='INPUT')menuButtons[focus]?.click();}
 function finish(){save.best=hoopData.length;save.resume=null;persist();burst(true);menu('clear',`<section class="card"><p class="eyebrow">${hoopData.length} golden hoops · ${CITY.name}</p><h2>Wonderful flying,<br>${escapeHTML(save.name)}!</h2><div class="medal">🏅</div><p>You visited every landmark on the ${CITY.name} tour!</p><div class="actions"><button id="again"><span class="key">A</span> Keep exploring</button><button id="runway">🛫 Fly again</button></div></section>`,()=>start(false,true));bind('again',()=>start(false,true));bind('runway',()=>start(false));}
-function updateHUD(){$('#hud').classList.toggle('hidden',S.free);$('#guide').classList.toggle('scenic',S.free);$('#hud').textContent=S.free?'':(hoopData[S.next]?.icon||'🏅')+' '+(hoopData[S.next]?.name||CITY.name+' explored');if(S.stage==='ground'){$('#guide').innerHTML='<span class="key">A</span> ➜ 🛩️ &nbsp; ⬆ 🛫';return;}if(S.free){$('#guide').innerHTML='🕹️ ↔ ↕ &nbsp; <span class="key">A</span> ✈ &nbsp; X ↻';return;}const p=hoopData[S.next];if(!p)return;const a=angle(Math.atan2(p.x-S.x,S.z-p.z)-S.heading),dy=p.y-S.y;const near=Math.hypot(p.x-S.x,p.z-S.z)<70,turn=Math.abs(a)>.22?(Math.abs(a)>2?'↶':a>0?'➜':'⬅'):'◎',vertical=Math.abs(dy)>10?(dy>0?'⬆':'⬇'):'';$('#guide').innerHTML='<span class="direction">'+turn+'</span>'+(vertical?'<span class="direction climb">'+vertical+'</span>':'')+'<span class="next-hoop">◎ <small>'+ (S.next+1)+'/'+hoopData.length+'</small></span><span class="guide-words">'+(Math.abs(a)>2?'Turn around':Math.abs(a)>.22?(a>0?'Turn right':'Turn left'):vertical?(dy>0?'Fly up':'Fly down'):near?'Through the hoop!':'Follow the golden path')+'</span>';}
+let guideMarkup='';function setGuide(markup){if(markup===guideMarkup)return;guideMarkup=markup;$('#guide').innerHTML=markup;}
+function updateHUD(){$('#hud').classList.toggle('hidden',S.free);$('#guide').classList.toggle('scenic',S.free);$('#hud').textContent=S.free?'':(hoopData[S.next]?.icon||'🏅')+' '+(hoopData[S.next]?.name||CITY.name+' explored');if(S.stage==='ground'){setGuide('<span class="key">A</span> ➜ 🛩️ &nbsp; ⬆ 🛫' );return;}if(S.free){setGuide('🕹️ ↔ ↕ &nbsp; <span class="key">A</span> ✈ &nbsp; X ↻' );return;}const p=hoopData[S.next];if(!p)return;const a=angle(Math.atan2(p.x-S.x,S.z-p.z)-S.heading),dy=p.y-S.y;const near=Math.hypot(p.x-S.x,p.z-S.z)<70,turn=Math.abs(a)>.22?(Math.abs(a)>2?'↶':a>0?'➜':'⬅'):'◎',vertical=Math.abs(dy)>10?(dy>0?'⬆':'⬇'):'';setGuide('<span class="direction">'+turn+'</span>'+(vertical?'<span class="direction climb">'+vertical+'</span>':'')+'<span class="next-hoop">◎ <small>'+ (S.next+1)+'/'+hoopData.length+'</small></span><span class="guide-words">'+(Math.abs(a)>2?'Turn around':Math.abs(a)>.22?(a>0?'Turn right':'Turn left'):vertical?(dy>0?'Fly up':'Fly down'):near?'Through the hoop!':'Follow the golden path')+'</span>');}
 
 function angle(a){return Math.atan2(Math.sin(a),Math.cos(a));}
 function doRoll(){if(S.mode==='flight'&&S.stage==='air'&&S.roll<=0){S.roll=1.1;note(440,.25);note(660,.2,.15);}}
-function input(){if(!startupReady)return;pad={};for(const p of GamepadStd.read('world-flight')){if(p.any)audioUnlock();if(p.index!==0)continue;pad=p;if(p.just.B||p.just.start){back();continue;}if(p.just.Y){if(S.mode==='landmark')closeLandmark();else openLandmark();}if(p.just.X)doRoll();if(p.just.A){confirm();continue;}if(S.mode!=='flight'&&document.activeElement?.tagName!=='INPUT'){if(!p.left&&!p.right&&!p.up&&!p.down)navReady=true;if(navReady){const n=GamepadStd.navRepeat(p,'berlin-menu');if(n.left||n.up)focusButton(focus-1);if(n.right||n.down)focusButton(focus+1);}}}}
+function input(){if(!startupReady)return;const p=GamepadStd.readActive('world-flight');pad=p||{};if(!p)return;if(p.any)audioUnlock();if(p.just.B||p.just.start){back();return;}if(p.just.Y){if(S.mode==='landmark')closeLandmark();else openLandmark();}if(p.just.X)doRoll();if(p.just.A){confirm();return;}if(S.mode!=='flight'&&document.activeElement?.tagName!=='INPUT'){if(!p.left&&!p.right&&!p.up&&!p.down)navReady=true;if(navReady){const n=GamepadStd.navRepeat(p,'berlin-menu');if(n.left||n.up)focusButton(focus-1);if(n.right||n.down)focusButton(focus+1);}}}
 addEventListener('keydown',e=>{if(!startupReady)return;if(e.target.tagName==='INPUT')return;if(['Space','Enter','ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Escape','KeyP','KeyX'].includes(e.code))e.preventDefault();audioUnlock();held[e.code]=true;if(e.repeat)return;if(e.code==='Escape'||e.code==='KeyP')back();else if(e.code==='Space'||e.code==='Enter')confirm();else if(e.code==='KeyL'){if(S.mode==='landmark')closeLandmark();else openLandmark();}else if(e.code==='KeyX')doRoll();else if(S.mode!=='flight'){if(e.code==='ArrowLeft'||e.code==='ArrowUp')focusButton(focus-1);if(e.code==='ArrowRight'||e.code==='ArrowDown')focusButton(focus+1);}});addEventListener('keyup',e=>delete held[e.code]);
 $('#pause').onclick=showPause;for(const b of document.querySelectorAll('[data-input]')){b.onpointerdown=e=>{e.preventDefault();audioUnlock();touch[b.dataset.input]=true;if(b.dataset.input==='X')doRoll();b.setPointerCapture(e.pointerId);};for(const event of ['pointerup','pointercancel','lostpointercapture'])b.addEventListener(event,()=>touch[b.dataset.input]=false);}
 addEventListener('pointerdown',e=>{audioUnlock();if(e.pointerType==='touch')document.body.classList.add('touch');});if(matchMedia('(pointer:coarse)').matches)document.body.classList.add('touch');
 function hide(){held={};touch={};if(S.mode==='flight')showPause();}addEventListener('blur',hide);document.addEventListener('visibilitychange',()=>{if(document.hidden)hide();});addEventListener('pagehide',snapshot);addEventListener('arcade-exit',snapshot);
-function update(dt){S.time+=dt;if(S.toast>0&&(S.toast-=dt)<=0)$('#toast').textContent='';if(S.mode==='flight'){
- const gas=held.Space||held.Enter||touch.A||pad.A,right=(held.ArrowRight||touch.right||pad.right?1:0)-(held.ArrowLeft||touch.left||pad.left?1:0),up=(held.ArrowUp||touch.up||pad.up?1:0)-(held.ArrowDown||touch.down||pad.down?1:0),ground=S.stage==='ground';S.speed=lerp(S.speed,gas?40:ground?0:14,1-Math.exp(-1.9*dt));S.turn=lerp(S.turn,right*(ground?.24:.96),1-Math.exp(-5*dt));S.heading=angle(S.heading+S.turn*dt);S.bank=lerp(S.bank,ground?0:-S.turn*.46,1-Math.exp(-5*dt));S.vy=lerp(S.vy,up*21,1-Math.exp(-5*dt));S.x+=Math.sin(S.heading)*S.speed*dt;S.z-=Math.cos(S.heading)*S.speed*dt;
+function update(dt){Object.assign(previousPose,S);S.time+=dt;if(S.toast>0&&(S.toast-=dt)<=0)$('#toast').textContent='';if(S.mode==='flight'){
+ const gas=held.Space||held.Enter||touch.A||pad.A,right=(held.ArrowRight||touch.right?1:0)-(held.ArrowLeft||touch.left?1:0)||steeringAxis(pad.ax,pad.right,pad.left),up=(held.ArrowUp||touch.up?1:0)-(held.ArrowDown||touch.down?1:0)||steeringAxis(-pad.ay,pad.up,pad.down),ground=S.stage==='ground';S.speed=lerp(S.speed,gas?40:ground?0:14,1-Math.exp(-1.9*dt));S.turn=lerp(S.turn,right*(ground?.24:.96),1-Math.exp(-5*dt));S.heading=angle(S.heading+S.turn*dt);S.bank=lerp(S.bank,ground?0:-S.turn*.46,1-Math.exp(-5*dt));S.vy=lerp(S.vy,up*21,1-Math.exp(-5*dt));S.x+=Math.sin(S.heading)*S.speed*dt;S.z-=Math.cos(S.heading)*S.speed*dt;
  if(ground){S.heading=clamp(S.heading,TAKEOFF.heading-.15,TAKEOFF.heading+.15);S.z=clamp(S.z,TAKEOFF.z-(S.x-TAKEOFF.x)*.071-6,TAKEOFF.z-(S.x-TAKEOFF.x)*.071+6);S.y=3.3;if(S.speed>18&&(up>0||S.x>TAKEOFF.x+150)){S.stage='air';S.y=8;toast('🛫  Up we go!');note(523);}}
- else {S.y=clamp(S.y+S.vy*dt,8,225);S.invincible=Math.max(0,S.invincible-dt);if(S.invincible<=0){const o=nearbyObstacles(S.x,S.z).find(o=>Math.abs(S.x-o.x)<o.w&&Math.abs(S.z-o.z)<o.d&&S.y<o.h);if(o){S.y=o.h+3;S.speed*=.7;S.invincible=1;toast('☁️  Whoosh!');}}if(!S.free){const p=hoopData[S.next];if(p&&Math.hypot(S.x-p.x,S.z-p.z)<75&&Math.abs(angle(Math.atan2(p.x-S.x,S.z-p.z)-S.heading))<.6){if(!up)S.y=lerp(S.y,p.y,dt*.9);if(!right)S.heading+=angle(Math.atan2(p.x-S.x,S.z-p.z)-S.heading)*dt*.18;}if(p&&Math.hypot(S.x-p.x,S.y-p.y,S.z-p.z)<22){hoops[S.next].visible=false;S.next++;save.best=Math.max(save.best||0,S.next);if(S.next===hoopData.length)finish();else{burst();toast((p.icon||'★')+' '+p.name+'  ✓');snapshot();}}}
+ else {const lift=clearanceClimb(dt);S.y=clamp(S.y+(lift>.05?Math.max(S.vy,lift):S.vy)*dt,8,225);if(!S.free){const p=hoopData[S.next];if(p&&Math.hypot(S.x-p.x,S.z-p.z)<75&&Math.abs(angle(Math.atan2(p.x-S.x,S.z-p.z)-S.heading))<.6){if(!up)S.y=lerp(S.y,p.y,dt*.9);if(!right)S.heading+=angle(Math.atan2(p.x-S.x,S.z-p.z)-S.heading)*dt*.18;}if(p&&Math.hypot(S.x-p.x,S.y-p.y,S.z-p.z)<22){hoops[S.next].visible=false;S.next++;save.best=Math.max(save.best||0,S.next);if(S.next===hoopData.length)finish();else{burst();toast((p.icon||'★')+' '+p.name+'  ✓');snapshot();}}}
  if(S.x<nw.x+30||S.x>se.x-30||S.z>se.z-30||S.z<nw.z+30){const a=angle(Math.atan2(-S.x,S.z)-S.heading);S.heading+=Math.sign(a)*dt*.7;}
- }S.roll=Math.max(0,S.roll-dt);S.saveT+=dt;if(S.saveT>1){S.saveT=0;snapshot();updateHUD();}if(Math.floor(S.time*10)!==Math.floor((S.time-dt)*10))updateHUD();}
+ }S.roll=Math.max(0,S.roll-dt);S.saveT+=dt;if(S.saveT>3){S.saveT=0;snapshot();updateHUD();}if(Math.floor(S.time*10)!==Math.floor((S.time-dt)*10))updateHUD();}
  if(S.fx>0){S.fx-=dt;for(let i=0;i<180;i++){fleckPositions[i*3]+=fleckVelocity[i*3]*dt;fleckPositions[i*3+1]+=fleckVelocity[i*3+1]*dt;fleckPositions[i*3+2]+=fleckVelocity[i*3+2]*dt;fleckVelocity[i*3+1]-=7*dt;}fleckGeo.attributes.position.needsUpdate=true;confetti.material.opacity=Math.min(1,S.fx);if(S.fx<=0)confetti.visible=false;}
  if(audio){engineGain.gain.setTargetAtTime(S.mode==='flight'?.012:0,audio.currentTime,.12);engine.frequency.setTargetAtTime(45+S.speed*2.5,audio.currentTime,.15);if(S.mode==='flight'&&save.music&&(musicT-=dt)<=0){musicT=.38;note(196*Math.pow(2,[0,4,7,12,9,7,4,2][musicI++%8]/12),.19);}}
 }
 function positionCamera(snap=false){
  aircraft.visible=S.mode!=='landmark';
  if(S.mode==='landmark'&&inspectLandmark){const l=inspectLandmark,r=Math.max(14,Math.hypot(l.wx,l.dz,l.modelHeight*.5)),distance=r*3.2/Math.min(1,camera.aspect),a=inspectionAngle+S.time*.035;camera.fov=45;camera.updateProjectionMatrix();camera.position.set(l.x+Math.sin(a)*distance,l.modelHeight*.5+distance*.6,l.z+Math.cos(a)*distance);camera.lookAt(l.x,l.modelHeight*.5-r*.13,l.z);return;}
- const fov=54+clamp((S.speed-14)/26,0,1)*8;if(Math.abs(camera.fov-fov)>.05){camera.fov=lerp(camera.fov,fov,snap?1:.12);camera.updateProjectionMatrix();}aircraft.position.set(S.x,S.y,S.z);aircraft.rotation.y=-S.heading;body.rotation.z=S.bank+(S.roll>0?(1-S.roll/1.1)*TAU:0);body.rotation.x=-S.vy*.012;const sy=Math.sin(S.heading),cy=Math.cos(S.heading);const followDistance=29*Math.max(1,1.1/camera.aspect);desired.set(S.x-sy*followDistance,S.y+(S.stage==='ground'?8:19),S.z+cy*followDistance);camera.position.lerp(desired,snap?1:.13);look.set(S.x+sy*55,S.y-10,S.z-cy*55);
- const l=featuredLandmark(),dx=l.x-S.x,dz=l.z-S.z,dist=Math.hypot(dx,dz),ahead=(dx*sy-dz*cy)/Math.max(1,dist),weight=clamp((230-dist)/150,0,1)*clamp((ahead-.1)/.6,0,1)*.5;
- if(S.mode==='flight'||S.mode==='title'){look.x=lerp(look.x,l.x,weight*.45);look.z=lerp(look.z,l.z,weight*.45);look.y=lerp(look.y,l.modelHeight*.35,weight);}camera.lookAt(look);}
-function render(){const t0=performance.now();positionCamera();guidePath();glints.material.uniforms.time.value=S.time;propeller.rotation.z=S.time*(S.mode==='flight'?38+S.speed*2:30);propdisk.visible=S.speed>10;water.material.uniforms.time.value=S.time*.32;for(const b of boats){const p=riverPoint(b.t+S.time*.002);b.g.position.set(p.x,0,p.z);b.g.rotation.y=p.heading;}hoops.forEach((h,i)=>{h.visible=S.mode!=='landmark'&&!S.free&&(i>=S.next&&i<=S.next+2);h.material.emissiveIntensity=i===S.next?.22+.16*Math.sin(S.time*2):.02;h.material.opacity=S.free||i===S.next?1:.36;h.scale.setScalar(i===S.next?1+Math.sin(S.time*2)*.025:1);});const lightFocus=inspectLandmark||S;sun.target.position.set(lightFocus.x,0,lightFocus.z-120);sun.position.set(lightFocus.x-330,430,lightFocus.z+70);sun.target.updateMatrixWorld();sky.position.copy(camera.position);updateLandmarkMarkers();renderCount++;renderer.shadowMap.needsUpdate=renderCount<3||renderCount%3===0;renderer.render(scene,camera);renderMs+=performance.now()-t0;renderFrames++;}
-function frame(now){const dt=Math.max(0,Math.min(.05,(now-last)/1000));last=now;input();acc+=dt;let n=0;while(acc>=1/120&&n++<8){update(1/120);acc-=1/120;}if(n>=8)acc=0;render();requestAnimationFrame(frame);}
+ const pose=flightPose(snap);const fov=54+clamp((pose.speed-14)/26,0,1)*8;if(Math.abs(camera.fov-fov)>.05){camera.fov=lerp(camera.fov,fov,snap?1:1-Math.exp(-7.7*renderDt));camera.updateProjectionMatrix();}aircraft.position.set(pose.x,pose.y,pose.z);aircraft.rotation.y=-pose.heading;body.rotation.z=pose.bank+(S.roll>0?(1-S.roll/1.1)*TAU:0);body.rotation.x=-pose.vy*.012;const sy=Math.sin(pose.heading),cy=Math.cos(pose.heading);const followDistance=29*Math.max(1,1.1/camera.aspect);desired.set(pose.x-sy*followDistance,pose.y+(S.stage==='ground'?8:19),pose.z+cy*followDistance);camera.position.lerp(desired,snap?1:1-Math.exp(-8.4*renderDt));look.set(pose.x+sy*55,pose.y-10,pose.z-cy*55);
+ const l=featuredLandmark(),dx=l.x-pose.x,dz=l.z-pose.z,dist=Math.hypot(dx,dz),ahead=(dx*sy-dz*cy)/Math.max(1,dist),weight=clamp((230-dist)/150,0,1)*clamp((ahead-.1)/.6,0,1)*.5;
+ if(S.mode==='title'){look.x=lerp(look.x,l.x,weight*.45);look.z=lerp(look.z,l.z,weight*.45);look.y=lerp(look.y,l.modelHeight*.35,weight);}if(snap)cameraAim.copy(look);else cameraAim.lerp(look,1-Math.exp(-8.4*renderDt));camera.lookAt(cameraAim);}
+function updateScenery(){
+ let radius=quality==='High'?2500:quality==='Performance'?1500:2000;scene.fog.density=daylight.fogDensity*(quality==='High'?.8:quality==='Performance'?1.25:1);
+ if(inspectLandmark?.modelHeight>150){radius=3500;scene.fog.density=daylight.fogDensity*.72;}
+ for(const m of [...cityChunks,...backgroundScenery]){const b=m.boundingSphere||m.geometry.boundingSphere;m.visible=b.center.distanceTo(camera.position)<radius+b.radius;}
+ waterfront.update(camera,radius);environment.update(S.time);
+}
+function render(){const t0=performance.now(),streetTime=t0/1000;positionCamera();updateScenery();streetDetails.update(camera,quality,streetTime,['flight','title','landmark'].includes(S.mode));transit.update(camera,quality,streetTime,['flight','title','landmark'].includes(S.mode));guidePath();glints.material.uniforms.time.value=S.time;propeller.rotation.z=S.time*(S.mode==='flight'?38+S.speed*2:30);propdisk.visible=S.speed>10;water.material.uniforms.time.value=S.time*.32;for(const b of boats){const p=riverPoint(b.t+S.time*.002);b.g.position.set(p.x,0,p.z);b.g.rotation.y=p.heading;}hoops.forEach((h,i)=>{h.visible=S.mode!=='landmark'&&!S.free&&(i>=S.next&&i<=S.next+2);h.material.emissiveIntensity=i===S.next?.22+.16*Math.sin(S.time*2):.02;h.material.opacity=S.free||i===S.next?1:.36;h.scale.setScalar(i===S.next?1+Math.sin(S.time*2)*.025:1);});const lightFocus=inspectLandmark||S;const refreshShadow=renderCount<2||(renderCount+1)%3===0;if(refreshShadow){daylight.update(lightFocus);}sky.position.copy(camera.position);updateLandmarkMarkers();renderCount++;renderer.shadowMap.needsUpdate=refreshShadow;renderer.render(scene,camera);renderMs+=performance.now()-t0;renderFrames++;}
+function frame(now){const dt=Math.max(0,Math.min(.05,(now-last)/1000));last=now;renderDt=dt;input();acc+=dt;let n=0;while(acc>=1/120&&n++<8){update(1/120);acc-=1/120;}if(n>=8)acc=0;render();requestAnimationFrame(frame);}
 $('#view').addEventListener('webglcontextlost',e=>{e.preventDefault();hide();$('#error').classList.remove('hidden');$('#error').innerHTML='<section class="card"><h2>Let’s try again</h2><p>Your flight is saved.</p><button onclick="location.reload()">↻ Reload flight</button></section>';$('#error button').focus();});
 async function waitForGraphics(){
  const gl=renderer.getContext();
@@ -567,6 +618,9 @@ async function prepareGraphics(){
   for(const {o,visible,culled} of objects){o.visible=visible;o.frustumCulled=culled;}
   renderer.setRenderTarget(null);warmTarget.dispose();water.onBeforeRender=oldReflect;resize();Object.assign(S,initialState);
  }
+ // Geometry and textures are already uploaded. Warm view-dependent programs
+ // behind the loading screen at a small render size, then restore the display.
+ renderer.setSize(320,180,false);
  const views=[{...TAKEOFF,stage:'air'},...hoopData.map(p=>({...p,heading:0,stage:'air'})),...(save.resume?[save.resume]:[]),{...TITLE,stage:'air'}];
  for(let i=0;i<views.length;i++){
   await loadingStage(91+7*i/views.length,'Checking the starting views…');
@@ -575,7 +629,7 @@ async function prepareGraphics(){
  }
  for(const l of landmarkModels){inspectLandmark=l;Object.assign(S,{mode:'landmark'});positionCamera(true);renderCount=0;render();await waitForGraphics();render();await waitForGraphics();}inspectLandmark=null;
  Object.assign(S,initialState);positionCamera(true);
- await loadingStage(100,'Ready for takeoff!');
+ resize();await loadingStage(100,'Ready for takeoff!');
  startup.ready=true;startup.shaderPrograms=renderer.info.programs.length;startup.geometryCount=renderer.info.memory.geometries;startup.elapsedMs=performance.now()-startup.startedAt;
  renderMs=0;renderFrames=0;held={};touch={};acc=0;
  // Consume buttons held during loading; starting requires a fresh confirm press.
@@ -584,6 +638,6 @@ async function prepareGraphics(){
  document.querySelector('#loading').remove();
 }
 await prepareGraphics();
-if(new URLSearchParams(location.search).has('test'))window.FlightTest={get state(){return {...S,city:CITY.id,startup:{...startup},shaderPrograms:renderer.info.programs.length,geometryCount:renderer.info.memory.geometries,inspecting:inspectLandmark?.name||null,focus:menuButtons[focus]?.id,save,profile:db.current,localProps,mapBuildings:buildings.length,mapPlaces:cityPOIs.length,quality,canvasSize:[renderer.domElement.width,renderer.domElement.height],drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,meanRender:renderMs/Math.max(1,renderFrames)};},step:n=>{input();for(let i=0;i<n;i++)update(1/120);},set:v=>{Object.assign(S,v);positionCamera(true);},start,render,hoops:hoopData,river:riverX,look:openLandmark,closeLook:closeLandmark,landmarks:landmarkModels,landmarkBounds:i=>{const l=landmarkModels[i],points=[];for(const x of [-l.wx,l.wx])for(const y of [0,l.modelHeight])for(const z of [-l.dz,l.dz])points.push(new T.Vector3(l.x+x,y,l.z+z).project(camera));return {left:Math.min(...points.map(p=>p.x)),right:Math.max(...points.map(p=>p.x)),top:Math.max(...points.map(p=>p.y)),bottom:Math.min(...points.map(p=>p.y))};},programs:()=>renderer.info.programs.map(p=>({name:p.name,key:p.cacheKey}))};
+if(new URLSearchParams(location.search).has('test'))window.FlightTest={get state(){return {...S,city:CITY.id,startup:{...startup},shaderPrograms:renderer.info.programs.length,geometryCount:renderer.info.memory.geometries,inspecting:inspectLandmark?.name||null,focus:menuButtons[focus]?.id,save,profile:db.current,localProps,planting:planting.stats,streetscape:streetscape.stats,transit:transit.stats,scenery:{streetDetails:streetDetails.stats,aerial:aerial.stats,waterfront:waterfront.stats,trees:treeCount,waterLevel:water.position.y,climate:STYLE.id},mapBuildings:buildings.length,mapPlaces:cityPOIs.length,quality,canvasSize:[renderer.domElement.width,renderer.domElement.height],drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,meanRender:renderMs/Math.max(1,renderFrames)};},step:n=>{input();for(let i=0;i<n;i++)update(1/120);},set:(v,snap=true)=>{Object.assign(S,v);if(snap){resetClearance();positionCamera(true);}},start,render,transitAudit:transit.audit,transitSample:transit.sample,streetAudit:streetDetails.audit,streetSample:streetDetails.sample,streetViews:streetDetails.views,motion:()=>({plane:aircraft.position.toArray(),camera:camera.position.toArray(),rotation:camera.quaternion.toArray()}),obstacles:()=>obstacles.filter(o=>o.h>25&&o.h<80).slice(0,30),auditGeometry:()=>{const seen=new Set(),invalid=[];scene.traverse(o=>{const g=o.geometry;if(g&&o.material?.vertexColors&&!g.attributes.color)invalid.push({object:o.name,attribute:'missing vertex colors',geometry:g.type,material:o.material.color?.getHexString()});if(!g||seen.has(g))return;seen.add(g);for(const name of ['position','normal','color','facadeStyle','elevation']){const a=g.attributes[name];if(a&&(a.count!==g.attributes.position.count||a.array.some(v=>!Number.isFinite(v))))invalid.push({object:o.name,attribute:name});}});return{geometries:seen.size,invalid};},hoops:hoopData,river:riverX,look:openLandmark,closeLook:closeLandmark,landmarks:landmarkModels,landmarkBounds:i=>{const l=landmarkModels[i],points=[];for(const x of [-l.wx,l.wx])for(const y of [0,l.modelHeight])for(const z of [-l.dz,l.dz])points.push(new T.Vector3(l.x+x,y,l.z+z).project(camera));return {left:Math.min(...points.map(p=>p.x)),right:Math.max(...points.map(p=>p.x)),top:Math.max(...points.map(p=>p.y)),bottom:Math.min(...points.map(p=>p.y))};},programs:()=>renderer.info.programs.map(p=>({name:p.name,key:p.cacheKey}))};
 title();persist();last=performance.now();acc=0;requestAnimationFrame(frame);
 })().catch(error=>{console.error(error);const panel=document.querySelector('#error');panel.classList.remove('hidden');panel.innerHTML='<section class="card"><h2>Could not load this city</h2><p>Try reloading the game in a recent browser.</p><button onclick="location.reload()">Reload</button><a href="index.html">Choose a city</a></section>';});

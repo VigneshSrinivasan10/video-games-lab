@@ -13,6 +13,9 @@
  *         LS=13 RS=14; d-pad is a hat on axes 6/7; triggers also on axes 4/5 (−1 = released).
  *  2. GamepadStd.read(channel) gives per-pad booleans with press edges (s.just.A) and merges the
  *     left stick into up/down/left/right. GamepadStd.navRepeat() adds menu auto-repeat.
+ *     GamepadStd.readActive(channel) lets a single player switch between connected controllers.
+ *     GamepadStd.readPlayers(channel, count, joined=count) keeps local co-op player slots stable
+ *     across disconnects. joined excludes spare controllers until another player joins.
  *  3. Holding B for 2 seconds anywhere leaves the game for the arcade launcher (/index.html), with an on-screen ring so the child sees it coming.
  *  4. Optional, for games that only listen to the keyboard:
  *       <script src="../gamepad-std.js" data-keys='{"A":"Space","B":"Escape","start":"KeyP"}'><\/script>
@@ -79,7 +82,7 @@
   function read(channel) {
     channel = channel || 'default';
     var prevMap = prevByChannel[channel] || (prevByChannel[channel] = {});
-    var list = pads(), res = [], i, j, n;
+    var list = pads(), res = [], nextMap = {}, i, j, n;
     for (i = 0; i < list.length; i++) {
       var gp = list[i];
       if (!gp || !gp.connected) continue;
@@ -95,10 +98,55 @@
         s.just[n] = s[n] && !prev[n]; s.released[n] = !s[n] && !!prev[n];
         if (s[n]) s.any = true;
       }
-      prevMap[gp.index] = now;
+      nextMap[gp.index] = now;
       res.push(s);
     }
+    prevByChannel[channel] = nextMap;
     return res;
+  }
+
+  /* ---- single-player input: a fresh press or stick movement takes control ---- */
+  var activeByChannel = {};
+  function readActive(channel) {
+    channel = channel || 'default';
+    var previous = activeByChannel[channel] || { moving: {} }, states = window.GamepadStd.read(channel), moving = {};
+    var active = states.find(function (s) { return s.index === previous.index && s.id === previous.id; }) || states[0] || null;
+    states.forEach(function (s) {
+      moving[s.index] = !!(s.ax || s.ay);
+      // Keep the last-used controller through neutral frames. An idle controller
+      // or an old held input must not steal control back from its replacement.
+      if (NAMES.some(function (n) { return s.just[n]; }) || (moving[s.index] && !previous.moving[s.index])) active = s;
+    });
+    activeByChannel[channel] = { index: active && active.index, id: active && active.id, moving: moving };
+    return active;
+  }
+
+  /* ---- stable local player slots; a replacement fills the disconnected slot ---- */
+  var playersByChannel = {};
+  function readPlayers(channel, count, joined) {
+    channel = channel || 'default';
+    count = count || 2;
+    if (joined == null) joined = count;
+    if (count === 1) {
+      var active = readActive(channel);
+      playersByChannel[channel] = active ? [{ index: active.index, id: active.id }] : [];
+      return active ? [active] : [];
+    }
+    var states = window.GamepadStd.read(channel), previous = playersByChannel[channel] || [], used = {};
+    var result = Array.from({ length: count }, function (_, slot) {
+      // A spare pad may fill player 1's vacancy until player 2 actually joins.
+      var owner = slot < joined && previous[slot];
+      var state = owner && states.find(function (s) { return s.index === owner.index && s.id === owner.id; });
+      if (state) used[state.index] = true;
+      return state || null;
+    });
+    states.forEach(function (s) {
+      if (used[s.index]) return;
+      var slot = result.indexOf(null);
+      if (slot !== -1) { result[slot] = s; used[s.index] = true; }
+    });
+    playersByChannel[channel] = result.map(function (s) { return s && { index: s.index, id: s.id }; });
+    return result;
   }
 
   /* ---- navRepeat(s, channel): menu movement with 350 ms delay then 140 ms repeat ---- */
@@ -173,28 +221,26 @@
   var defaultDirs = { up: 'ArrowUp', down: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' };
   function tickKeys() {
     if (!keyMaps.length) return;
-    var states = read('gamepad-std-keys'), slot = 0, i, n;
-    for (i = 0; i < states.length && slot < 2; i++, slot++) {
-      var s = states[i], map = keyMaps[slot]; if (!map) continue;
+    var states = readPlayers('gamepad-std-keys', keyMaps.length), next = {}, i, n;
+    for (i = 0; i < states.length; i++) {
+      var s = states[i], map = keyMaps[i]; if (!s || !map) continue;
       for (n in map) {
         if (n in defaultDirs) continue;
-        var codes = [].concat(map[n] || []); if (!codes.length) continue;
-        if (s.just[n]) codes.forEach(function (c) { sendKey('keydown', c); });
-        else if (s.released[n]) codes.forEach(function (c) { sendKey('keyup', c); });
+        if (s[n]) [].concat(map[n] || []).forEach(function (c) { next[c] = true; });
       }
-      // stick-merged directions get edges here (s.just only tracks buttons)
-      var dir = dirPrev[slot] || (dirPrev[slot] = {});
       ['up', 'down', 'left', 'right'].forEach(function (d) {
-        var codes = [].concat((d in map) ? (map[d] || []) : defaultDirs[d]); if (!codes.length) return;
-        if (s[d] && !dir[d]) codes.forEach(function (c) { sendKey('keydown', c); }); else if (!s[d] && dir[d]) codes.forEach(function (c) { sendKey('keyup', c); });
-        dir[d] = s[d];
+        if (s[d]) [].concat((d in map) ? (map[d] || []) : defaultDirs[d]).forEach(function (c) { next[c] = true; });
       });
     }
+    // Release keys from the old controller when switching or disconnecting.
+    for (n in synthesizedKeys) if (!next[n]) sendKey('keyup', n);
+    for (n in next) if (!synthesizedKeys[n]) sendKey('keydown', n);
+    synthesizedKeys = next;
   }
-  var dirPrev = [];
+  var synthesizedKeys = {};
 
   function loop() { try { if (!noExit) tickExit(); tickKeys(); } catch (e) { /* never break the game */ } requestAnimationFrame(loop); }
   requestAnimationFrame(loop);
 
-  window.GamepadStd = { NAMES: NAMES, pads: pads, read: read, navRepeat: navRepeat, exitToArcade: exitToArcade, exitUrl: exitUrl, normalize: normalize, version: 1 };
+  window.GamepadStd = { NAMES: NAMES, pads: pads, read: read, readActive: readActive, readPlayers: readPlayers, navRepeat: navRepeat, exitToArcade: exitToArcade, exitUrl: exitUrl, normalize: normalize, version: 1 };
 })();

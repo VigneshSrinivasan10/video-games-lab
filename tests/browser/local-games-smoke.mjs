@@ -8,7 +8,9 @@ for(const name of selected)await fs.access(new URL('../../local-games/'+name+'/'
 const server=await startTestServer(),b=await launch({}),report=[];
 async function until(expression,timeout=60000){const end=Date.now()+timeout;while(Date.now()<end){if(await b.eval(expression))return;await b.sleep(200);}throw Error('Timed out: '+expression);}
 try{
- await b.addInit(await fs.readFile(new URL('../helpers/fakepad.js',import.meta.url),'utf8'));await b.signIn(server.base,'local-game-check');
+ await b.addInit(await fs.readFile(new URL('../helpers/fakepad.js',import.meta.url),'utf8'));
+ if(process.env.ARCADE_TEST_PAD==='replacement')await b.addInit('__fake.addPad();__fake.pads[0]=null;__fake.usePad(1)');
+ await b.signIn(server.base,'local-game-check');
  for(const name of selected){
   console.log('Testing optional game:',name);const start=b.logs.length;
   try{

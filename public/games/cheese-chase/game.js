@@ -330,11 +330,12 @@ function readInputs() {
   if (pressed.has('KeyD')) inp[1].right = true;
   if (['KeyW', 'KeyA', 'KeyS', 'KeyD'].some(k => pressed.has(k))) inp[1].any = true;
   pointerAction = false;
-  // Controllers — AGENTS.md §9 standard, read ONLY through GamepadStd. Pad in slot 0 = Mouse 1, slot 1 = Mouse 2.
+  // Local co-op keeps each mouse's controller assigned through disconnects.
   //   d-pad / stick = move (dominant axis wins) · A = go / confirm · B = pause toggle in play, back in menus · Start = pause toggle
-  const pads = window.GamepadStd ? GamepadStd.read('game') : [];
+  const pads = window.GamepadStd ? GamepadStd.readPlayers('game', FAMILY ? 1 : 2, S.players[1] ? 2 : 1) : [];
   for (let slot = 0; slot < 2 && slot < pads.length; slot++) {
     const gp = pads[slot], p = inp[slot];
+    if (!gp) { gpPrev[slot] = {}; continue; }
     let ax = gp.ax, ay = gp.ay;
     if (Math.abs(ax) < 0.4) ax = 0; if (Math.abs(ay) < 0.4) ay = 0;
     if (gp.left) ax = -1; if (gp.right) ax = 1; if (gp.up) ay = -1; if (gp.down) ay = 1;

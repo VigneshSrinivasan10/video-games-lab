@@ -1398,7 +1398,7 @@ window.addEventListener('keydown', (e) => {
 });
 function pollPads() {
   if(FAMILY && (FAMILY.role==='guest'||!FAMILY.ready))return;
-  for (const p of GamepadStd.read('game')) {
+  for (const p of GamepadStd.readPlayers('game', 1)) {
     if (p.any) ensureAudio();
     const nav = GamepadStd.navRepeat(p, 'game');
     if (nav.left) dirInput(-1, 0); if (nav.right) dirInput(1, 0); if (nav.up) dirInput(0, -1); if (nav.down) dirInput(0, 1);

@@ -892,7 +892,7 @@ canvas.addEventListener('pointerdown', () => { ensureAudio(); input.any = true; 
 const padState = { left: false, right: false, jump: false };
 function pollGamepad() {
   if (!window.GamepadStd) return;
-  const pads = GamepadStd.read('game');
+  const pads = GamepadStd.readPlayers('game', 1);
   if (!pads.length) { if (padState.left || padState.right || padState.jump) { padState.left = padState.right = padState.jump = false; refreshKeys(); } return; }
   const inMenu = !!activeMenu();
   let left = false, right = false, jump = false;

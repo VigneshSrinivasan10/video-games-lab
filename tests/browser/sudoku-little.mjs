@@ -1,0 +1,43 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import { launch } from '../helpers/cdp.mjs';
+import { startTestServer } from '../helpers/server.mjs';
+const server=await startTestServer(),b=await launch();
+const tap=async key=>{await b.eval(`__fake.tap(${JSON.stringify(key)})`);await b.sleep(180);};
+try{
+await b.addInit(await fs.readFile(new URL('../helpers/fakepad.js',import.meta.url),'utf8'));
+await b.signIn(server.base,'little-tester');await b.goto(server.base+'/sudoku-kids/');
+assert.equal(await b.eval('data.little'),true);
+assert.equal(await b.eval('board.filter(v=>!v).length'),2);
+const before=await b.eval('JSON.stringify(board)');
+for(const expected of ['fruit','space','numbers','animals']){await tap('RB');assert.equal(await b.eval('data.theme'),expected);assert.equal(await b.eval('JSON.stringify(board)'),before);}
+await tap('LB');assert.equal(await b.eval('data.theme'),'numbers');
+await b.eval('ArcadeProfile.sync()');await b.goto(server.base+'/sudoku-kids/');assert.equal(await b.eval('data.theme'),'numbers');
+await tap('RB');assert.equal(await b.eval('data.theme'),'animals');
+await b.eval('trayIndex=puzzle.solution[selected]%4');await tap('A');
+assert.equal(await b.eval('JSON.stringify(board)'),before,'Wrong choices leave board unchanged');
+await tap('X');assert.equal(await b.eval('trayIndex+1===puzzle.solution[selected]'),true);
+await tap('A');assert.equal(await b.eval('board.filter(v=>!v).length'),1);
+assert.equal(await b.eval('board[selected]'),0,'Advance automatically');
+await tap('Y');assert.equal(await b.eval('board.filter(v=>!v).length'),2);
+await tap('right');assert.equal(await b.eval("document.querySelectorAll('.symbol.chosen').length"),1);
+await tap('X');await tap('A');await tap('X');await tap('A');
+assert.equal(await b.eval("$('success').classList.contains('hidden')"),false);
+assert.equal(await b.eval('Object.keys(data.stars)[0]'),'little:0:0');
+await tap('A');assert.equal(await b.eval('data.puzzle'),1);
+await b.eval('ArcadeProfile.sync()');await b.goto(server.base+'/sudoku-kids/');
+assert.equal(await b.eval('data.puzzle'),1);
+await b.eval("$('little-mode').click()");assert.equal(await b.eval('data.little'),false);
+assert.equal(await b.eval('board.filter(v=>!v).length'),4,'Original puzzles unchanged');
+await tap('A');assert.equal(await b.eval('controllerTray'),true);await tap('RB');assert.equal(await b.eval('data.theme'),'fruit');assert.equal(await b.eval("document.activeElement.parentElement.id"),'tray');await tap('B');
+await b.eval('selected=board.findIndex(v=>!v);place(puzzle.solution[selected])');const classic=await b.eval('JSON.stringify(board)');
+await b.eval("$('little-mode').click();$('little-mode').click()");assert.equal(await b.eval('JSON.stringify(board)'),classic,'Separate original progress');
+await b.eval("$('little-mode').click()");
+await b.eval('data.puzzle=1;start();window.scrollTo(0,0)');
+await b.screenshot('/tmp/safari-little-desktop.png');
+assert.ok(await b.eval("$('tray').getBoundingClientRect().bottom<innerHeight"),'Choices visible with board on desktop');
+await b.send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});
+assert.ok(await b.eval('document.documentElement.scrollWidth<=390'));
+assert.deepEqual(b.errors(),[]);
+console.log('PASS little mode: two blanks, controller choice/place/help/undo/next, gentle mistakes, save resume, original controls and saves, desktop and mobile layout.');
+}finally{await b.close();await server.stop();}

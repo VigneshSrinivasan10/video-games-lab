@@ -946,11 +946,11 @@ document.querySelectorAll('.tbtn').forEach((b) => {
   b.addEventListener('pointerdown', on); b.addEventListener('pointerup', off); b.addEventListener('pointercancel', off); b.addEventListener('pointerleave', off);
 });
 canvas.addEventListener('pointerdown', () => ensureAudio());
-// gamepads — AGENTS.md §9 standard, read ONLY through GamepadStd (pad in slot 0 = player 1, slot 1 = player 2)
+// Solo/online play accepts replacement pads; local co-op keeps stable player slots.
 //   A (or up) = gas · d-pad / stick = steer · down or LT = brake · X / Y / RB = rocket · B = back (menus) or pause / resume (race) · Start = pause / resume
 function pollGamepads() {
   if (FAMILY && (FAMILY.role === 'guest' || !FAMILY.ready)) return;
-  const pads = window.GamepadStd ? GamepadStd.read('game') : [];
+  const pads = window.GamepadStd ? GamepadStd.readPlayers('game', FAMILY || S.players === 1 ? 1 : 2) : [];
   const menu = activeMenu();
   for (let i = 0; i < 2; i++) {
     const p = pads[i], g = gpIn[i];

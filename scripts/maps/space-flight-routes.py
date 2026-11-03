@@ -25,7 +25,7 @@ def order(points,seed,max_leg=2.15,keep_end=False):
 if __name__=='__main__':
  p=root/'public/games/city-flight/cities.json';cities=json.loads(p.read_text())
  for c in cities:
-  if c.get('routeVersion')==6:continue
+  if c.get('routeVersion',0)>=6:continue
   c['previousRouteIds']=[l['id'] for l in c['landmarks']]
   c['landmarks'],stats=order(c['landmarks'],c['id']);c.update(stats);c['routeVersion']=6
   print(c['id'],stats,flush=True)

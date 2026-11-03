@@ -4,8 +4,11 @@
 
 ```sh
 node --test tests/server/*.test.mjs
+node --test tests/unit/*.test.mjs
 node tests/browser/refactor-smoke.mjs
 node tests/browser/flight-smoke.mjs
+node tests/browser/city-flight-controllers.mjs
+node tests/browser/controller-handover.mjs
 node tests/browser/multiplayer-smoke.mjs
 ```
 
@@ -14,6 +17,17 @@ These suites launch disposable servers through `helpers/server.mjs`. Credentials
 The multiplayer suite checks creating and joining chess and kitchen rooms, both embedded games, readiness, controls, disconnection, and returning to the arcade.
 
 The custom-game suite exercises gameplay, inputs, saving, and return-to-launcher behavior. It accepts an optional comma-separated game list. The flight suite checks all packaged cities plus Berlin.
+
+The flight controller check covers replacing a controller in the atlas, Paris, Berlin, and Berlin District, including an empty first slot, an old controller still connected, disconnection, reconnection, and the held-A return guard. The handover suite checks launcher focus, the profile dialog guard, releasing held inputs, and keeping both local players assigned in all four co-op games. Shared-input tests also cover keyboard emulation and spare controllers before player 2 joins.
+
+Run the arcade and installed-game smoke suites with the original controller missing and a replacement in browser slot 1:
+
+```sh
+ARCADE_TEST_PAD=replacement node tests/browser/refactor-smoke.mjs
+ARCADE_TEST_PAD=replacement node tests/browser/local-games-smoke.mjs
+```
+
+The Still puzzle games currently use keyboard/mouse for gameplay; their smoke checks cover that gameplay and controller hold-B return. The installed-game suite requires the six local installations. Changes inside `local-games/` stay local and are ignored by Git.
 
 ## Existing targeted checks
 

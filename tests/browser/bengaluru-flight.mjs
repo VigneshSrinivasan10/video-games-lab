@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';import fs from 'node:fs/promises';import {launch} from '../helpers/cdp.mjs';import {startTestServer} from '../helpers/server.mjs';
+const server=await startTestServer(),b=await launch({headed:true,args:['--headless=new','--ozone-platform=headless','--use-angle=gl-egl','--enable-gpu','--ignore-gpu-blocklist']});const results=[];
+try{
+ await b.addInit(await fs.readFile(new URL('../helpers/fakepad.js',import.meta.url),'utf8'));await b.signIn(server.base,'bengaluru-flight');await b.send('Emulation.setDeviceMetricsOverride',{width:1920,height:1080,deviceScaleFactor:1,mobile:false});await b.goto(server.base+'/games/city-flight/game.html?city=bengaluru&test');for(let i=0;i<400&&!await b.eval('!!window.FlightTest');i++)await b.sleep(100);assert(await b.eval('!!window.FlightTest'));
+ for(const mode of ['low-flight','dense-flight']){
+  await b.eval(`FlightTest.start(false,true);FlightTest.set({y:${mode==='low-flight'?18:55},stage:'air',invincible:0});__fake.set('A',true)`);
+  const result=await b.eval(`new Promise(resolve=>{let last=performance.now(),start=last,prev=FlightTest.state;const frames=[];let maxYStep=0,speedDrops=0;function tick(now){const s=FlightTest.state,dt=(now-last)/1000;last=now;const t=(now-start)/1000;if(t>1){frames.push(dt*1000);maxYStep=Math.max(maxYStep,Math.abs(s.y-prev.y));if(s.speed-prev.speed < -2)speedDrops++;}prev=s;__fake.stick(Math.sin(t*.24)*.68,t>7&&t<12?.5:0);if(t<30)requestAnimationFrame(tick);else{__fake.set('A',false);__fake.stick(0,0);frames.sort((a,b)=>a-b);resolve({fps:1000/(frames.reduce((a,b)=>a+b,0)/frames.length),p99:frames[Math.floor(frames.length*.99)],maxFrame:frames.at(-1),over34:frames.filter(x=>x>34).length,maxYStep,speedDrops,pixels:FlightTest.state.canvasSize});}}requestAnimationFrame(tick);})`);
+  console.log(mode,result);results.push({mode,...result});if(!process.env.BASELINE){assert(result.maxYStep<2,'no rooftop teleport');assert.equal(result.speedDrops,0,'no abrupt collision braking');}
+ }
+ assert.deepEqual(b.logs.filter(x=>x.startsWith('EXC')),[]);
+}finally{await fs.writeFile('/tmp/bengaluru-long-'+(process.env.BASELINE?'before':'after')+'.json',JSON.stringify(results,null,2));await b.close();await server.stop();}

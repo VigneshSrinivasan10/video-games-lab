@@ -1,10 +1,117 @@
-CITY FLIGHT — GRAND TOURS
+CITY FLIGHT — SEVEN CITY TOURS (2026-11-01)
 
-Open index.html through the arcade web server. The selector offers 16 new city tours and the existing Berlin City Flight.
+The arcade's City Flight selector features Berlin, Paris, London, Rome, Venice,
+Bengaluru and Dubai. Each has 25 stops and its own saved progress. Other existing
+cities are removed from the main selector, but their maps, direct links and profile
+keys remain available through archived-cities.json. No existing save is deleted.
 
-All 16 new cities have 25 named sightseeing checkpoints, matching Berlin. Routes connect nearby landmarks, museums, parks, squares and waterfront sights. Added stops retain their mapped architecture and have gold markers and inspection views; only selected monuments get custom models.
+BERLIN ARCHITECTURE REFERENCES
+https://www.berlinerdom.de/en/visiting/about-the-cathedral/architecture/
+https://tv-turm.de/en/history/
+https://denkmaldatenbank.berlin.de/daobj.php?obj_dok_nr=09065023%2CT
 
-Each city is loaded separately: cities.json supplies the curated route and links to Google Maps; data/<city>.bin is gzip-compressed JSON of actual OpenStreetMap footprints, streets, parks and water. No paid API, credentials or third-party runtime requests are needed. Google Maps opens only when its link is selected. The 16 new cities use a shared Three.js engine and start in the air near their first landmark.
+SHARED SCENERY
+The Berlin District study is now integrated into the original Berlin City Flight.
+Its detailed 39-building Pariser Platz neighbourhood, Brandenburg Gate, cathedral,
+TV Tower and Reichstag dome are part of the full Berlin map. The original entry
+point, runway, tour and berlin-city-flight.v1 save key remain. Scenic views are
+available from its title and pause menus. The separate district preview retains
+its own save keys and now loads the same shared assets.
+
+City Flight owns scenery/environment.js, buildings.js, geometry.js, waterfront.js,
+streets.js and city-styles.js. Both flight engines use this material and scenery
+layer. Facade variation and refined roofs extend across each existing map, with
+bounded roof subdivision outside the detailed Berlin showcase. Tall buildings
+and the flat-roof cities use roof types appropriate to their silhouettes. Regional
+palettes distinguish brick, limestone, terracotta, Venetian plaster, Bengaluru and
+Dubai. Existing bespoke landmark shapes are retained, with textured materials and
+prefiltered daylight reflections replacing plain plastic-looking surfaces.
+
+Water sits below the terrain and uses layered ripples, subdued glints, soft planar
+reflections and regional colour. Mapped shores receive stone quay edges near
+buildings or sloping earth banks by lakes and green areas. Islands and courtyard
+holes are retained. Structural decks, piers and parapets fill mapped road bridges;
+bespoke landmark bridges are excluded to avoid overlapping their architecture.
+Natural shoreline and bridge geometry covers the whole packaged map.
+
+Trees have varied crowns, branching trunks, bark, contact shading and gentle wind.
+Rome retains cypress silhouettes; Bengaluru and Dubai include palms. Park planting
+is clustered and avoids streets and buildings. Mapped streets near the tour receive
+up to 28 crossings, 112 parked cars and small bus shelters. Cars, occasional buses
+and walking groups follow mapped road and footway paths clear of buildings and
+water. Each city has up to 864 moving vehicles and 800 walkers; Venice instead
+has up to 64 canal boats and pedestrians, with no cars. Ten instanced mesh pools and
+distance culling keep animation bounded, and pausing freezes the activity.
+Berlin's existing central activity is retained, with the new paths outside that
+core. Movement follows short loops along mapped paths. Traffic is distributed
+around all 25 Berlin stops, including Kreuzberg and the approach from Tempelhof.
+Bright vehicle roofs, larger bus silhouettes, small walking groups, and boat wakes
+make movement readable from the chase camera. Animation uses elapsed real time,
+so low frame rates do not slow traffic to the flight simulation's capped clock.
+The central Berlin pedestrians remain visible in Performance quality as well.
+
+Daylight uses scenery/daylight.js to keep direct sunlight, the visible sky, HDR
+metal reflections and water glints aligned. Neutral sunlight and cooler sky fill
+replace the previous yellow-green cast; roof-edge and facade contact shading are
+lighter, and reduced haze preserves distant building colour. Shadow filtering is
+softened and its moving camera is snapped to the shadow texel grid. Dubai retains
+warmer sunlight, stronger atmospheric haze and reduced cloud cover.
+Geometry is merged by location and repeated objects are instanced. Distant banks
+and bridge groups are culled together with the background map. Quality settings
+adjust render size, scenery distance and reflection frequency. Materials and
+textures are uploaded before takeoff; route and inspection views are warmed at
+320 by 180 behind the loading screen before the normal display is restored.
+
+MAP AND MODEL LIMITS
+The improvements cover each packaged map, not the entire municipal/metropolitan
+region. Berlin now extends through Karlshorst to Köpenick. Footprints, roads, water and park
+outlines come from OpenStreetMap; roof forms, facade details, untagged heights and
+planting are authored approximations. This is not photogrammetry. No LEGO assets
+or downloaded architectural photographs are used. Textures and meshes are original
+procedural artwork and work offline after the page's local assets have loaded.
+
+DUBAI
+Dubai covers Downtown, Business Bay and the nearby financial district. Its source
+is the Geofabrik GCC states OSM extract, snapshot 2026-10-31T21:23:06Z, downloaded
+2026-11-01: https://download.geofabrik.de/asia/gcc-states.html
+The map uses the same .36 units/metre projection as the other tours, with origin
+55.2744 E, 25.1972 N. Burj Khalifa uses a three-wing stepped silhouette and spire;
+the Museum of the Future has an open elliptical torus and abstract window markings;
+Dubai Opera uses a curved dhow-like plan. These are architectural approximations,
+not exact reproductions of facade lettering or structural drawings.
+Reference pages:
+https://www.visitdubai.com/en/places-to-visit/burj-khalifa
+https://www.visitdubai.com/en/places-to-visit/museum-of-the-future
+https://www.visitdubai.com/en/places-to-visit/dubai-opera
+
+The Dubai build configuration lives in scripts/maps/dubai.json. Rebuild with the
+existing build-flight-city.py using osmium and shapely, then package-dubai.py. The
+latter dissolves overlapping water polygons, preserves islands and writes a
+reproducible gzip package and updated map counts. dubai-coast.json stores the OSM
+coastline ways from the same snapshot, including the creek and coastal corner.
+Coastlines follow OSM’s land-left, water-right convention:
+https://wiki.openstreetmap.org/wiki/Tag:natural=coastline
+
+VALIDATION
+The selected maps contain approximately 293,000 mapped buildings. All 175 tour
+checkpoints, finite geometry attributes, input/save behavior, and desktop/mobile
+layout passed the browser checks during this integration. The existing district
+regression and the five server route/authentication checks also passed.
+node tests/browser/city-scenery.mjs covers every selected city: map and shader load,
+finite geometry attributes, roof coverage, 25 collectible hoops below the flight
+ceiling, controller steering, graphics allocation stability, isolated saves and
+return to the arcade. Screenshots and results go to .local/full-city/.
+node tests/browser/city-flight-layout.mjs covers desktop/mobile layout.
+node tests/browser/flight-smoothness.mjs checks clearance and input smoothing.
+The standalone district regression remains tests/browser/berlin-district.mjs.
+Software rendering is available in this environment; hardware GPU performance
+must be assessed separately. Do not interpret software-renderer FPS as GPU FPS.
+
+Open index.html through the arcade web server. The selector offers six shared-engine tours and the original Berlin City Flight.
+
+All selected cities have 25 named sightseeing checkpoints, matching Berlin. Routes connect nearby landmarks, museums, parks, squares and waterfront sights. Added stops retain their mapped architecture and have gold markers and inspection views; only selected monuments get custom models.
+
+Each city is loaded separately: cities.json supplies the curated route and links to Google Maps; data/<city>.bin is gzip-compressed JSON of actual OpenStreetMap footprints, streets, parks and water. No paid API, credentials or third-party runtime requests are needed. Google Maps opens only when its link is selected. The six non-Berlin cities use a shared Three.js engine and start in the air near their first landmark.
 
 Graphics: merged spatial map chunks, instanced scenery, capped pixel count (Balanced 1920x1080, Performance 1280x720, High 2560x1440), reduced reflection/shadow refresh, and full texture/shader/geometry warm-up before controls become active. Only one city lives in GPU memory. Pause > Graphics changes quality. Each city has its own local progress key, world-flight.<city>.v1; Berlin retains its existing keys.
 
@@ -25,7 +132,7 @@ The scripts/maps/build-flight-city.py importer requires Python osmium and shapel
 scripts/maps/package-flight-maps.py merges the official OSM land/coastline polygons with the mapped water and writes compressed files. It requires pyshp and shapely, the generated city-map.json files and land-polygons-split-4326/land_polygons.shp. See its command-line help.
 
 CHECKS
-tests/browser/test-world-flight.mjs uses the local CDP harness and isolated test server on port 8766 to check all 16 loads, all route hoops, separate saves, warmed geometry/program counts, and 1080p frame timing. It requires Chromium with access to a hardware rendering device for meaningful GPU measurements. Software-rendered results do not measure the computer's GPU performance.
+tests/browser/test-world-flight.mjs uses the local CDP harness and isolated test server on port 8766 to check catalog loads, all route hoops, separate saves, warmed geometry/program counts, and 1080p frame timing. It requires Chromium with access to a hardware rendering device for meaningful GPU measurements. Software-rendered results do not measure the computer's GPU performance.
 
 LANDMARK LOOK
 Press Y on the controller, L on the keyboard, or the on-screen landmark button to pause flight and inspect the nearby/target landmark. A or B returns to the unchanged flight; Fly from here begins a scenic flight nearby. Explore places also opens landmark close-ups. The Colosseum and Rialto use dedicated architecture models; Venice also has custom St Mark’s Basilica, campanile and Doge’s Palace.
@@ -35,7 +142,131 @@ EXPANDED TOURS
 Route version 5 keeps pilot names, settings and saved plane positions. Previous route scores and resume data are archived in each profile under previousTours; the expanded route starts at checkpoint 1. Subsequent saves continue normally. tests/browser/test-expanded-tours.mjs checks migration, catalog limits and consecutive checkpoint spacing.
 
 SPACED TOURS (route version 6; Berlin City Flight version 5)
-Nearby sights are interleaved with stops in other areas. Consecutive landmark centers are at least 750 metres apart; the 16 new cities retain the same 25 sights and no leg exceeds 2.15 km. The enhanced Berlin tour keeps its takeoff/landing stops and original sights. scripts/maps/space-flight-routes.py uses a deterministic offline route optimizer; it adds no work during flight. Actual hoop spacing and collision-safe collection are checked in the browser. Existing 25-stop best scores and plane positions are retained; old resume data is archived and the reordered tour begins at stop 1.
+Nearby sights are interleaved with stops in other areas. Consecutive landmark centers are at least 750 metres apart; the existing shared-engine cities retain the same 25 sights and no leg exceeds 2.15 km. The enhanced Berlin tour keeps its takeoff/landing stops and original sights. scripts/maps/space-flight-routes.py uses a deterministic offline route optimizer; it adds no work during flight. Actual hoop spacing and collision-safe collection are checked in the browser. Existing 25-stop best scores and plane positions are retained; old resume data is archived and the reordered tour begins at stop 1.
 
 BENGALURU / BANGALORE (2026-10-26)
 Central Bengaluru adds 25 stops, spaced at least 750 metres apart by landmark center. Geofabrik Southern Zone supplies the real OSM buildings, roads, parks and lakes. The inland map requires no coastline geometry; overlapping lake polygons are merged. Vidhana Soudha, the High Court and State Central Library, Bangalore Palace, Tipu’s summer palace, Lalbagh Glasshouse and Chinnaswamy stadium use stylized dedicated models. Google Maps place searches were reviewed for all 25 stops; architecture references: https://bengaluruurban.nic.in/en/tourism/ and https://karnatakatourism.org/en/destinations/bengaluru/ .
+
+SMOOTHER FLIGHT (2026-10-30)
+Both engines interpolate their fixed-step simulation for display. The visible aircraft eases vertically after collision recovery; camera following and aim use elapsed-time smoothing. The route ribbon follows the displayed aircraft. Cached shadows keep their light projection until refreshed, unchanged guidance retains its DOM, and periodic saves run every three seconds (checkpoints, pause and exit still save immediately).
+Run tests/browser/flight-smoothness.mjs with hardware-enabled Chromium to check roof-contact visual jumps, camera easing, unchanged guidance nodes, all 25 hoops, pause saving and steering frame timing in Venice, Bengaluru and Berlin. Test timings are samples, not a guarantee under every desktop workload.
+
+ORDINARY-FLIGHT CLEARANCE (2026-10-30)
+Roof clearance now samples the existing obstacle grid ahead of the aircraft and gradually climbs with bounded vertical acceleration, replacing instant height corrections and speed cuts. Analog steering is proportional to stick movement. Automatic landmark camera pulls are limited to the title view; the explicit landmark inspection remains available. Route guidance reuses curve/vector objects. Bengaluru Balanced rendering is capped at 1600x900 pixels to leave GPU headroom on the integrated Radeon; High and Performance remain selectable. These physics/control changes also apply to Berlin.
+Run tests/browser/bengaluru-flight.mjs for two 30-second ordinary-flight samples, including low-altitude clearance and continuous steering. It checks altitude discontinuities and abrupt speed drops; the shared smoothness test also checks synthetic building contact in Venice, Bengaluru and Berlin.
+
+ROME AND DUBAI OPENINGS (ROUTE VERSION 7)
+Rome now starts at Piazza del Popolo and ends at the Colosseum. Dubai starts at
+Design Quarter and ends at Burj Khalifa. Both 25-stop routes are reversed, keeping
+the existing leg spacing. Migrating a version-6 save keeps its best score and
+plane position, archives the old route progress, and resets the next stop to 1.
+Continue flying resumes that position; the additional Start at [place] button
+starts at the revised opening. Other cities retain their current route version.
+
+Street paths and animation can be checked offline with:
+  node tests/scenery/street-life.mjs
+The browser scenery check also covers moving activity, pause, saved-route
+migration, mobile start controls, and all 25 hoops in each selected city:
+  node tests/browser/city-scenery.mjs
+
+VISIBLE STREET REGRESSION
+  node tests/browser/street-visibility.mjs berlin,venice,dubai after
+This captures normal chase-camera views and uses a depth-tested colour mask to
+count actual traffic pixels after building occlusion. It also checks movement
+without flight simulation ticks, and pause. Nearby actor counts alone do not
+prove that traffic is on screen.
+
+Venice's fresh flight approaches Rialto along the mapped Grand Canal so the
+water and quays are visible immediately. Resuming a saved flight keeps its position.
+Boat routes use both outer shorelines and inner island boundaries.
+
+DAYLIGHT REGRESSION
+  node tests/browser/city-daylight.mjs berlin,venice,dubai after
+  node tests/browser/city-daylight.mjs district after
+Captures flight and landmark views in .local/daylight, checks that sunlight,
+visible sky and water use the same direction, cycles all graphics settings without
+new geometry or shaders, and verifies all 25 checkpoints and finite geometry.
+Visual comparison includes the television tower, Reichstag dome and Berlin streets.
+
+APPROVED PALETTE AND BERLIN EXTENSION (2026-11-02)
+The user approved the bright colour palette, rounded geometry, lively streets and
+transit, and explicitly authorised publication, the extension through Köpenick,
+and the same visual improvements in all six other City Flight cities.
+Future changes in visual direction still require an actual game render for review.
+Reference photographs and the local design image are review material only.
+
+All seven cities use clean pastel materials, neutral white sunlight, rounded tree
+crowns, blue/teal water with smooth waves and reflections, and neutral UI whites.
+Regional facades, roof profiles, palms and cypresses remain distinct. Only Berlin
+uses the six-colour autumn mix; other cities retain green seasonal foliage.
+CityStyles defines fixed geographic afternoon solar presets for each city. These
+are scenic conditions, not live weather. Berlin keeps 24 October 2026, 13:05 UTC,
+19.77 degrees elevation and 215.22 degrees azimuth. East is +X; north is -Z.
+Reference: https://gml.noaa.gov/grad/solcalc/solareqns.PDF
+Sky, HDR reflections, shadows and water highlights use the same sun direction.
+The central Berlin sky-visibility atlas still uses 96 x 96 x 7 probes and fades at
+its boundary. No claim of full global illumination is made.
+
+Park groves cover whole mapped polygons, with buildings, roads, water, sports
+pitches, courtyard holes and the former airfield excluded. Berlin has a 24,000
+park-tree budget and 1,500 avenue trees; other cities use at most 12,000 / 700
+(Dubai 5,000 / 700; Venice at most 100 avenue trees). Planting beds, occasional
+flowers, lamps and road markings use spatial mesh batches. Tree wind phases vary.
+
+Berlin has green S-Bahn scenic shuttles and yellow buses/U-Bahn, following the
+user's explicit colour preference. Oberbaum's U-Bahn uses its authored upper deck.
+Other cities use regional train colours on existing mapped surface rails where
+available. No underground trains are drawn above ground. Venice retains walking
+and boat traffic, with no road vehicles. Vehicle and carriage pools are fixed;
+animation follows elapsed render time and freezes during pause. Scenic shuttle
+routes are not a complete railway network, live operation or real timetable.
+
+BERLIN MAP AND PARKSTADT PROVENANCE
+Downloaded Geofabrik Berlin on 2 November 2026. The extract's own replication
+header gives 2026-11-01T21:21:36Z (not a date inferred from a website or filename).
+Source: https://download.geofabrik.de/europe/germany/berlin.html
+Resolved download: https://download.geofabrik.de/europe/germany/berlin-261101.osm.pbf
+Map data © OpenStreetMap contributors, ODbL 1.0.
+
+The previous tour area [13.28,52.47,13.54,52.546] is joined to the eastern extent
+[13.48,52.435,13.64,52.515]. This includes Karlshorst, Wuhlheide and Köpenick's
+old town and surrounding streets. The ground covers the enlarged extent.
+All 25 tour hoops and save identifiers are retained. The extension has no hoops.
+Use the title's Explore Karlshorst & Köpenick button, or Pause > Explore places,
+to begin a scenic flight there without travelling from the city centre.
+
+Parkstadt's boundary is OSM way 1445246996. The importer preserves building IDs,
+footprints, courtyard holes and available storey tags, plus mapped tree and bench
+positions. Fourteen apartment footprints receive dedicated facade/window detail,
+flat planted roofs and recessed upper floors. Heights from storeys use an
+estimated 3.2 metres per floor; missing storeys use a marked five-floor estimate.
+Setback outlines, facade finishes, balconies and young-tree heights are authored
+approximations, not a survey or a photogrammetric reconstruction. The nearby
+school/sports hall uses its mapped footprints and generic height estimates.
+
+Architectural references, consulted 2 November 2026:
+https://www.eckertnegwersuselbeek.de/bauten/vorlage-genk9
+https://www.porr.de/fileadmin/s_porr-de/Medien/Imagebroschuere/Broschueren_Leistungen/PORR_Hochbau_Ost.pdf
+https://www.dbs-invest.de/projekte/parkstadt-berlin/
+https://www.berlin.de/ba-lichtenberg/aktuelles/pressemitteilungen/2020/pressemitteilung.952445.php
+The architect's built photographs inform light plaster, darker lower facades,
+recessed top floors and balconies. PORR documents courtyard blocks and flat green
+roofs. Mapped geometry takes precedence over generalised visual references.
+
+Rebuild with osmium and shapely:
+  python scripts/maps/build-berlin-map.py INPUT.osm.pbf OUTPUT.json
+Compress the resulting JSON with gzip (mtime=0) into:
+  public/games/city-flight/berlin/data/berlin.bin
+The input's replication timestamp is required and retained in the output.
+
+Validation:
+  node tests/scenery/berlin-autumn.mjs
+  node tests/scenery/berlin-planting.mjs
+  node tests/scenery/berlin-transit.mjs
+  node tests/scenery/berlin-extension.mjs
+  node tests/scenery/street-life.mjs berlin,venice,dubai
+  node tests/browser/city-daylight.mjs berlin,district city-final
+  node tests/browser/city-daylight.mjs venice,dubai,paris,london,rome,bengaluru city-final
+These cover planting exclusions, geographic sunlight, transit colours and motion,
+pause, fixed mesh pools, quality settings, finite geometry and all checkpoints.
+Actual renderer screenshots are stored under .local/daylight/city-*.png.

@@ -1,7 +1,7 @@
 const TEST_URL = process.env.ARCADE_TEST_URL || 'http://127.0.0.1:8766';
 import {launch} from '../helpers/cdp.mjs';import assert from 'node:assert/strict';import fs from 'node:fs';
 const cities=JSON.parse(fs.readFileSync(new URL('../../public/games/city-flight/cities.json',import.meta.url)));
-for(const c of cities){assert.equal(c.routeVersion,6);assert.equal(c.landmarks.length,25);assert.deepEqual(c.landmarks.map(l=>l.id).sort(),[...c.previousRouteIds].sort());for(let i=1;i<25;i++){const a=c.landmarks[i-1],b=c.landmarks[i],d=Math.hypot((a.lon-b.lon)*Math.cos((a.lat+b.lat)*Math.PI/360),a.lat-b.lat)*111.32;assert(d>=.75&&d<2.15,c.id+' adjacent cluster or distant detour');}}
+for(const c of cities){assert.equal(c.routeVersion,['rome','dubai'].includes(c.id)?7:6);assert.equal(c.landmarks.length,25);assert.deepEqual(c.landmarks.map(l=>l.id).sort(),[...c.previousRouteIds].sort());for(let i=1;i<25;i++){const a=c.landmarks[i-1],b=c.landmarks[i],d=Math.hypot((a.lon-b.lon)*Math.cos((a.lat+b.lat)*Math.PI/360),a.lat-b.lat)*111.32;assert(d>=.75&&d<2.15,c.id+' adjacent cluster or distant detour');}}
 const b=await launch({headed:true,args:['--headless=new','--ozone-platform=headless','--use-angle=gl-egl','--enable-gpu','--ignore-gpu-blocklist']});
 await b.signIn(TEST_URL);
 try{

@@ -46,7 +46,7 @@
   tiles.forEach(function (t, i) { t.addEventListener('mouseenter', function () { idx = i; paint(); }); });
   function pollPad() {
     if(document.querySelector('dialog[open]')){requestAnimationFrame(pollPad);return;}
-    var states = GamepadStd.read('launcher');
+    var states = GamepadStd.readPlayers('launcher', 1);
     for (var i = 0; i < states.length; i++) {
       var s = states[i], nav = GamepadStd.navRepeat(s, 'launcher');
       if (nav.left) idx = (idx - 1 + tiles.length) % tiles.length;

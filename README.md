@@ -8,7 +8,7 @@ A collection of custom browser games and adaptations with keyboard, touch, and c
 - Still Nonograms, Still Mahjong, and Still Reversi
 - Beat Safari and Chess Quest
 - Super Mario and Brick Ninja Quest
-- City Flight, including Berlin and 16 additional city tours
+- City Flight: Berlin, Paris, London, Rome, Venice, Bengaluru and Dubai
 - Rocket Pals and Pip and the Moonstone
 - Cheese Chase, Orchard Catch, and Kitchen Pals
 

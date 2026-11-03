@@ -177,11 +177,10 @@ function readInput() {
   if (pressed.has('Escape')) inp.back = true;
   if (pressed.has('ArrowLeft') || pressed.has('KeyA')) inp.left = true;
   if (pressed.has('ArrowRight') || pressed.has('KeyD')) inp.right = true;
-  // Controller via the shared standard (AGENTS.md §9); the first pad is the player.
+  // The most recently used controller flies the local player's ship.
   // D-pad or left stick = fly, A = confirm / dash, B = back (menus) or pause-resume (play), Start = pause-resume.
-  const pads = GamepadStd.read('game');
-  if (pads.length) {
-    const p = pads[0];
+  const p = GamepadStd.readActive('game');
+  if (p) {
     let ax = p.ax, ay = p.ay;                   // analog stick (deadzone handled by GamepadStd)
     if (p.left && ax > -0.5) ax = -1;           // d-pad gives full speed when the stick is centred
     if (p.right && ax < 0.5) ax = 1;
