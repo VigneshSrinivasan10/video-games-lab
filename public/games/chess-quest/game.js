@@ -213,6 +213,17 @@ function solvePuzzle(pos0, stars0, needGob, safe, limit) {
   }
   return null;
 }
+// Legal captures matter: a pinned attacker cannot necessarily win a piece.
+function captureThreats(pos, side) {
+  return legalMoves({ ...pos, turn: side, ep: side === pos.turn ? pos.ep : -1 }, side)
+    .filter(m => m.cap && m.cap.toUpperCase() !== 'K');
+}
+function looseCaptures(pos, side) {
+  return captureThreats(pos, side).filter(m => {
+    const next = makeMove({ ...pos, turn: side }, m);
+    return !captureThreats(next, other(side)).some(reply => reply.to === m.to);
+  });
+}
 /* ===== ENGINE END ===== */
 
 /* ===== Chess Quest — game ===== */
@@ -702,18 +713,20 @@ function animateMove(m, onLand) {
 function setTheme(i) { G.theme = i; }
 function isPuzzle() { return G.kind === 'stars' || G.kind === 'gobble' || G.kind === 'safe'; }
 function startLevel(li) {
+  G.positionIndex=null;
   const lv = LEVELS[li];
   G.mode = 'level'; G.li = li; G.kind = lv.kind; G.gems = [false, false, false]; setTheme(lv.theme);
   if (lv.kind === 'game') startGame(); else loadPuzzle(0);
   showHintCard('Level ' + (li + 1) + ': ' + lv.name, lv.tip, lv.icon);
 }
 function startFree(mode) {
+  G.positionIndex=null;
   G.mode = mode; G.kind = 'game'; G.gems = [false, false, false];
   setTheme(mode === 'two' ? 3 : 9); startGame();
   if (mode === 'two') showHintCard('2 Players', 'Sunny team goes first. Take turns. Trap the other king to win!', ['N', 'w']);
   else showHintCard('Play Grumble', 'A real game with King Grumble. You are the sunny team. You go first!', ['K', 'b']);
 }
-function resetTurnState() { G.sel = -1; G.targets = []; G.hintM = null; G.locked = false; G.thinking = false; G.timers = []; G.busy = 0; G.lastMove = null; G.idle = 0; G.banner = null; }
+function resetTurnState() { G.coachMarks = []; G.hintStage = 0; G.sel = -1; G.targets = []; G.hintM = null; G.locked = false; G.thinking = false; G.timers = []; G.busy = 0; G.lastMove = null; G.idle = 0; G.banner = null; }
 function loadPuzzle(pi) {
   const lv = LEVELS[G.li]; G.pi = pi;
   const { pos, stars } = posFromRows(lv.puzzles[pi], 'w', '');
@@ -728,6 +741,7 @@ function loadPuzzle(pi) {
   say((lv.owl && lv.owl[pi]) || lv.tip);
 }
 function startGame() {
+  G.positionIndex=null; G.initialBoard=startPosition().b;
   resetTurnState();
   G.pos = startPosition(); G.stars = []; G.hist = []; G.ply = 0; G.allPlies = 0; G.capQ = false; G.autoSel = false; G.cursor = 52;
   buildSprites(true);
@@ -735,6 +749,8 @@ function startGame() {
   say(G.mode === 'two' ? 'Sunny team, your turn!' : 'You are the sunny team. You go first! Try moving a pawn.');
 }
 function restartCurrent() {
+  if (G.positionIndex != null && G.kind === 'game') { startPracticePosition(G.positionIndex,G.mode); return; }
+  if (G.mode === 'academy') { academyStart(academyState.lesson, academyState.step); return; }
   if (G.mode !== 'level') startFree(G.mode);
   else if (G.kind === 'game') startLevel(G.li);
   else { loadPuzzle(G.pi); }
@@ -773,6 +789,7 @@ function activate() {
   G.idle = 0;
   if (!canAct()) { if (G.thinking) say('Wait! Grumble is thinking...'); return; }
   const sq = G.cursor, p = G.pos.b[sq], me = sideToPlay();
+  if (G.mode === 'academy' && colorOf(p) === 'w' && sq !== academyFrom(academyTask())) return;
   if (G.sel >= 0) {
     const m = G.targets.find((mm) => mm.to === sq);
     if (m) { playerMove(m); return; }
@@ -790,6 +807,8 @@ function activate() {
   } else say(p === '.' ? 'Pick one of your pieces first!' : (G.mode === 'two' ? 'It is the other team’s turn!' : 'That is a grumpy piece. Pick one of YOUR pieces!'));
 }
 function playerMove(m) {
+  if (G.mode === 'academy') { academyTry(m); return; }
+  G.coachMarks = []; G.hintStage = 0;
   G.hintM = null; G.idle = 0;
   if (isPuzzle()) {
     const np = makeMove(G.pos, m, true);
@@ -855,7 +874,7 @@ function afterGameMove(m) {
     return;
   }
   if (st === 'stalemate') {
-    if (G.mode !== 'two' && mover === 'w') {
+    if (G.positionIndex == null && G.mode !== 'two' && mover === 'w') {
       G.locked = true; banner('UH-OH!', '#ff8a3d'); sfx.wrong();
       say('His king cannot move, but he is not in check. That is a tie! Try another move.');
       after(2.8, () => { G.pos = G.hist.pop(); G.ply--; G.lastMove = null; buildSprites(false); G.locked = false; });
@@ -874,8 +893,8 @@ function afterGameMove(m) {
     if (capName) grumble(['Hmph! My ' + capName + '!', 'Oh no, not my ' + capName + '!', 'Grr! Good one!'][G.ply % 3], 'surprised');
     else if (st === 'check') grumble('Eek! My king!', 'surprised');
     const lead = material(G.pos.b, 'w') - material(G.pos.b, 'b');
-    if (lead >= 600) { grumbleGivesUp('giveup'); return; }
-    if (G.allPlies >= 100) { grumbleGivesUp('sleepy'); return; }
+    if (G.positionIndex == null && lead >= 600) { grumbleGivesUp('giveup'); return; }
+    if (G.positionIndex == null && G.allPlies >= 100) { grumbleGivesUp('sleepy'); return; }
     G.thinking = true;
     say(capName ? 'You got his ' + capName + '! Super!' : 'Good move! Now Grumble is thinking...');
     after(0.9, grumbleTurn);
@@ -898,6 +917,7 @@ function grumbleTurn() {
   animateMove(m, () => { G.thinking = false; afterGameMove(m); });
 }
 function playerTrapped() {
+  if(G.positionIndex != null) {G.locked=true;after(1.6,()=>gameOverCard('Grumble wins!', 'Try the next board or play this one again.'));return;}
   G.locked = true; sfx.oops();
   grumble('Ha! Got your king!', 'grumpy');
   say('Oops! Grumble trapped your king. Let’s go back a little and try again!');
@@ -924,8 +944,39 @@ function endTie() {
   if (G.mode === 'level') { G.gems = [true, G.capQ, false]; after(1.6, levelClear); }
   else after(1.6, () => gameOverCard('A tie!', 'Good game, everyone!'));
 }
+function squareName(sq) { return 'abcdefgh'[sq & 7] + (8 - (sq >> 3)); }
+function inspectThreats() {
+  if (!canAct() || G.kind !== 'game') return;
+  G.hintM = null;
+  const side = G.pos.turn;
+  const danger = captureThreats(G.pos, other(side));
+  const wins = looseCaptures(G.pos, side);
+  G.coachMarks = [...new Set(danger.map(m => m.to))];
+  if (inCheck(G.pos, side)) say('Check! Can you move your king, capture the attacker, or block the check?');
+  else if (danger.length) {
+    const m = danger[0];
+    say('Look at the ! marks. The ' + NAME[m.piece] + ' can take your ' + NAME[m.cap.toUpperCase()] + ' on ' + squareName(m.to) + '. Move, protect, or capture? Check the trade!');
+  } else if (wins.length) say('No captures against your pieces right now. Can you find a piece to win? Look for checks and captures.');
+  else say('No captures against your pieces right now. What changed last turn? Bring out a piece or keep your king safe.');
+}
+function secondLook() {
+  if (FAMILY || !canAct() || G.kind !== 'game' || !G.hist.length) return;
+  const back = G.mode === 'two' ? 1 : Math.min(2, G.hist.length);
+  const restored = G.hist[G.hist.length - back];
+  G.hist.length -= back; G.ply -= back; G.allPlies = Math.max(0, G.allPlies - back);
+  resetTurnState(); G.pos = restored; buildSprites(false);
+  G.capQ = !G.pos.b.includes('q');
+  say('A second look! What was your opponent threatening? Try another idea.');
+}
 function showHint() {
+  if (G.mode === 'academy') { if (canAct()) academyHint(); return; }
   if (G.screen !== 'play' || G.paused || G.busy || G.locked || G.thinking || !myTurn()) return;
+  if (G.kind === 'game' && !G.hintStage) {
+    G.hintStage = 1;
+    inspectThreats();
+    say(G.owl + ' Press Hint again for a move.');
+    return;
+  }
   let m = null;
   if (isPuzzle()) { const sol = solvePuzzle(G.pos, G.stars, G.kind !== 'stars', G.kind === 'safe'); m = sol && sol[0]; }
   else if (G.kind === 'mate') { m = legalMoves(G.pos).find((mm) => gameStatus(makeMove(G.pos, mm)) === 'mate'); G.tries = Math.max(G.tries, 1); }
@@ -934,7 +985,14 @@ function showHint() {
   sfx.hint();
   G.cursor = m.from; select(m.from, true);
   G.hintM = m; G.hintT = 0; G.idle = 0;
-  say('Try this! Follow the green arrow, then press A.');
+  const next = makeMove(G.pos, m);
+  const reason = G.kind !== 'game' ? 'Follow the green arrow.'
+    : gameStatus(next) === 'mate' ? 'This is checkmate: the king has no escape!'
+    : inCheck(G.pos, G.pos.turn) ? 'This move gets your king out of check.'
+    : m.castle ? 'Castling moves your king toward safety and brings your rook out.'
+    : m.cap ? 'This captures a ' + NAME[m.cap.toUpperCase()] + '. What could they capture back?'
+    : 'Try this move. What can your opponent do next?';
+  say(reason + ' Follow the arrow, then press A.');
 }
 
 /* ---------- celebration & menus ---------- */
@@ -963,16 +1021,25 @@ function gameOverCard(title, text) {
   $('clearImg').src = pieceImage('K', G.mode === 'two' && title.startsWith('Purple') ? 'b' : 'w', 150, 'happy');
   $('clearTitle').textContent = title; $('clearText').textContent = text; $('clearGems').innerHTML = '';
   $('btnNext').textContent = 'Play again ▶'; $('btnClearMap').classList.remove('hidden');
-  G.clearNext = 'again';
+  G.clearNext = G.positionIndex != null ? 'position' : 'again';
+  if(G.positionIndex != null) {
+    $('btnNext').textContent='Next board ▶';
+    $('clearText').textContent='Next board coming up…';
+    after(4,nextPracticePosition);
+  }
   showScreen('clear');
 }
 const SCREENS = ['title', 'players', 'map', 'hint', 'pause', 'clear'];
 let hintTimer = 0;
 function showScreen(id) {
   SCREENS.forEach((s) => $(s).classList.toggle('hidden', s !== id));
+  $('btnReplayPosition').classList.toggle('hidden', id !== 'clear' || G.clearNext !== 'position');
   G.screen = id || 'play';
   G.paused = id === 'pause';
+  $('btnPositionMenu').classList.toggle('hidden', G.positionIndex == null || G.kind !== 'game');
   $('playBtns').classList.toggle('hidden', !!id);
+  $('btnDetective').classList.toggle('hidden', G.kind !== 'game');
+  $('btnUndo').classList.toggle('hidden', G.kind !== 'game' || !!FAMILY);
   if (id) setTimeout(focusDefault, 20);
   else if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
 }
@@ -1184,6 +1251,10 @@ function drawField() {
     if (!s.dying) { ctx.fillStyle = 'rgba(20,24,40,' + (0.18 - lift * 0.005) + ')'; ctx.beginPath(); ctx.ellipse(x, y + SQ * 0.5 - 7, 17 - lift * 0.3, 4.5, 0, 0, TAU); ctx.fill(); }
     drawPiece(s.t, s.c, x, y, { lift, sx, rot, alpha, mood: s.tipping ? 'happy' : null });
   }
+  // Optional threat detective marks, with a symbol as well as colour.
+  for (const sq of G.coachMarks || []) {
+    text('!', sqX(sq) + 20, sqY(sq) - 18, 24, '#ff5a4d');
+  }
   // cursor
   const cx = BX + (G.cursor & 7) * SQ, cy = BY + (G.cursor >> 3) * SQ, cp = 1;
   ctx.save(); ctx.translate(cx + SQ / 2, cy + SQ / 2); ctx.scale(cp, cp);
@@ -1213,7 +1284,7 @@ function drawField() {
 }
 function drawHud() {
   const lv = LEVELS[G.li];
-  const title = G.mode === 'level' ? (G.li + 1) + '. ' + lv.name : G.mode === 'two' ? '2 Players' : 'Play Grumble';
+  const title = G.mode === 'academy' ? '★  ' + (academyState.lesson + 1) + '   /   ' + (academyState.step + 1) + ' ★' : G.mode === 'level' ? (G.li + 1) + '. ' + lv.name : G.mode === 'two' ? '2 Players' : 'Play Grumble';
   const w = 470, x = W / 2 - w / 2, y = 12, h = 52;
   ctx.fillStyle = 'rgba(20,24,40,0.25)'; rr(ctx, x + 2, y + 5, w, h, 26); ctx.fill();
   const gr = ctx.createLinearGradient(0, y, 0, y + h); gr.addColorStop(0, '#fff09a'); gr.addColorStop(0.5, '#ffd23c'); gr.addColorStop(1, '#e8a512');
@@ -1231,6 +1302,7 @@ function drawHud() {
 }
 function puzzleDoneVisual() { return G.kind === 'mate' ? G.pos && gameStatus(G.pos) === 'mate' : puzzleDone(); }
 function drawSide() {
+  if (G.mode === 'academy') { drawAcademySide(); return; }
   // left: Professor Hoot the owl
   const owlY = 470;
   if (G.owl) { const lines = wrapLines(G.owl, 222 - 28, '900 20px ' + BODY).length, bh = lines * 25 + 24; bubble(14, Math.max(84, 372 - bh), 222, G.owl, 128, 398, G.owlPop); }
@@ -1257,7 +1329,7 @@ function drawSide() {
       text(turnTxt, x + w / 2, ty + 23, G.thinking ? 20 : 26, '#fff');
     }
     // pieces the player has won
-    const start = { p: 8, n: 2, b: 2, r: 2, q: 1 }, got = [];
+    const start = Object.fromEntries(['p','n','b','r','q'].map(p=>[p,(G.initialBoard || startPosition().b).filter(q=>q===p).length])), got = [];
     for (const k in start) { const have = G.pos.b.filter((p) => p === k).length; for (let i = have; i < start[k]; i++) got.push(k.toUpperCase()); }
     if (got.length) {
       text('You got:', x + 14, 452, 20, '#fff', 'left');
@@ -1341,7 +1413,7 @@ function update(dt) {
   G.shake = Math.max(0, G.shake - dt * 30);
   G.curPulse = Math.max(0, G.curPulse - dt * 6);
   G.owlPop = Math.max(0, G.owlPop - dt * 4); G.grumPop = Math.max(0, G.grumPop - dt * 4);
-  if (G.screen === 'play' && canAct()) {
+  if (G.screen === 'play' && canAct() && G.mode !== 'academy') {
     G.idle += dt;
     if (G.idle > 25 && !G.hintM) { G.idle = -1000; say('Need help? Press X for a hint!'); }
   }
@@ -1362,7 +1434,7 @@ function pressB() {
   switch (G.screen) {
     case 'play': if (G.sel >= 0 && !G.autoSel && !G.busy) { deselect(); G.hintM = null; sfx.tick(); } else pauseGame(); break;
     case 'pause': resumeGame(); break;
-    case 'players': case 'map': sfx.click(); goTitle(); break;
+    case 'positions': case 'academy': case 'players': case 'map': sfx.click(); goTitle(); break;
     default: break;
   }
 }
@@ -1389,6 +1461,8 @@ window.addEventListener('keydown', (e) => {
     case 'ArrowDown': case 'KeyS': dirInput(0, 1); break;
     case 'Space': case 'Enter': case 'NumpadEnter': if (!e.repeat) pressA(); break;
     case 'Escape': case 'Backspace': pressB(); break;
+    case 'KeyT': inspectThreats(); break;
+    case 'KeyU': secondLook(); break;
     case 'KeyP': pressStart(); break;
     case 'KeyX': case 'KeyH': case 'ShiftLeft': case 'ShiftRight': pressX(); break;
     case 'Tab': navMove(e.shiftKey ? -1 : 1, 0); break;
@@ -1405,7 +1479,8 @@ function pollPads() {
     if (p.just.A) pressA();
     if (p.just.B) pressB();
     if (p.just.start) pressStart();
-    if (p.just.X || p.just.Y) pressX();
+    if (p.just.X) pressX();
+    if (p.just.Y) { if (G.kind === 'game') inspectThreats(); else pressX(); }
   }
 }
 cv.addEventListener('pointerdown', (e) => {
@@ -1433,12 +1508,16 @@ $('btnMusic').addEventListener('click', () => { ensureAudio(); setMusic(!AU.musi
 $('btnPlayers').addEventListener('click', () => { sfx.click(); G.mode = 'menu'; resetTurnState(); ArcadeProfile.switchPlayer(); });
 $('btnNext').addEventListener('click', () => {
   sfx.click();
-  if (G.clearNext === 'next') startLevel(Math.min(LEVELS.length - 1, G.li + 1));
-  else if (G.clearNext === 'again') startFree(G.mode);
+  if (G.clearNext === 'position') nextPracticePosition();
+  else if (G.clearNext === 'next') startLevel(Math.min(LEVELS.length - 1, G.li + 1));
+  else if (G.clearNext === 'again') { if(G.positionIndex != null) startPracticePosition(G.positionIndex,G.mode); else startFree(G.mode); }
   else goMap();
 });
-$('btnClearMap').addEventListener('click', () => { sfx.click(); goTitle(); });
+$('btnReplayPosition').addEventListener('click',()=>startPracticePosition(G.positionIndex,G.mode));
+$('btnClearMap').addEventListener('click', () => { sfx.click(); resetTurnState(); goTitle(); });
 $('btnHint').addEventListener('click', () => { ensureAudio(); showHint(); });
+$('btnDetective').addEventListener('click', inspectThreats);
+$('btnUndo').addEventListener('click', secondLook);
 $('btnPause').addEventListener('click', () => { ensureAudio(); pauseGame(); });
 document.addEventListener('visibilitychange', () => { if (document.hidden && G.screen === 'play') pauseGame(); });
 
@@ -1472,14 +1551,14 @@ setMusic(AU.musicOn);
 goTitle();
 requestAnimationFrame(frame);
 // debug hooks for the test harness
-window.CQ = { G, LEVELS, startLevel, startFree, loadPuzzle, solvePuzzle, legalMoves, makeMove, gameStatus, bestMove, posFromRows, showHint, goMap, goTitle, SAVE: () => SAVE, DB: () => DB };
+window.CQ = { gameOverCard, afterGameMove, inspectThreats, secondLook, playerMove, captureThreats, looseCaptures, G, LEVELS, startLevel, startFree, loadPuzzle, solvePuzzle, legalMoves, makeMove, gameStatus, bestMove, posFromRows, showHint, goMap, goTitle, SAVE: () => SAVE, DB: () => DB };
 
 
 if(FAMILY) {
   const familySounds=[];
   if(FAMILY.role==='host')for(const name of Object.keys(sfx)){const original=sfx[name];if(typeof original==='function')sfx[name]=(...args)=>{if(familySounds.length<16)familySounds.push(name);return original(...args);};}
   for(const id of ['btnMap','btnPlayers','btnClearMap'])$(id).style.display='none';
-  const fields=['screen','paused','theme','t','mode','li','pi','kind','pos','stars','sprites','cursor','sel','targets','autoSel','moves','par','tries','gems','hintM','hintT','busy','locked','thinking','parts','texts','banner','shake','owl','owlPop','grumSay','grumMood','grumPop','ply','lastMove','curPulse','clearNext'];
+  const fields=['screen','paused','theme','t','mode','li','pi','kind','pos','stars','sprites','cursor','sel','targets','autoSel','moves','par','tries','gems','hintM','hintT','busy','locked','thinking','parts','texts','banner','shake','owl','owlPop','grumSay','grumMood','grumPop','ply','lastMove','curPulse','clearNext','coachMarks','hintStage'];
   const textIds=['hintTitle','hintText','clearTitle','clearText','btnNext'];
   FAMILY.register({
     start(){startFree('two');clearTimeout(hintTimer);},

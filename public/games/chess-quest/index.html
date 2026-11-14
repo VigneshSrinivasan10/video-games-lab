@@ -15,7 +15,7 @@
 <body>
 <div id="wrap"><canvas id="cv"></canvas></div>
 <canvas id="fx"></canvas>
-<div id="playBtns" class="hidden"><button id="btnHint" title="Hint" tabindex="-1">💡</button><button id="btnPause" title="Pause" tabindex="-1">⏸</button></div>
+<div id="playBtns" class="hidden"><button id="btnDetective" title="Threat detective (T / Y)" aria-label="Threat detective">🔎</button><button id="btnUndo" title="Second look: undo your turn (U)" aria-label="Second look: undo">↶</button><button id="btnHint" aria-label="Hint" title="Hint" tabindex="-1">💡</button><button id="btnPause" title="Pause" tabindex="-1">⏸</button></div>
 
 <div class="screen" id="title">
   <div class="card">
@@ -25,6 +25,8 @@
     <div class="home-modes">
       <button class="btn" id="btnFree">🤖 Play Computer</button>
       <button class="btn blue" id="btnTwo">🎮 Two Players</button>
+      <button class="btn blue" id="btnPositions">♟ Play a Position</button>
+      <button class="btn blue" id="btnAcademy">🔎 Detective School</button>
       <button class="btn blue" id="btnPlay">⭐ Lessons</button>
     </div>
     <div class="row"><button class="btn blue" id="btnWho">👤 <span id="whoName">Player</span></button></div>
@@ -46,7 +48,7 @@
   <div class="card">
     <h2><span id="mapPlayer">Player</span>'s Lessons</h2>
     <div class="stats">💎 <span id="mapGems">0</span> / 30</div>
-    <div id="mapArea"></div>
+    <div id="mapArea"></div><button class="btn blue" id="btnAcademyMap">🔎 Attack &amp; defense lessons</button>
     <div class="row"><button class="btn blue" id="btnHome">🏠 Home</button></div>
   </div>
 </div>
@@ -62,10 +64,11 @@
 
 <div class="screen hidden" id="pause">
   <div class="card">
-    <h1>Paused</h1>
+    <h1>Paused</h1><p>🔎 Detective: spot threats (T / Y)<br>↶ Second look: try again (U)<br>💡 Hint: a clue first, then a move (X)</p>
     <div class="row" style="flex-direction:column">
       <button class="btn big" id="btnResume">▶ Keep Playing</button>
       <div class="row">
+        <button class="btn blue hidden" id="btnPositionMenu">♟ Positions</button>
         <button class="btn blue" id="btnRestart">↺ Start again</button>
         <button class="btn blue" id="btnMap">🏠 Home</button>
         <button class="btn blue" id="btnMusic">🎵 Music: On</button>
@@ -81,11 +84,15 @@
     <h1 id="clearTitle">Super, Player!</h1>
     <p id="clearText">Level complete!</p>
     <div class="gemrow" id="clearGems"></div>
-    <div class="row"><button class="btn big" id="btnNext">Next ▶</button><button class="btn blue" id="btnClearMap">🏠 Home</button></div>
+    <div class="row"><button class="btn big" id="btnNext">Next ▶</button><button class="btn blue hidden" id="btnReplayPosition" aria-label="Replay this position">↶ Replay</button><button class="btn blue" id="btnClearMap">🏠 Home</button></div>
   </div>
 </div>
 
 
+<div class="screen hidden" id="academy"><div class="card academy-card"><h2 id="academyTitle"></h2><div id="academyContent"></div><button class="btn blue" id="academyHome">🏠 Home</button></div></div>
+<div class="screen hidden" id="positions"><div class="card academy-card"><h2>Play a Position</h2><div class="row"><button class="btn blue" id="positionComputer" aria-label="Play computer">🤖</button><button class="btn blue" id="positionTogether" aria-label="Two players">👤 + 👤</button></div><div id="positionChoices"></div><button class="btn blue" id="positionHome">🏠 Home</button></div></div>
 <script src="/games/chess-quest/game.js"></script>
+<script src="/games/chess-quest/academy.js"></script>
+<script src="/games/chess-quest/positions.js"></script>
 </body>
 </html>
