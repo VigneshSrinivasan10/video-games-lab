@@ -13,3 +13,5 @@
   .tile.focus, .tile:hover { transform: scale(1.06); border-color: var(--gold); box-shadow: 0 0 0 6px var(--gold), 0 12px 0 #0b3d91aa, 0 16px 28px rgba(0,0,0,.35); }
   .section { grid-column: 1 / -1; color:#fff; font-family: "Lilita One", Nunito, sans-serif; font-size: 30px; margin: 10px 0 -6px; text-shadow: 0 3px 0 #0b3d91; }
 .phone-exit{display:none}@media(pointer:coarse){.phone-exit{display:block;text-align:center;color:#e8f4ff;font-size:14px;margin:0 18px 18px}.hint{display:none}}
+
+.tile .preview { display:block; width:100%; height:auto; aspect-ratio:16/9; object-fit:cover; border-radius:10px; margin-bottom:10px; }

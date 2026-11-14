@@ -1,0 +1,37 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {launch} from '../helpers/cdp.mjs';
+import {startTestServer} from '../helpers/server.mjs';
+const server=await startTestServer(),b=await launch();
+fs.mkdirSync('output/rumble-riders',{recursive:true});
+const key=async(code,down)=>b.send('Input.dispatchKeyEvent',{type:down?'keyDown':'keyUp',code,key:code==='Space'?' ':code,windowsVirtualKeyCode:code==='Space'?32:code==='ArrowLeft'?37:39});
+const advance=ms=>b.eval(`__advance(${ms})`);
+const state=()=>b.eval('rumbleState');
+const until=async distance=>{distance*=2;for(let i=0;i<100;i++){const s=await state();if(s.position>=distance||s.state==='finish')return;await advance(Math.min(500,(distance-s.position)/112*1000+17))}throw Error('Course stalled')};
+const steer=async x=>{const before=await state(),code=before.playerX<x?'ArrowRight':'ArrowLeft';await key(code,true);await advance(Math.abs(x-before.playerX)/1.35*1000);await key(code,false)};
+try {
+ await b.signIn(server.base);b.logs.length=0;
+ await b.addInit(`(()=>{let now=0,queue=[];window.requestAnimationFrame=fn=>(queue.push(fn),queue.length);window.__advance=ms=>{for(let i=0;i<Math.ceil(ms/33.334);i++){now+=33.334;const batch=queue;queue=[];batch.forEach(fn=>fn(now))}};window.__pad=null;Object.defineProperty(navigator,'getGamepads',{value:()=>window.__pad?[window.__pad]:[]})})()`);
+ await b.send('Emulation.setDeviceMetricsOverride',{width:1280,height:720,deviceScaleFactor:1,mobile:false});
+ await b.goto(server.base+'/games/rumble-riders/index.html');
+ assert.equal((await state()).state,'intro');await b.screenshot('output/rumble-riders/star-sprint-intro.png');
+ await b.eval('document.querySelector("#play").click();document.querySelector("#sound").click()');await advance(2500);assert.equal((await state()).state,'race');assert.equal((await state()).racers.length,6);
+ await until(160);assert.equal((await state()).stars,4);assert.ok((await state()).boost>0,'Three stars trigger turbo');assert.ok((await state()).speed>90,'Turbo accelerates');
+ await b.screenshot('output/rumble-riders/star-sprint-gameplay.png');
+ await b.eval('document.querySelector("#pause").click()');const paused=await state();await advance(1000);assert.equal((await state()).position,paused.position);await b.eval('document.querySelector("#pause").click()');
+ await key('Space',true);await advance(200);assert.ok((await state()).jumpY>20);await key('Space',false);await advance(1000);assert.equal((await state()).jumpY,0);
+ await steer(.48);await until(310);await key('Space',true);await advance(350);await key('Space',false);await until(335);assert.equal((await state()).slow,0,'Jump clears puddle');
+ await steer(-.5);await until(475);assert.ok((await state()).jumpY>0,'Ramp launches automatically');assert.ok((await state()).boost>0);await advance(300);await b.screenshot('output/rumble-riders/star-sprint-jump.png');
+ await until(560);await steer(.35);await until(750);await b.screenshot('output/rumble-riders/star-sprint-tunnel.png');
+ await steer(-.35);await until(1040);await steer(.5);await until(1335);await key('Space',true);await advance(350);await key('Space',false);await until(1380);await steer(.5);await until(1470);assert.ok((await state()).jumpY>0);await until(1660);console.log('First half passed');assert.equal((await state()).state,'race','Race continues into the longer second stretch');
+ await steer(.25);await until(1840);await steer(-.48);await until(2000);await steer(.5);await until(2140);assert.ok((await state()).jumpY>0,'Second stretch ramp works');await until(2230);await steer(-.35);await until(2400);await steer(.35);await until(2710);await steer(-.5);await until(3050);await steer(.5);await until(3135);assert.ok((await state()).jumpY>0,'Final ramp works');await until(3320);await b.screenshot('output/rumble-riders/star-sprint-finish-arch.png');await until(3420);
+ const result=await state();assert.ok(result.passes>0,'Real overtakes occur');assert.equal(result.finishDistance,6840);assert.equal(result.state,'finish');assert.ok(result.stars>=20,JSON.stringify(result));assert.equal(result.bank,result.stars);assert.equal(await b.eval('document.querySelector("#finish").hidden'),false);await b.screenshot('output/rumble-riders/star-sprint-reward.png');
+ await b.eval('document.querySelectorAll("#colours button")[1].click();document.querySelector("#again").click()');assert.equal((await state()).colour,1);assert.equal((await state()).stars,0);await advance(2500);
+ await b.send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});
+ const button=await b.eval('(()=>{const r=document.querySelector("[data-key=Space]").getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2}})()');
+ await b.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{...button,id:1}]});await advance(200);assert.ok((await state()).jumpY>0,'Touch jumps');await b.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await advance(1000);await until(90);await b.screenshot('output/rumble-riders/star-sprint-mobile.png');assert.equal(await b.eval('document.documentElement.scrollWidth>innerWidth'),false);
+ await b.eval('window.__pad={connected:true,axes:[1,0],buttons:Array.from({length:16},()=>({pressed:false}))}');const x=(await state()).playerX;await advance(200);assert.ok((await state()).playerX>x,'Controller steers');await b.eval('__pad.axes[0]=0;__pad.buttons[0].pressed=true');await advance(100);assert.ok((await state()).jumpY>0,'Controller jumps');await b.eval('__pad.buttons[0].pressed=false;__pad.buttons[9].pressed=true');await advance(20);assert.equal((await state()).paused,true,'Controller pauses');
+ await b.eval('__pad=null;document.querySelector("#again").click()');await advance(2500);await steer(.48);await until(327);assert.ok((await state()).slow>0,'Puddle slows gently without ending race');await advance(800);assert.equal((await state()).slow,0);
+ await b.goto(server.base+'/games/rumble-riders/index.html');assert.equal((await state()).bank,result.bank,'Rewards survive reload');assert.equal((await state()).colour,1,'Chosen colour survives reload');
+ assert.deepEqual(b.errors(),[]);console.log('PASS: fast full race, turbo, real overtakes, '+result.stars+'/56 stars, puddle jump, ramps, finish, colour unlock, replay, pause, mobile touch and controller.');
+} finally {await b.close();await server.stop()}
