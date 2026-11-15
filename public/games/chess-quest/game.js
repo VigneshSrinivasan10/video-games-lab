@@ -713,6 +713,7 @@ function animateMove(m, onLand) {
 function setTheme(i) { G.theme = i; }
 function isPuzzle() { return G.kind === 'stars' || G.kind === 'gobble' || G.kind === 'safe'; }
 function startLevel(li) {
+  window.ArcadeMonitor?.level('Level ' + (li + 1));
   G.positionIndex=null;
   const lv = LEVELS[li];
   G.mode = 'level'; G.li = li; G.kind = lv.kind; G.gems = [false, false, false]; setTheme(lv.theme);

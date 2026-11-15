@@ -1,4 +1,5 @@
 import { dataRoot } from './paths.mjs';
+import { monitoring } from './monitoring.mjs';
 import { profiles, profileSession } from './profiles.mjs';
 import { sudokuAccounts } from './sudoku.mjs';
 import { readFileSync } from 'node:fs';
@@ -71,6 +72,8 @@ export async function online(req,res) {
     else json(res,401,{error:'Please unlock the arcade',login:'/login'});
     return true;
   }
+  if(await monitoring(req,res)) return true;
+  if(path === '/monitor/' || path === '/monitor/index.html') return false;
   if(await profiles(req,res)) return true;
   if(await sudokuAccounts(req,res)) return true;
   if ((path.endsWith('.html') || path.endsWith('/')) && !['/', '/index.html'].includes(path) && !profileSession(req)) {

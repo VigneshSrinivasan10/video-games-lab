@@ -1662,6 +1662,7 @@ const $ = (id) => document.getElementById(id);
     }
 
     function loadLevel(index) {
+  window.ArcadeMonitor?.level('Level ' + (index + 1));
       const map = generateLevel(index);
       const maxW = Math.max(...map.map((r) => r.length));
       const rows = map.map((r) => r.padEnd(maxW, " "));

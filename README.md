@@ -79,3 +79,7 @@ node tests/browser/multiplayer-smoke.mjs
 Browser tests require Chromium. Each smoke suite starts an isolated server with temporary credentials and saves.
 
 See [development and architecture](docs/development.md), [test instructions](tests/README.md), and [city map sources and rebuilding](docs/city-flight.txt).
+
+## Monitoring
+
+Open `/monitor/` for visits, IP addresses, live players and saved progress from hosted and localhost play. Run `node scripts/setup-monitoring.mjs` to create a separate admin key. See [setup, coverage and retention](docs/monitoring.md).

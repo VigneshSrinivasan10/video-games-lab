@@ -181,6 +181,7 @@ const sfx = {
 
 // ---------- game logic ----------
 function startGame(withP2) {
+  window.ArcadeMonitor?.level('Level 1');
   S.mode = 'playing'; S.score = 0; S.hearts = 3; S.level = 1; S.items = []; S.parts = []; S.floats = [];
   S.spawnT = 0.7; S.shake = 0; S.paused = false; S.streak = 0; S.wind = 0; S.showerT = 14; S.shower = null;
   S.banner = { text: 'Level 1', sub: 'Catch the fruit!', life: 1.6 };
@@ -209,6 +210,7 @@ const LEVEL_INTRO = {
 };
 function levelUp() {
   S.level++;
+  window.ArcadeMonitor?.level('Level ' + S.level);
   S.banner = { text: `Level ${S.level}!`, sub: LEVEL_INTRO[S.level] || pick(['Faster now!', 'You are doing great!', 'Keep going!']), life: 2 };
   sfx.level();
   if (!reduceMotion) confetti(70);

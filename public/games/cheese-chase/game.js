@@ -375,6 +375,7 @@ document.addEventListener('fullscreenchange', () => { fsBtn.hidden = !!document.
 // ---------- level setup ----------
 let bgDirty = true;
 function startLevel(i) {
+  window.ArcadeMonitor?.level('Level ' + (i + 1));
   const L = LEVELS[i]; S.level = i;
   const g = L.map;
   S.rows = g.length; S.cols = g[0].length;
