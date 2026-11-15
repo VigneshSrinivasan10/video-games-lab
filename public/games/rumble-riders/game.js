@@ -85,7 +85,7 @@ function stuntBike(x,y,s,color,pitch){
  ctx.restore();
 }
 function rampRise(distance,x){
- let rise=0;for(const r of rampList){if(Math.abs(x-r.x)>.45)continue;const spec=RumbleRiding.ramps[r.style||'simple'];const t=(distance-(r.distance-spec.length))/spec.length;if(t>=0&&t<=1)rise=Math.max(rise,spec.rise*t*t)}return rise*4.9;
+ let rise=0;for(const r of rampList){if(Math.abs(x-r.x)>.45)continue;const spec=RumbleRiding.ramps[r.style||'simple'];const t=(distance-(r.distance-spec.length))/spec.length;if(t>=0&&t<=1)rise=Math.max(rise,RumbleRiding.rampHeight(r.style,t))}return rise*4.9;
 }
 function startRamp(r){
  const launch=RumbleRiding.launch(r.style||'simple',speed);jumpMode=r.style==='flip'?'flip':'ramp';jumpY=launch.height;jumpV=launch.velocity+groundRate();jumpAge=0;flightDuration=launch.duration;flipAngle=0;boost=Math.max(boost,1.5);show(r.style==='flip'?'⤾':'⤴');sound(440,.15);sound(880,.18,.1);
@@ -133,14 +133,35 @@ function drawFeature(o,p){
  }
  if(o.type==='ramp'){
   const spec=RumbleRiding.ramps[o.style||'simple'],half=.45;
-  for(let i=7;i>=0;i--){const t0=i/8,t1=(i+1)/8,z0=o.z-spec.length*(1-t0),z1=o.z-spec.length*(1-t1);if(z1<0)continue;
-   const a=project(Math.max(0,z0),o.x-half),b=project(Math.max(0,z0),o.x+half),c=project(z1,o.x+half),d=project(z1,o.x-half);
-   const r0=spec.rise*t0*t0*h*.007*a.s,r1=spec.rise*t1*t1*h*.007*c.s;
-   poly([[b.x,b.y-r0],[c.x,c.y-r1],[c.x,c.y],[b.x,b.y]],'#806b50');
-   poly([[a.x,a.y-r0],[b.x,b.y-r0],[c.x,c.y-r1],[d.x,d.y-r1]],o.style==='flip'?'#ce995b':'#d4b17c');
-   line([[a.x,a.y-r0],[b.x,b.y-r0]],'#f4d8a2',Math.max(.5,2*a.s));
+  // Raised quarter-pipe profile, with visible steel cheeks and a clear takeoff lip.
+  const point=(t,x,ground=false)=>{const z=Math.max(0,o.z-spec.length*(1-t)),q=project(z,x);return [q.x,q.y-(ground?0:RumbleRiding.rampHeight(o.style,t)*h*.007*q.s)]};
+  const start=Math.max(0,1-o.z/spec.length),steps=16;
+  const edge=(x,ground=false)=>Array.from({length:steps+1},(_,i)=>point(start+(1-start)*i/steps,x,ground));
+  for(const side of [-1,1]){
+   const x=o.x+side*half,top=edge(x),base=edge(x,true);
+   poly([...top,...base.reverse()],side<0?'#193f4d':'#102c38');
+   for(let i=3;i<16;i+=3){const t=i/16;if(t<start)continue;line([point(t,x),point(t,x,true)],'#e6a13e',Math.max(1,3*p.s));}
   }
-  const mid=project(Math.max(1,o.z-spec.length*.5),o.x);ctx.fillStyle='#fff1bb';ctx.font=`bold ${Math.max(6,34*mid.s)}px Arial`;ctx.textAlign='center';ctx.fillText(o.style==='flip'?'⤾':'↑',mid.x,mid.y-spec.rise*.25*h*.007*mid.s);ctx.textAlign='start';return;
+  for(let i=steps-1;i>=0;i--){
+   const t0=Math.max(start,i/steps),t1=(i+1)/steps;if(t1<=start)continue;
+   poly([point(t0,o.x-half),point(t0,o.x+half),point(t1,o.x+half),point(t1,o.x-half)],i%2?'#287d8c':'#2c8492');
+  }
+  for(const side of [-1,1]){
+   poly([...edge(o.x+side*half),...edge(o.x+side*(half-.035)).reverse()],'#ffc74e');
+   line(edge(o.x+side*half),'#ffed9a',Math.max(1,2*p.s));
+  }
+  // Large perspective-painted chevrons remain readable from the approach.
+  for(const t of [.22,.46,.70])if(t>start+.03){
+   poly([point(t-.08,o.x-.29),point(t+.04,o.x),point(t-.08,o.x+.29),point(t-.015,o.x+.29),point(t+.105,o.x),point(t-.015,o.x-.29)],'#fff0ad');
+  }
+  const lip=point(1,o.x),lipL=point(1,o.x-half),lipR=point(1,o.x+half);
+  line([lipL,lipR],'#ffcf51',Math.max(2,7*p.s));
+  for(const side of [-1,1]){
+   const q=point(1,o.x+side*(half-.025)),pole=43*p.s;
+   line([q,[q[0],q[1]-pole]],'#e9e9cc',Math.max(1,3*p.s));
+   poly([[q[0],q[1]-pole],[q[0]-side*20*p.s,q[1]-pole+8*p.s],[q[0],q[1]-pole+15*p.s]],'#ff764b');
+  }
+  return;
  }
  if(o.type==='tunnel'){
   const half=roadWidth*1.07,top=p.y-380*unit*Math.max(1,h/700);
@@ -165,7 +186,10 @@ function drawFeature(o,p){
 function draw(){
 updateOcclusion();const theme=scenery.theme;
 ctx.save();if(!reducedMotion&&state==='race'){ctx.translate(w/2,h/2);ctx.rotate(-lean*.009-RumbleRiding.bank(circuit,position)*.002);ctx.scale(1.015,1.015);ctx.translate(-w/2,-h/2);}
-ctx.drawImage(scenery.background,0,0);
+// Follow the rider gently at the top of a high jump; keep the sky filled.
+const airCamera=reducedMotion?0:Math.max(0,jumpY-180)*Math.min(h/700,1.3)*.62;
+ctx.translate(0,airCamera);
+ctx.drawImage(scenery.background,0,-airCamera,w,h+airCamera);
 // The verges and asphalt are continuous ribbons: no horizontal polygon seams.
 const ground=ctx.createLinearGradient(0,h*.38,0,h);ground.addColorStop(0,theme.ground[0]);ground.addColorStop(1,theme.ground[1]);
 ribbon(depths,-30,theme.water?1.85:30,ground);ctx.globalAlpha=.35;ribbon(depths,-30,theme.water?1.85:30,ctx.createPattern(scenery.grain,'repeat'));ctx.globalAlpha=1;
@@ -256,9 +280,14 @@ let circuit=0,resumeCircuit=0,unlocked=1,completed=Array(10).fill(false),medals=
 const palette=['#df704d','#45b9be','#a98bdb','#e5b73d'];
 let state='intro',countdown=0,stars=0,jumpY=0,jumpV=0,jumpAge=0,slow=0,boost=0,flash=0,toast='',bank=0,colour=0,features=[],collected=0,speed=0,rush=0,chain=0,engine=null,engineGain=null,raceTime=0,place=7,passes=0,flightDuration=1,flipAngle=0,landingAge=10,landingForce=0,splash=0,rampList=[],previousGrade=0,jumpMode='none';
 const reducedMotion=matchMedia("(prefers-reduced-motion: reduce)").matches;
-let audio=null,muted=false,padJump=false,padPause=false,padDirection=0,padMenuDirection=0;
+let audio=null,muted=false,padJump=false,padDirection=0,padMenuDirection=0;
 try{const save=JSON.parse(localStorage.getItem('rumble-star-sprint')||'{}');bank=Math.max(0,Math.min(100000,Number(save.bank)||0));colour=Math.max(0,Math.min(3,Math.floor(Number(save.colour))||0));if(colour>Math.floor(bank/8))colour=0;unlocked=Math.max(1,Math.min(10,Math.floor(Number(save.unlocked)||1)));circuit=Math.max(0,Math.min(unlocked-1,Math.floor(Number(save.circuit)||0)));resumeCircuit=circuit;completed=Array.from({length:10},(_,i)=>save.completed?.[i]===true);medals=Array.from({length:10},(_,i)=>save.medals?.[i]===true);finishDistance=circuits[circuit].length}catch{}
 const ui={stars:document.querySelector('#stars'),speed:document.querySelector('#speed'),progress:document.querySelector('#progress'),rider:document.querySelector('#rider-progress'),message:document.querySelector('#message'),intro:document.querySelector('#intro'),finish:document.querySelector('#finish'),pause:document.querySelector('#pause')};
+const rivalMarkers=rivals.map((r,i)=>{const el=document.createElement('div');el.className='rival-marker';el.style.background=r.c;el.style.top=`${3+i*5}px`;el.setAttribute('role','img');ui.progress.parentElement.append(el);return el});
+function updateRaceMap(){
+ const progress=Math.min(100,position/finishDistance*100);ui.progress.style.width=`${progress}%`;ui.rider.style.left=`${progress}%`;
+ rivals.forEach((r,i)=>{const percentage=Math.max(0,Math.min(100,r.distance/finishDistance*100));const left=`${percentage.toFixed(1)}%`,label=`Racer ${i+1}: ${Math.round(percentage)}% of circuit`;if(rivalMarkers[i].style.left!==left)rivalMarkers[i].style.left=left;if(rivalMarkers[i].getAttribute('aria-label')!==label)rivalMarkers[i].setAttribute('aria-label',label)});
+}
 function sound(freq,duration=.1,delay=0,type='sine'){
  if(!audio||muted)return;const t=audio.currentTime+delay,osc=audio.createOscillator(),gain=audio.createGain();osc.type=type;osc.frequency.setValueAtTime(freq,t);gain.gain.setValueAtTime(.0001,t);gain.gain.exponentialRampToValueAtTime(.07,t+.015);gain.gain.exponentialRampToValueAtTime(.0001,t+duration);osc.connect(gain);gain.connect(audio.destination);osc.start(t);osc.stop(t+duration+.02);
 }
@@ -290,7 +319,10 @@ function award(kind){
 }
 function refreshTour(){
  const picker=document.querySelector('#circuit-picker');picker.replaceChildren();
- circuits.forEach((c,i)=>{const b=document.createElement('button');b.disabled=i>=unlocked;b.setAttribute('aria-label',`${i+1}. ${c.name}${completed[i]?' completed':''}`);b.setAttribute('aria-pressed',String(i===circuit));b.title=c.name;
+ const stops=[[55,65],[150,85],[250,55],[350,85],[445,65],[445,205],[350,180],[250,210],[150,180],[55,205]];
+ const route=stops.map(p=>p.join(',')).join(' ');
+ picker.insertAdjacentHTML('beforeend',`<svg viewBox="0 0 500 270" aria-hidden="true"><rect width="500" height="270" rx="24" fill="#75b9c2"/><path d="M15 45Q70 5 145 30T275 22T475 37L487 209Q453 258 369 237T235 246T35 244Q5 217 25 167T15 45" fill="#e3cf94"/><path d="M30 53Q90 20 155 45T280 40T460 50L470 202Q422 236 355 219T240 229T45 227Q22 207 42 164T30 53" fill="#88a979"/><path d="M190 0Q170 95 220 135T280 270" fill="none" stroke="#75b9c2" stroke-width="22"/><path d="M310 105l27-50 28 50zM365 145l28-48 25 48z" fill="#668b71"/><path d="M55 112l15-30 15 30zM85 137l15-30 15 30zM315 245l15-30 15 30z" fill="#3e7763"/><polyline points="${route}" fill="none" stroke="#5d725f" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/><polyline points="${route}" fill="none" stroke="#fff1bb" stroke-width="3" stroke-dasharray="5 8" stroke-linecap="round"/></svg>`);
+ circuits.forEach((c,i)=>{const b=document.createElement('button');b.disabled=i>=unlocked;b.setAttribute('aria-label',`${i+1}. ${c.name}${completed[i]?' completed':''}`);b.setAttribute('aria-pressed',String(i===circuit));b.title=c.name;b.style.left=`${stops[i][0]/5}%`;b.style.top=`${stops[i][1]/2.7}%`;
   b.innerHTML=`${b.disabled?'🔒':c.icon}<small>${i+1}</small>`;b.classList.toggle('complete',completed[i]);b.onclick=()=>selectCircuit(i);picker.append(b)
  });
  document.querySelector('#challenge-demo').textContent=circuits[circuit].demo;
@@ -300,13 +332,17 @@ function selectCircuit(index){
  if(index<0||index>=unlocked)return;
  circuit=index;resumeCircuit=index;scenery.configure(circuit,w,h);finishDistance=circuits[index].length;challenge=0;draft=0;position=0;time=0;speed=0;rush=0;jumpY=0;jumpV=0;playerX=-.25;lean=0;features=buildCourse();stars=0;place=7;ui.stars.textContent='0';ui.speed.textContent='0';ui.progress.style.width='0%';ui.rider.style.left='0%';document.querySelector('#place').textContent='7 / 7';rivals.splice(0,rivals.length,...makeRacers());save();refreshTour();draw();
 }
+function navigateMap(dx,dy){
+ const row=circuit<5?0:1,col=circuit<5?circuit:9-circuit;
+ const nextRow=Math.max(0,Math.min(1,row+dy)),nextCol=Math.max(0,Math.min(4,col+dx));
+ selectCircuit(nextRow===0?nextCol:9-nextCol);
+}
 function openTour(){
  state='intro';paused=false;keys.clear();document.querySelectorAll('.confetti').forEach(n=>n.remove());ui.finish.hidden=true;ui.intro.hidden=false;ui.message.textContent='';document.querySelector('main').classList.remove('boosting');engineSound();selectCircuit(circuit);
 }
 function nextCircuit(){
  if(state!=='finish')return;
- if(circuit===9){openTour();return}
- circuit++;scenery.configure(circuit,w,h);resumeCircuit=circuit;finishDistance=circuits[circuit].length;refreshTour();reset();
+ circuit=Math.min(9,circuit+1);openTour();document.querySelector('#play').focus({preventScroll:true});
 }
 function primaryAction(){if(state==='finish')nextCircuit();else reset()}
 
@@ -324,7 +360,7 @@ function finish(){
  document.querySelector('#bank').textContent=String(bank);document.querySelector('#jar-fill').style.width=`${Math.min(bank/24,1)*100}%`;chooseColours();
  document.querySelector('#clear-badge').textContent=circuit===9&&completed.every(Boolean)?'🏆 10 / 10 🏆':`${circuits[circuit].icon} ✓`;
  const stamps=document.querySelector('#tour-stamps');stamps.replaceChildren();circuits.forEach((c,i)=>{const stamp=document.createElement('span');stamp.textContent=medals[i]?'🏅':c.icon;stamp.className=(completed[i]?'earned ':'')+(i===circuit?'new':'');stamp.setAttribute('aria-label',`${c.name}: ${completed[i]?'complete':'not complete'}`);stamps.append(stamp)});
- document.querySelector('#next').textContent=circuit===9?'▦':'▶';document.querySelector('#next').setAttribute('aria-label',circuit===9?'View completed tour':'Next circuit');
+ document.querySelector('#next').textContent='Ⓐ 🗺';document.querySelector('#next').setAttribute('aria-label','Continue to the world map');document.querySelector('#finish .trophy').textContent=place===1?'🏆':'🏅';
  [523,659,784,1046,1318,1568].forEach((f,i)=>sound(f,.3,i*.14));
  for(let i=0;i<(circuit===9?80:48);i++){const el=document.createElement('i');el.className='confetti';el.style.left=`${(i*37)%100}%`;el.style.background=['#ffd16b','#f48a63','#7dd7cf','#c3a2f0'][i%4];el.style.animationDelay=`${i%8*.1}s`;el.style.setProperty('--drift',`${(i%7-3)*25}px`);document.querySelector('main').append(el);el.addEventListener('animationend',()=>el.remove())}
  document.querySelector('#next').focus({preventScroll:true});
@@ -335,26 +371,36 @@ function toggle(){if(state!=='race'&&state!=='countdown')return;paused=!paused;k
 function inputDown(code){if(keys.has(code))return;keys.add(code);if(code==='Space')jump()}
 function inputUp(code){keys.delete(code)}
 addEventListener('keydown',e=>{
- if(!['ArrowLeft','ArrowRight','Space','KeyA','KeyD','KeyP','Escape','Enter'].includes(e.code))return;
+ if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Space','KeyA','KeyD','KeyM','KeyP','Escape','Enter'].includes(e.code))return;
  // Native buttons retain Enter; Space starts the picture-based intro/replay.
  if(e.code==='Enter'){if((state==='intro'||state==='finish')&&!e.repeat){e.preventDefault();primaryAction()}return}
  e.preventDefault();if(e.repeat)return;
  if(e.code==='Space'&&(state==='intro'||state==='finish')){primaryAction();return}
- if(state==='intro'&&['ArrowLeft','ArrowRight'].includes(e.code)){selectCircuit(Math.max(0,Math.min(unlocked-1,circuit+(e.code==='ArrowRight'?1:-1))));return}
+ if(e.code==='KeyM'){openTour();return}
+ if(state==='intro'&&e.code.startsWith('Arrow')){navigateMap(e.code==='ArrowLeft'?-1:e.code==='ArrowRight'?1:0,e.code==='ArrowUp'?-1:e.code==='ArrowDown'?1:0);return}
  if(e.code==='KeyP'||e.code==='Escape'){toggle();return}inputDown(e.code);
 });
 addEventListener('keyup',e=>inputUp(e.code));
 addEventListener('blur',()=>{if(!paused)toggle();keys.clear()});
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&!paused)toggle()});
-ui.pause.onclick=toggle;document.querySelector('#play').onclick=reset;document.querySelector('#again').onclick=reset;document.querySelector('#next').onclick=nextCircuit;document.querySelector('#tour-map').onclick=openTour;
+document.querySelector('#map').onclick=openTour;ui.pause.onclick=toggle;document.querySelector('#play').onclick=reset;document.querySelector('#again').onclick=reset;document.querySelector('#next').onclick=nextCircuit;document.querySelector('#tour-map').onclick=openTour;
 document.querySelector('#sound').onclick=()=>{enableSound();muted=!muted;document.querySelector('#sound').textContent=muted?'♪̸':'♫';document.querySelector('#sound').setAttribute('aria-label',muted?'Enable sound':'Mute sound')};
 document.querySelectorAll('[data-key]').forEach(b=>{b.onpointerdown=e=>{e.preventDefault();b.setPointerCapture(e.pointerId);inputDown(b.dataset.key)};b.onpointerup=b.onpointercancel=b.onlostpointercapture=()=>inputUp(b.dataset.key)});
 function pollPad(){
- const pad=Array.from(navigator.getGamepads?.()||[]).find(p=>p?.connected);if(!pad){padDirection=0;if(padJump)inputUp('Space');padJump=false;padPause=false;return}
- const a=!!pad.buttons[0]?.pressed,start=!!pad.buttons[9]?.pressed;
- padDirection=pad.buttons[14]?.pressed?-1:pad.buttons[15]?.pressed?1:Math.abs(pad.axes[0]||0)>.2?pad.axes[0]:0;
- const menuDirection=padDirection>.5?1:padDirection<-.5?-1:0;if(state==='intro'&&menuDirection&&menuDirection!==padMenuDirection)selectCircuit(Math.max(0,Math.min(unlocked-1,circuit+menuDirection)));padMenuDirection=menuDirection;
- if(a&&!padJump){if(state==='intro'||state==='finish')primaryAction();else inputDown('Space')}if(!a&&padJump)inputUp('Space');if(start&&!padPause)toggle();padJump=a;padPause=start;
+ const pad=GamepadStd.readActive('rumble-riders');
+ if(!pad){padDirection=0;padMenuDirection=0;if(padJump)inputUp('Space');padJump=false;return}
+ if(pad.just.B){save();GamepadStd.exitToArcade();return}
+ padDirection=pad.left?-1:pad.right?1:pad.ax;
+ if(pad.just.X){openTour();return}
+ if(state==='intro'){
+  const nav=GamepadStd.navRepeat(pad,'rumble-map');
+  if(nav.left||nav.right||nav.up||nav.down)navigateMap(nav.left?-1:nav.right?1:0,nav.up?-1:nav.down?1:0);
+ }
+ if(state==='intro'||state==='finish'){
+  if(pad.just.A||pad.just.start)primaryAction();
+ }else if(pad.just.start)toggle();
+ else if(pad.just.A){if(paused)toggle();else inputDown('Space')}
+ if(!pad.A&&padJump)inputUp('Space');padJump=pad.A;
 }
 function update(dt){
  time+=dt;
@@ -365,7 +411,7 @@ function update(dt){
  slow=Math.max(0,slow-dt);boost=Math.max(0,boost-dt);flash=Math.max(0,flash-dt);
  const grade=RumbleWorld.grade(circuit,position)+(RumbleWorld.deck(circuit,position+5,playerX)-RumbleWorld.deck(circuit,position-5,playerX))/10;
  const terrainSpeed=Math.max(-12,Math.min(14,-grade*60));
- const help=place>3&&raceTime>8?6:0;
+ const help=place>4&&raceTime>10?2.5:0;
  const desired=(slow>0?64:boost>0?112:76)+terrainSpeed+help;
  if(previousGrade>0&&grade<=0&&speed>70&&jumpY===0&&RumbleWorld.environments[circuit].hill>=25){jumpMode='crest';jumpY=1;jumpV=125;jumpAge=.4;sound(280,.06)}previousGrade=grade;
  document.querySelector('#slope').textContent=grade>.055?'↗':grade<-.055?'↘':'';
@@ -399,8 +445,8 @@ function update(dt){
  // Rivals travel their own distance; boosts and clean riding change the actual gaps.
  rivals.forEach((r,i)=>{
   const priorGap=r.z-4,gap=r.distance-position;
-  const catchup=Math.max(-10,Math.min(4,-gap*.025));
-  const aiSpeed=67+i*.6+Math.sin(raceTime*.55+i*1.4)*3+catchup+Math.max(-12,Math.min(14,-RumbleWorld.grade(circuit,r.distance)*60));
+  const catchup=Math.max(-1.5,Math.min(2,-gap*.012));
+  const aiSpeed=74.5+i*1.4+circuit*.18+(circuit===4?2:0)+Math.sin(raceTime*.55+i*1.4)*3+catchup+Math.max(-12,Math.min(14,-RumbleWorld.grade(circuit,r.distance)*60));
   const localGrade=RumbleWorld.grade(circuit,r.distance)+(RumbleWorld.deck(circuit,r.distance+5,r.x)-RumbleWorld.deck(circuit,r.distance-5,r.x))/10;if(r.grade>0&&localGrade<=0&&RumbleWorld.environments[circuit].hill>=25){r.airY=1;r.airV=125}r.grade=localGrade;if(r.airY>0){r.airAge+=dt;const flight=RumbleRiding.step(r.airY,r.airV,dt);r.airY=flight.height;r.airV=flight.velocity;if(flight.landed)r.flip=false}
   const previous=r.distance;r.distance+=aiSpeed*dt;for(const f of features){if(['ramp','roller'].includes(f.type)&&f.distance>previous&&f.distance<=r.distance&&Math.abs(f.x-r.x)<.4&&r.airY===0){const launch=RumbleRiding.launch(f.style||'simple',aiSpeed);r.airY=f.type==='ramp'?launch.height:1;r.airV=f.type==='ramp'?launch.velocity:165;r.airAge=0;r.airDuration=launch.duration;r.flip=f.style==='flip'}}r.z=r.distance-position+4;if(priorGap>0&&r.z<=4&&!passedRacers.has(i)){passedRacers.add(i);award('pass')}
   if(r.finishedAt===null&&r.distance>=finishDistance)r.finishedAt=raceTime-dt+(finishDistance-previous)/aiSpeed;
@@ -423,11 +469,11 @@ function update(dt){
  document.querySelector('#turbo').classList.toggle('active',boost>0);
  document.querySelector('main').classList.toggle('boosting',boost>0);
  ui.stars.textContent=String(stars);ui.speed.textContent=String(Math.round(speed*1.45));ui.message.textContent=flash>0?toast:'';
- const progress=Math.min(100,position/finishDistance*100);ui.progress.style.width=`${progress}%`;ui.rider.style.left=`${progress}%`;
+ updateRaceMap();
  if(position>=finishDistance)finish();
 }
 // Read-only state for browser QA; gameplay uses normal keyboard, touch and gamepad input.
 Object.defineProperty(window,'rumbleState',{get:()=>({state,paused,position,playerX,stars,jumpY,jumpV,jumpMode,flipAngle,flightDuration,landingAge,splash,slow,boost,bank,colour,finishDistance,circuit,unlocked,completed:[...completed],medals:[...medals],challenge,challengeTarget:circuits[circuit].target,challengeKind:circuits[circuit].kind,terrain:{elevation:RumbleWorld.height(circuit,position),grade:RumbleWorld.grade(circuit,position),deck:RumbleWorld.deck(circuit,position,playerX),environment:scenery.theme.prop,bank:RumbleRiding.bank(circuit,position),surface:RumbleRiding.surface(circuit,position)},draft,speed,chain,place,passes,raceTime,racers:rivals.map(r=>({z:r.z,x:r.x,c:r.c,distance:r.distance,airY:r.airY})),remaining:features.filter(f=>f.type==='star'&&!f.done).length})});
 function frame(now){const dt=Math.min((now-last)/1000,.04);last=now;pollPad();engineSound();if(!paused&&!document.hidden){update(dt);if(state!=='finish')draw()}requestAnimationFrame(frame)}
-scenery.configure(circuit,w,h);features=buildCourse();refreshTour();draw();requestAnimationFrame(frame);
+scenery.configure(circuit,w,h);features=buildCourse();refreshTour();updateRaceMap();draw();requestAnimationFrame(frame);
 })();

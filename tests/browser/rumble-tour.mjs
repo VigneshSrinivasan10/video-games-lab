@@ -4,14 +4,14 @@ import {startTestServer} from '../helpers/server.mjs';
 const server=await startTestServer(),b=await launch();
 try{
  await b.signIn(server.base);b.logs.length=0;
- await b.addInit(`(()=>{
+ await b.addInit(`navigator.getGamepads=()=>[];(()=>{
  let now=0,queue=[];window.requestAnimationFrame=fn=>(queue.push(fn),queue.length);window.__advance=ms=>{for(let i=0;i<Math.ceil(ms/33.334);i++){now+=33.334;const batch=queue;queue=[];batch.forEach(fn=>fn(now))}};
  window.__skipDrawing=true;const original=HTMLCanvasElement.prototype.getContext;
  HTMLCanvasElement.prototype.getContext=function(...args){const c=original.apply(this,args);if(this.id!=='road'||!c)return c;return new Proxy(c,{get(t,k){const v=Reflect.get(t,k,t);if(typeof v!=='function')return v;return (...a)=>{if(__skipDrawing){if(k==='createLinearGradient'||k==='createRadialGradient')return {addColorStop(){}};return undefined}return v.apply(t,a)}},set(t,k,v){if(!__skipDrawing)Reflect.set(t,k,v,t);return true}})};
  })()`);
  await b.send('Emulation.setDeviceMetricsOverride',{width:1280,height:720,deviceScaleFactor:1,mobile:false});
  await b.goto(server.base+'/games/rumble-riders/index.html');
- assert.equal(await b.eval('RumbleTour.circuits.length'),10);
+ assert.equal(await b.eval('RumbleTour.circuits.length'),10);assert.equal(await b.eval('document.querySelectorAll(".rival-marker").length'),6);
  assert.equal(await b.eval('document.querySelectorAll("#circuit-picker button:not(:disabled)").length'),1);
  const layouts=await b.eval('RumbleTour.circuits.map((c,i)=>JSON.stringify(RumbleTour.build(i)))');assert.equal(new Set(layouts).size,10);
  const kinds=await b.eval('RumbleTour.circuits.map(c=>c.kind)');assert.equal(new Set(kinds).size,10);
@@ -22,8 +22,9 @@ try{
   const s=await b.eval('rumbleState');assert.equal(s.state,'finish',`Circuit ${i+1} finishes`);assert.ok(s.place<=3,`Forgiving default run places in top three on circuit ${i+1}: ${s.place}`);assert.equal(s.completed[i],true);assert.equal(s.unlocked,Math.min(10,i+2));
   assert.equal(await b.eval('document.querySelectorAll("#tour-stamps .earned").length'),i+1);
   if(i===0){await b.eval('__skipDrawing=false;document.querySelectorAll("#colours button")[0].click()');await b.screenshot('output/rumble-riders/tour-celebration.png');await b.eval('__skipDrawing=true')}
+  assert.equal(await b.eval('Array.from(document.querySelectorAll(".rival-marker")).every((el,i)=>Math.abs(parseFloat(el.style.left)-Math.min(100,rumbleState.racers[i].distance/rumbleState.finishDistance*100))<.1)'),true,'All rival positions match race distances');
   console.log(`Circuit ${i+1}: place ${s.place}/7, finish, stamp, unlock passed`);
-  if(i<9)await b.eval('document.querySelector("#next").click()');
+  if(i<9){await b.eval('document.querySelector("#next").click()');assert.equal(await b.eval('rumbleState.state'),'intro');assert.equal(await b.eval('rumbleState.circuit'),i+1);await b.eval('document.querySelector("#play").click()');}
  }
  assert.equal(await b.eval('document.querySelector("#clear-badge").textContent'),'🏆 10 / 10 🏆');
  await b.eval('__skipDrawing=false;document.querySelectorAll("#colours button")[0].click()');await b.screenshot('output/rumble-riders/tour-complete.png');
