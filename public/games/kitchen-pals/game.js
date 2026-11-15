@@ -51,6 +51,7 @@ function burst(c,r,n=14){for(let i=0;i<n;i++){if(S.particles.length>=240)S.parti
 function notice(text){S.notice=text;S.noticeT=2.5;}
 function unlockedInfo(){S.unlocked=SAVE.unlocked;S.mapStars=SAVE.stars.slice();S.name=DB.current;S.profileNames=Object.keys(DB.profiles);}
 function startLevel(level,resume=false){
+ window.ArcadeMonitor?.level('Level ' + (Math.max(0, Math.min(level, 7)) + 1));
  S.level=clamp(level,0,7);S.order=0;S.stars=0;S.served=0;S.notice='';S.particles=[];resetStations();makePlayers();
  if(resume&&SAVE.run&&SAVE.run.level===S.level){const r=SAVE.run;S.order=clamp(r.order|0,0,LEVELS[S.level].orders.length-1);if(r.players?.length===2)S.players=copy(r.players);if(r.machines&&stationList.every(st=>r.machines[st.id]))S.machines=copy(r.machines);S.stars=(r.stars||0)&7;S.team=!!FAMILY||!!r.team;S.served=r.served||0;}
  S.hintT=4;show(resume?'play':'hint');saveRun();

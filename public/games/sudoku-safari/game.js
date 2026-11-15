@@ -10,7 +10,8 @@ const puzzleKey=(p=data.puzzle)=>(data.little?'little:':'')+data.level+':'+p;
 const current=()=>puzzleKey(), config=()=>levels[data.level],theme=()=>themes[data.theme];
 function save(){if(board)data.boards[current()]=board.slice();ArcadeProfile.storage.setItem(KEY,JSON.stringify(data));}
 function say(message){$('status').textContent=message;}
-function start(){puzzle=generate(data.level,data.puzzle);
+function start(){
+ window.ArcadeMonitor?.level('Level ' + (data.level+1) + ' / puzzle ' + (data.puzzle+1));puzzle=generate(data.level,data.puzzle);
 if(data.little){let left=0;const holes=[2,4,6,8][data.level];puzzle.clues=puzzle.clues.map((v,i)=>v || (++left<=holes?0:puzzle.solution[i]));}
 trayIndex=0;const stored=data.boards[current()];board=Array.isArray(stored)&&stored.length===puzzle.clues.length&&stored.every(v=>Number.isInteger(v)&&v>=0&&v<=config().n)?stored.slice():puzzle.clues.slice();puzzle.clues.forEach((v,i)=>{if(v)board[i]=v;});selected=board.findIndex(v=>!v);history=[];hintTarget=-1;controllerTray=false;save();render();say(board.every((v,i)=>v===puzzle.solution[i])?'You did it! Press A for the next puzzle.':data.little?'Find the missing picture!': 'Tap an empty square, then choose a tile below.');}
 function isPeer(i,j){const {n,h,w}=config();return Math.floor(i/n)===Math.floor(j/n)||i%n===j%n||(Math.floor(i/n/h)===Math.floor(j/n/h)&&Math.floor(i%n/w)===Math.floor(j%n/w));}

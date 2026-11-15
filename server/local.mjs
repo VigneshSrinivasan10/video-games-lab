@@ -15,7 +15,8 @@ http.createServer((req, res) => {
   const signature = createHmac('sha256', secret).update(value).digest('hex');
   const cookies = (req.headers.cookie || '').split(';').map(s => s.trim()).filter(s => s && !s.startsWith('arcade_session='));
   cookies.push('arcade_session=' + value + '.' + signature);
-  const upstream = http.request({ hostname: '127.0.0.1', port: upstreamPort, path: req.url, method: req.method, headers: { ...req.headers, cookie: cookies.join('; ') } }, response => {
+  const localProof = createHmac('sha256', secret).update('local-monitor:' + value + '.' + signature).digest('hex');
+  const upstream = http.request({ hostname: '127.0.0.1', port: upstreamPort, path: req.url, method: req.method, headers: { ...req.headers, 'x-arcade-local': localProof, cookie: cookies.join('; ') } }, response => {
     res.writeHead(response.statusCode, response.headers); response.pipe(res);
   });
   upstream.on('error', () => { if (!res.headersSent) res.writeHead(503, {'Content-Type': 'text/plain'}); res.end('The arcade server is restarting. Please reload in a moment.'); });

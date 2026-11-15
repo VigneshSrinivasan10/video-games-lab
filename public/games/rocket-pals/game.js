@@ -456,6 +456,7 @@ function makeKart(o) {
 function placeKart(k, idx, s) { const T = S.track, c = T.C[((idx % T.N) + T.N) % T.N]; k.x = c.x + c.nx * s * T.halfW; k.y = c.y + c.ny * s * T.halfW; k.a = c.ang; k.vx = k.vy = 0; k.prog = ((idx % T.N) + T.N) % T.N; k.lapDist = wrapDelta(k.prog - 0, T.N); if (k.lapDist > 0) k.lapDist -= T.N; k.lap = 0; k.total = k.lapDist; }
 
 function startTrack(ti, opts) {
+  window.ArcadeMonitor?.level('Track ' + (ti + 1));
   opts = opts || {};
   if (FAMILY) S.players = 2;
   S.ti = ti; S.track = getTrack(ti); const T = S.track;

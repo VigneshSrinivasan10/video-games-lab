@@ -241,6 +241,7 @@ function togglePause() { if (S.mode === 'play') S.paused = !S.paused; }
 function startStory(lines, next) { S.story = { lines, idx: 0, shown: 0, next }; S.mode = 'story'; }
 
 function loadLevel(i) {
+  window.ArcadeMonitor?.level('Chapter ' + (i + 1));
   S.levelIdx = i; const L = lv();
   S.hearts = 3; S.shield = false; S.progress = 0; S.shake = 0; S.paused = false;
   Object.assign(S.ship, { x: VW * 0.25, y: VH * 0.55, vx: 0, vy: 0, inv: 1.2, dash: 0, tilt: 0 });

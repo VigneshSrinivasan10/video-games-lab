@@ -1884,6 +1884,7 @@ function buildMap() {
 function goTitle() { S.mode = 'title'; stopMusic(); $('titlePlayer').textContent = playerName(); if (!S.L) { buildLevel(0); S.phase = 'demo'; } showOverlay('title'); document.body.style.background = '#4FB0F0'; }
 function goMap() { S.mode = 'map'; stopMusic(); buildMap(); showOverlay('map'); if (S.L) S.phase = 'demo'; document.body.style.background = '#3FA66A'; }
 function startLevel(i) {
+  window.ArcadeMonitor?.level('Level ' + (i + 1));
   ensureAudio(); S.mode = 'game'; S.clearShown = false; buildLevel(i, false); S.phase = 'intro'; S.introT = 0; stopMusic(); hideOverlays(); $('pauseBtn').classList.add('show');
   $('touch').classList.toggle('show', isTouch || $('touch').classList.contains('show'));
 }

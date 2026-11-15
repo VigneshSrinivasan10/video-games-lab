@@ -1,10 +1,11 @@
 // Shared game-file and profile server. No dependencies. Local play proxies here.
 import http from 'node:http';
-import { realpath, stat } from 'node:fs/promises';
+import { realpath, stat, readFile } from 'node:fs/promises';
 import { createReadStream } from 'node:fs';
 import path from 'node:path';
 import { resolveAsset } from './routes.mjs';
 import { online } from './online.mjs';
+import { observeVisit } from './monitoring.mjs';
 
 const port = Number(process.env.ARCADE_PORT || 8780);
 const types = {'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8',
@@ -23,6 +24,7 @@ export const server = http.createServer(async (req, res) => {
   res.setHeader('Referrer-Policy','same-origin');
   res.setHeader('Cache-Control','private, no-store');
   res.setHeader('X-Frame-Options','SAMEORIGIN');
+  observeVisit(req, res);
   try { if (await online(req,res)) return; } catch { if(!res.headersSent) { res.writeHead(400,{'Content-Type':'application/json'}); res.end('{"error":"Invalid request"}'); } else res.end(); return; }
   const end = (code, message) => { res.writeHead(code, {'Content-Type':'text/plain; charset=utf-8'}); res.end(message); };
   if (!['GET','HEAD'].includes(req.method)) { res.setHeader('Allow','GET, HEAD'); return end(405,'Method not allowed'); }
@@ -41,6 +43,11 @@ export const server = http.createServer(async (req, res) => {
     }
     const actual = await realpath(filename);
     if (actual !== filename || !actual.startsWith(root + path.sep) || !info.isFile() || !types[path.extname(actual)]) return end(404,'Not found');
+    if (path.extname(actual) === '.html' && !raw.startsWith('/monitor')) {
+      const html = (await readFile(actual,'utf8')).replace(/<head([^>]*)>/i, '<head$1><script src="/shared/monitoring.js"></script>');
+      res.writeHead(200, {'Content-Type': types['.html'], 'Content-Length': Buffer.byteLength(html)});
+      return res.end(req.method === 'HEAD' ? undefined : html);
+    }
     let start = 0, finish = info.size - 1, status = 200;
     res.setHeader('Accept-Ranges','bytes');
     if (req.headers.range) {

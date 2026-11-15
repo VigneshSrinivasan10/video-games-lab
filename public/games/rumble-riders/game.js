@@ -311,6 +311,7 @@ function nextCircuit(){
 function primaryAction(){if(state==='finish')nextCircuit();else reset()}
 
 function reset(){
+ window.ArcadeMonitor?.level('World '+(circuit+1));
  enableSound();resumeCircuit=circuit;save();challenge=0;draft=0;draftCooldown=0;pairedHops={};passedRacers=new Set();challengeProgress();state='countdown';countdown=2.4;position=0;time=0;playerX=-.25;lean=0;paused=false;stars=0;collected=0;jumpY=0;jumpV=0;jumpAge=0;flipAngle=0;flightDuration=1;landingAge=10;landingForce=0;splash=0;jumpMode='none';slow=0;boost=0;flash=0;speed=0;rush=0;chain=0;raceTime=0;place=7;passes=0;previousGrade=RumbleWorld.grade(circuit,0);keys.clear();features=buildCourse();
  rivals.splice(0,rivals.length,...makeRacers());ui.intro.hidden=true;ui.finish.hidden=true;ui.pause.textContent='Ⅱ';document.querySelectorAll('.confetti').forEach(n=>n.remove());ui.stars.textContent='0';document.querySelector('#place').textContent='7 / 7';ui.speed.textContent='0';document.querySelector('#turbo').textContent='☆☆☆';document.querySelector('main').classList.remove('boosting');ui.progress.style.width='0%';ui.rider.style.left='0%';draw();
 }
